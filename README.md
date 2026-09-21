@@ -17,7 +17,8 @@ The project is designed as one connected workflow rather than a set of disconnec
 
 ## Source of truth
 
-- `index.html` — current integrated prototype, preserving the established RentReady visual layout.
+- `index.html` — explainer homepage describing the connected RentReady journey and each calculator/tool.
+- `app.html` — current integrated prototype/workspace, preserving the established RentReady visual layout.
 - `archive/` — earlier prototype variants retained for reference.
 - `docs/original-structure.txt` — earlier proposed file structure.
 
