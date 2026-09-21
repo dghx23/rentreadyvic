@@ -997,3 +997,2225 @@ Apply online via 2Apply. Inspections by appointment."></textarea>
         </div>
       </div>
     </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">Σ</span>Summary
+        <div class="head-actions">
+          <button type="button" class="action small ghost" id="btn-toggle-summary">Show</button>
+          <button type="button" class="action small ghost" id="btn-copy-summary">Copy</button>
+        </div>
+      </div>
+      <div class="card-body hidden" id="summary-box">
+        <pre id="summary-content" style="background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:.75rem;font-size:.78rem;font-family:var(--mono);max-height:360px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:0;color:var(--ink-soft);"></pre>
+      </div>
+    </div>
+
+    <div class="toolbar" style="display:flex;gap:.5rem;flex-wrap:wrap;padding:1rem 0 2rem;">
+      <button type="button" class="action" id="btn-print-checklist">Print checklist</button>
+      <button type="button" class="action" id="btn-export-json">Export as JSON</button>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       REFERENCES (dedicated page)
+       ============================================================ -->
+  <section class="panel" id="panel-references" role="tabpanel">
+
+    <div class="callout rights">
+      <strong>What a reference is (legally) and how it works</strong>
+      Under the Victorian <em>Residential Tenancies Act 1997</em> (as amended) and the prescribed <strong>Form 3A</strong>, a rental provider may ask for a maximum of <strong>two general references</strong>. They are not "employment references" and they are not automatically verified. A referee can be anyone who can speak to your reliability — a former landlord, housemate, employer, colleague, community contact, or support worker. The Act does not require you to provide a rental address reference, and it does not require references to be contacted automatically. If an agent asks for more than two references, or asks for a reference type that isn't on Form 3A, you can decline.
+      <br><br>
+      <strong>Your rights around references:</strong> an agent can't refuse your application because you can't provide a specific kind of referee, and can't use a refusal to provide a reference as a proxy for discrimination on a protected attribute. If you believe that has happened, you can complain to VEOHRC (1300 292 153) or apply to VCAT for compensation under s 210AA.
+    </div>
+
+    <div class="ref-flow">
+
+      <!-- Step 1 — You provide referee details -->
+      <div class="ref-step">
+        <span class="step-num">1</span>
+        <h3>Enter referee details</h3>
+        <p>Two referees are required. Provide their name, relationship, and email. We'll generate a request email for you to send.</p>
+
+        <div style="margin-top:.85rem;">
+          <h4 style="font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">Reference 1</h4>
+          <div class="grid">
+            <div class="field"><label>Referee name</label><input type="text" id="ref1-name" data-input="ref1-name" placeholder="Sam Lee"></div>
+            <div class="field"><label>Relationship</label><input type="text" id="ref1-rel" data-input="ref1-rel" placeholder="Former landlord, manager, colleague…"></div>
+            <div class="field"><label>Referee email</label><input type="email" id="ref1-email" data-input="ref1-email" placeholder="referee@example.com"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <h4 style="font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">Reference 2</h4>
+          <div class="grid">
+            <div class="field"><label>Referee name</label><input type="text" id="ref2-name" data-input="ref2-name" placeholder="Jordan Park"></div>
+            <div class="field"><label>Relationship</label><input type="text" id="ref2-rel" data-input="ref2-rel" placeholder="Former housemate, supervisor…"></div>
+            <div class="field"><label>Referee email</label><input type="email" id="ref2-email" data-input="ref2-email" placeholder="referee@example.com"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 — Preview the email -->
+      <div class="ref-step">
+        <span class="step-num">2</span>
+        <h3>Preview the request email</h3>
+        <p>This is what your referee will receive. It includes a short series of questions they can answer directly in their reply. When they send it back, RentReady parses the answers into your application and generates a signed PDF.</p>
+        <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem;">
+          <button type="button" class="action small" id="btn-ref-generate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+            Generate email
+          </button>
+          <button type="button" class="action small" id="btn-ref-copy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+          <button type="button" class="action small primary" id="btn-ref-open-mail">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Open in mail app
+          </button>
+        </div>
+        <div class="email-preview" id="ref-email-preview">Click <strong>Generate email</strong> to see the request preview.</div>
+      </div>
+
+      <!-- Step 3 — Paste the referee's reply -->
+      <div class="ref-step">
+        <span class="step-num">3</span>
+        <h3>Paste the referee's reply</h3>
+        <p>When the referee replies, copy their email body and paste it here. RentReady extracts the answers, stores them against the reference, and produces a signed PDF for you to print or attach.</p>
+        <div style="margin-top:.75rem;">
+          <label for="ref-reply-input" style="font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:.4rem;">Referee reply — paste here</label>
+          <textarea id="ref-reply-input" class="listing-textarea" style="min-height:110px;" placeholder="Paste the referee's reply. It should contain the answers to the questions from the request email."></textarea>
+          <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button type="button" class="action primary" id="btn-ref-parse">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+              Parse reply
+            </button>
+            <button type="button" class="action" id="btn-ref-parse-demo">Insert sample reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 — Result -->
+      <div class="ref-step">
+        <span class="step-num">4</span>
+        <h3>Your signed reference</h3>
+        <p>Once parsed, your reference is stored and a signed PDF is generated. You can print it, save it, or attach it to your Form 3A submission.</p>
+        <div id="ref-result" style="margin-top:.75rem;">
+          <div class="empty-state" style="padding:1.5rem 1rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <h3 style="font-size:.95rem;">No reference parsed yet</h3>
+            <p style="font-size:.82rem;">Once you paste a referee's reply above, the answers will appear here with a signed PDF.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backend note -->
+      <div class="callout warn" style="margin-top:1rem;">
+        <strong>Backend hook — what would need wiring up for real email</strong>
+        This flow uses <code>mailto:</code> for outbound and manual paste for inbound, which works today with no server. To make it fully automatic (send from RentReady, receive replies, auto-parse), you'd connect:
+        <ul>
+          <li>An email service (Postmark, SendGrid, Resend) triggered from a serverless function.</li>
+          <li>A dedicated inbound address (e.g. <code>ref-{token}@refs.rentready.vic</code>) whose webhook posts the reply body back to your server.</li>
+          <li>A parser that matches the reply to the reference token and writes the answers to your database.</li>
+          <li>PDF generation server-side (Puppeteer or PDFKit) with a cryptographic signature.</li>
+        </ul>
+        The UI here is already designed around that flow, so the swap is contained to the marked functions.
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       INCOME
+       ============================================================ -->
+  <section class="panel" id="panel-income" role="tabpanel">
+
+    <div class="callout info">
+      <strong>Income support pre-population</strong>
+      Tick the box below if you receive a Centrelink or DVA payment. RentReady will pre-fill the relevant payment types and current maximum rates. You can adjust each one.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">0</span>Do you receive income support?</div>
+      <div class="card-body">
+        <label style="display:flex;align-items:center;gap:.65rem;cursor:pointer;font-size:.92rem;font-weight:500;">
+          <input type="checkbox" id="income-support-toggle" style="width:18px;height:18px;accent-color:var(--accent);">
+          I am on income support
+        </label>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:.5rem;">Tick to pre-fill JobSeeker, Rent Assistance, DSP, and other payments. You can deselect individual payments below.</p>
+
+        <div id="income-support-panel" class="hidden" style="margin-top:.85rem;">
+          <div class="grid">
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="jobseeker" checked style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>JobSeeker Payment</strong><span class="detail">Max <span data-rate="jobseeker">$808.70</span>/fn (single)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="ra" checked style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Commonwealth Rent Assistance</strong><span class="detail">Max <span data-rate="ra">$219.40</span>/fn (single, no children)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="dsp" style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Disability Support Pension</strong><span class="detail">Max <span data-rate="dsp">$1,064.00</span>/fn (single, 21+)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="youth" style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Youth Allowance (other)</strong><span class="detail">Max <span data-rate="youth">$688.20</span>/fn (single, 18+, at home)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="austudy" style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Austudy</strong><span class="detail">Max <span data-rate="austudy">$688.20</span>/fn (single, 24+)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="carer" style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Carer Payment</strong><span class="detail">Max <span data-rate="carer">$1,064.00</span>/fn (single)</span></span>
+            </label>
+            <label class="check" style="cursor:pointer;align-items:center;">
+              <input type="checkbox" class="is-payment" data-payment="parenting" style="width:18px;height:18px;accent-color:var(--accent);">
+              <span class="txt"><strong>Parenting Payment (single)</strong><span class="detail">Max <span data-rate="parenting">$1,007.50</span>/fn</span></span>
+            </label>
+          </div>
+          <div style="margin-top:.75rem;font-size:.75rem;color:var(--muted);">
+            <span class="mock-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Rates shown are placeholder defaults. Live rates would come from your riskatlas backend.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>Income test</strong>
+      JobSeeker free area is <strong>$150/fortnight</strong>. Between $150 and $256, JobSeeker tapers at 50c/$1 and Rent Assistance also tapers at 50c/$1 — total income is flat. Above $256, JobSeeker tapers at 60c/$1 and Rent Assistance continues at 50c/$1 — total income falls until the second break-even.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span>Your inputs</div>
+      <div class="card-body">
+        <div class="field" style="margin-bottom:1.1rem;">
+          <div class="field-head">
+            <label for="earn-fn">Gross earnings from work — per fortnight</label>
+            <span class="pct-badge" id="earn-pct">—</span>
+          </div>
+          <div class="input-row">
+            <input type="number" id="earn-fn" value="0" min="0" max="1800" step="1">
+            <div class="slider-wrap"><input type="range" id="earn-fn-range" value="0" min="0" max="1800" step="1"></div>
+          </div>
+          <div class="nudge-row">
+            <button type="button" data-nudge="earn-fn" data-pct="-25">−25%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="-10">−10%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="-5">−5%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="5">+5%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="10">+10%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="25">+25%</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="0">$0</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="150">$150 free area</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="256">$256 peak</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="672">$672 2nd BE</button>
+          </div>
+          <div class="suffix mono" id="earn-weekly">—</div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <div class="field-head"><label for="max-js">JobSeeker max — per fortnight</label><span class="pct-badge" id="js-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="max-js" value="808.70" min="0" max="1200" step="0.01">
+              <div class="slider-wrap"><input type="range" id="max-js-range" value="808.70" min="0" max="1200" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="max-js" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="max-js" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="max-js" data-set="808.70">Single</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="max-ra">Rent Assistance max — per fortnight</label><span class="pct-badge" id="ra-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="max-ra" value="219.40" min="0" max="400" step="0.01">
+              <div class="slider-wrap"><input type="range" id="max-ra-range" value="219.40" min="0" max="400" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="max-ra" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="max-ra" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="max-ra" data-set="219.40">Single</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span>Your result</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat"><div class="lbl">JobSeeker</div><div class="val" id="r-js" data-money>—</div><div class="sub" id="r-js-sub">—</div></div>
+          <div class="stat"><div class="lbl">Rent Assistance</div><div class="val" id="r-ra" data-money>—</div><div class="sub" id="r-ra-sub">—</div></div>
+          <div class="stat"><div class="lbl">Wages</div><div class="val" id="r-wages" data-money>—</div><div class="sub" id="r-wages-sub">—</div></div>
+          <div class="stat highlight"><div class="lbl">Total income</div><div class="val" id="r-total" data-money>—</div><div class="sub" id="r-total-week">—</div></div>
+        </div>
+        <div class="verdict" id="r-verdict"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       RENTASSIST
+       ============================================================ -->
+  <section class="panel" id="panel-rentassist" role="tabpanel">
+    <div class="callout info">
+      <strong>RentAssist bond loan — three tests</strong>
+      <strong style="display:inline">1.</strong> Your gross weekly income must be at or below the limit for your household.
+      <strong style="display:inline">2.</strong> Weekly rent must not exceed 55% of your gross weekly income.
+      <strong style="display:inline">3.</strong> Household assets must be $27,644 or less.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span>Your details</div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="field">
+            <div class="field-head"><label for="household">Household type</label></div>
+            <select id="household">
+              <option value="811">Single person — $811/wk limit</option>
+              <option value="1385">Couple — $1,385/wk limit</option>
+              <option value="1419">Family with 1 dependent child — $1,419/wk</option>
+              <option value="1462">Family with 2 dependent children — $1,462/wk</option>
+              <option value="1505">Family with 3 dependent children — $1,505/wk</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="rent-wk">Weekly rent</label><span class="pct-badge" id="rent-ra-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="rent-wk" value="350" min="0" max="1500" step="5">
+              <div class="slider-wrap"><input type="range" id="rent-wk-range" value="350" min="0" max="1500" step="5"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="rent-wk" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="5">+5%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="rent-wk" data-set="350">$350</button>
+              <button type="button" class="primary-nudge" data-nudge="rent-wk" data-set="400">$400</button>
+            </div>
+            <div class="suffix">Must not exceed 55% of gross weekly income.</div>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="gross-wk">Total gross weekly income</label><span class="pct-badge" id="gross-ra-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="gross-wk" value="514.05" min="0" max="2500" step="0.01">
+              <div class="slider-wrap"><input type="range" id="gross-wk-range" value="514.05" min="0" max="2500" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="gross-wk" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="5">+5%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" id="btn-use-cl-total">Use Centrelink total</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="assets">Assets (household)</label><span class="pct-badge" id="assets-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="assets" value="0" min="0" max="60000" step="100">
+              <div class="slider-wrap"><input type="range" id="assets-range" value="0" min="0" max="60000" step="100"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="assets" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="assets" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="assets" data-set="0">$0</button>
+              <button type="button" class="primary-nudge" data-nudge="assets" data-set="27644">At limit</button>
+            </div>
+            <div class="suffix">Limit $27,644.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span>Eligibility</div>
+      <div class="card-body">
+        <div class="checks" id="ra-checks"></div>
+        <div class="verdict" id="ra-verdict"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       AFFORDABILITY
+       ============================================================ -->
+  <section class="panel" id="panel-affordability" role="tabpanel">
+    <div class="callout info">
+      <strong>Market practice — the 30% benchmark</strong>
+      Most Melbourne agents look for rent to be no more than 30% of your net (after-tax) weekly income. Some accept up to 40% with a strong record or guarantor. This threshold is adjustable.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span>Rent vs net income</div>
+      <div class="card-body">
+        <div class="grid">
+          <div class="field">
+            <div class="field-head"><label for="aff-rent">Weekly rent</label><span class="pct-badge" id="aff-rent-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="aff-rent" value="350" min="0" max="1500" step="5">
+              <div class="slider-wrap"><input type="range" id="aff-rent-range" value="350" min="0" max="1500" step="5"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="aff-rent" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="5">+5%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-rent" data-set="350">$350</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="aff-net">Net weekly income (take-home)</label><span class="pct-badge" id="aff-net-pct">—</span></div>
+            <div class="input-row">
+              <input type="number" id="aff-net" value="1167" min="0" max="3000" step="10">
+              <div class="slider-wrap"><input type="range" id="aff-net-range" value="1167" min="0" max="3000" step="10"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="aff-net" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="aff-net" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="aff-net" data-pct="5">+5%</button>
+              <button type="button" data-nudge="aff-net" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" id="btn-use-cl-net">Use Centrelink total</button>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-head"><label for="aff-threshold">Affordability threshold</label><span class="pct-badge info" id="aff-th-pct">30%</span></div>
+            <div class="input-row">
+              <input type="number" id="aff-threshold" value="30" min="10" max="60" step="1">
+              <div class="slider-wrap"><input type="range" id="aff-threshold-range" value="30" min="10" max="60" step="1"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="25">25%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="30">30%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="33">33%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="40">40%</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span>Assessment</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat"><div class="lbl">Rent as % of net income</div><div class="val" id="aff-pct">—</div><div class="sub" id="aff-pct-sub">—</div></div>
+          <div class="stat"><div class="lbl">Minimum net income</div><div class="val" id="aff-min" data-money>—</div><div class="sub" id="aff-min-sub">—</div></div>
+          <div class="stat"><div class="lbl">Maximum rent</div><div class="val" id="aff-max" data-money>—</div><div class="sub" id="aff-max-sub">—</div></div>
+        </div>
+        <div class="verdict" id="aff-verdict"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CHART
+       ============================================================ -->
+  <section class="panel" id="panel-chart" role="tabpanel">
+    <div class="callout info">
+      <strong>Total income vs earnings</strong>
+      The chart shows your combined income (wages + JobSeeker + Rent Assistance) as earnings increase. The plateau at the peak, the fall, and the second break-even are all visible. The marker follows the earnings slider in the Income tab.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span>Break-even curve</div>
+      <div class="card-body">
+        <div class="chart-wrap"><canvas id="chart" width="880" height="400"></canvas></div>
+        <div class="legend">
+          <span><span class="swatch" style="background:var(--accent)"></span> Total income</span>
+          <span><span class="swatch dashed" style="color:var(--bad)"></span> Wages alone</span>
+          <span><span class="swatch dashed" style="color:var(--ok)"></span> Plateau peak</span>
+          <span><span class="dot" style="background:var(--ok)"></span> $256 plateau peak</span>
+          <span><span class="dot" style="background:var(--warn)"></span> Second break-even</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span>Key thresholds</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat peak"><div class="lbl">Plateau peak</div><div class="val" id="th-peak" data-money>—</div><div class="sub">at $256/fn earnings</div></div>
+          <div class="stat warn"><div class="lbl">Second break-even</div><div class="val" id="th-second" data-money>—</div><div class="sub">total returns to peak</div></div>
+          <div class="stat bad"><div class="lbl">JobSeeker cuts out</div><div class="val" id="th-cutoff" data-money>—</div><div class="sub">payment reaches $0</div></div>
+          <div class="stat"><div class="lbl">Peak weekly</div><div class="val" id="th-weekly" data-money>—</div><div class="sub">maximum on Centrelink</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ADMIN PANEL
+       ============================================================ -->
+  <section class="panel" id="panel-admin" role="tabpanel">
+
+    <div class="admin-header">
+      <span class="admin-tag">ADMIN</span>
+      <h2>Admin console</h2>
+      <button type="button" class="action small ghost admin-back" id="btn-admin-signout" style="color:#fff;border-color:rgba(255,255,255,.25);">Sign out</button>
+    </div>
+
+    <div class="callout warn">
+      <strong>Demo admin</strong>
+      This admin panel is a UI demonstration. Data is stored in this browser only. Wire it up to a real backend (Supabase, Postgres, or your riskatlas service) to administer live data.
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card accent"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div class="stat-label">Registered users</div><div class="stat-value" id="admin-users">—</div><div class="stat-sub">Local accounts</div></div>
+      <div class="stat-card ok"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div class="stat-label">Applications</div><div class="stat-value" id="admin-apps">—</div><div class="stat-sub">Submitted on this device</div></div>
+      <div class="stat-card warn"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span><div class="stat-label">References</div><div class="stat-value" id="admin-refs">—</div><div class="stat-sub">Generated</div></div>
+      <div class="stat-card bad"><span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span><div class="stat-label">Rate feed</div><div class="stat-value" id="admin-feed">Stale</div><div class="stat-sub">ratlas backend not connected</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">⚙</span>Centrelink &amp; social security rates</div>
+      <div class="card-body">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:.85rem;">These values feed the Income tab. In production, they would be pulled from the riskatlas social security backend and versioned by date.</p>
+        <table class="admin-table">
+          <thead><tr><th>Payment</th><th>Amount (per fortnight)</th><th>Source</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>JobSeeker Payment (single)</td><td>$808.70</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Commonwealth Rent Assistance (single)</td><td>$219.40</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Disability Support Pension (single, 21+)</td><td>$1,064.00</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Youth Allowance (other, at home)</td><td>$688.20</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Austudy (single, 24+)</td><td>$688.20</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Carer Payment (single)</td><td>$1,064.00</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Parenting Payment (single)</td><td>$1,007.50</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Income free area (JS/RA)</td><td>$150.00</td><td>Default</td><td><span class="pill warn">Placeholder</span></td></tr>
+            <tr><td>Asset limit (RentAssist)</td><td>$27,644.00</td><td>Default</td><td><span class="pill info">Static</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:.85rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button type="button" class="action small" id="btn-admin-refresh-rates">Refresh from backend</button>
+          <button type="button" class="action small" id="btn-admin-edit-rates">Edit rates</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">👤</span>Users</div>
+      <div class="card-body">
+        <table class="admin-table">
+          <thead><tr><th>Email</th><th>Role</th><th>Created</th><th>Last active</th><th>Status</th></tr></thead>
+          <tbody id="admin-users-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">📄</span>Generated references</div>
+      <div class="card-body">
+        <table class="admin-table">
+          <thead><tr><th>Referee</th><th>Applicant</th><th>Generated</th><th>Status</th></tr></thead>
+          <tbody id="admin-refs-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="app-footer">
+  <div>RentReady VIC · A self-contained toolkit for Victorian renters</div>
+  <div class="rate-source">
+    <span class="mock-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Rates placeholder — will sync with riskatlas backend
+    </span>
+  </div>
+  <div style="margin-top:.5rem;font-size:.72rem;">Not legal or financial advice. Verify with Services Australia, Homes Victoria, and Consumer Affairs Victoria.</div>
+</footer>
+
+</div>
+
+<!-- ============================================================
+     DRAWER
+     ============================================================ -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+<aside class="drawer" id="drawer-settings" aria-label="Settings">
+  <div class="drawer-head">
+    <h2>Settings</h2>
+    <button class="icon-btn" id="btn-close-settings" style="margin-left:auto;" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="setting-group">
+      <h3>Appearance</h3>
+      <div class="setting-row">
+        <div class="label-group"><strong>Theme</strong><small>Light, dark, or match system</small></div>
+        <div class="segmented" id="theme-segmented">
+          <button data-theme-value="light">Light</button>
+          <button data-theme-value="dark">Dark</button>
+          <button data-theme-value="auto">Auto</button>
+        </div>
+      </div>
+    </div>
+    <div class="setting-group">
+      <h3>Account</h3>
+      <div class="setting-row">
+        <div class="label-group"><strong id="settings-user-email">Guest</strong><small id="settings-user-role">Not signed in</small></div>
+      </div>
+      <div class="drawer-actions">
+        <button type="button" class="action" id="btn-signout-drawer">Sign out</button>
+      </div>
+    </div>
+    <div class="setting-group">
+      <h3>Data</h3>
+      <div class="drawer-actions">
+        <button type="button" class="action" id="btn-export">Export all data (JSON)</button>
+        <button type="button" class="action" id="btn-import">Import data…</button>
+        <input type="file" id="file-import" accept=".json,application/json" style="display:none;">
+        <button type="button" class="action" id="btn-print-all">Print everything</button>
+      </div>
+    </div>
+    <div class="setting-group">
+      <h3>Reset</h3>
+      <div class="drawer-actions">
+        <button type="button" class="action danger" id="btn-reset-all">Reset all data</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-top:.6rem;">Clears every field, checkbox, and setting. Cannot be undone.</p>
+    </div>
+    <div class="setting-group">
+      <h3>About</h3>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.55;">RentReady VIC is a self-contained, offline-first toolkit. All data stays in your browser — nothing is sent anywhere in this demo.</p>
+      <p style="font-size:.78rem;color:var(--faint);margin-top:.5rem;">Version 2.0.0</p>
+    </div>
+  </div>
+</aside>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<div class="modal-backdrop" id="modal-about">
+  <div class="modal">
+    <h2>About RentReady VIC</h2>
+    <p>A self-contained toolkit for renters in Victoria — covering the prescribed forms (Form 3 and 3A), Centrelink income testing, RentAssist bond loan eligibility, and a full references workflow.</p>
+    <div class="callout warn"><strong>Not legal advice</strong>Always verify rates and rules with Services Australia, Homes Victoria, and Consumer Affairs Victoria.</div>
+    <div class="callout ok"><strong>Privacy</strong>All data stays in this browser. Export or delete any time from Settings.</div>
+    <div class="modal-actions">
+      <button type="button" class="action primary" id="btn-close-about">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     USER MENU
+     ============================================================ -->
+<div class="modal-backdrop" id="modal-user">
+  <div class="modal">
+    <h2>Account</h2>
+    <p id="user-menu-summary">Signed in as Guest</p>
+    <div class="modal-actions" style="flex-direction:column;">
+      <button type="button" class="action" id="btn-account-settings" style="width:100%;justify-content:center;">Open settings</button>
+      <button type="button" class="action" id="btn-account-signout" style="width:100%;justify-content:center;">Sign out</button>
+      <button type="button" class="action primary" id="btn-account-close" style="width:100%;justify-content:center;">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-text">Saved</span>
+</div>
+
+<script>
+/* ============================================================
+   RENTREADY VIC — APPLICATION CODE
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "rentready-vic-v2";
+  const SETTINGS_KEY = "rentready-vic-settings-v2";
+  const AUTH_KEY = "rentready-vic-auth-v2";
+  const LISTINGS_KEY = "rentready-vic-listings-v2";
+  const REFS_KEY = "rentready-vic-refs-v2";
+  const VERSION = "2.0.0";
+
+  const FREE_AREA = 150;
+  const BAND1_END = 256;
+  const TAPER_1 = 0.50;
+  const TAPER_2 = 0.60;
+  const RA_TAPER = 0.50;
+  const ASSET_LIMIT = 27644;
+
+  // Base rates (per fortnight). In production these would be pulled from riskatlas.
+  const RATES = {
+    jobseeker: 808.70,
+    ra: 219.40,
+    dsp: 1064.00,
+    youth: 688.20,
+    austudy: 688.20,
+    carer: 1064.00,
+    parenting: 1007.50
+  };
+
+  const DEFAULTS = {
+    "earn-fn": 0,
+    "max-js": 808.70,
+    "max-ra": 219.40,
+    "rent-wk": 350,
+    "gross-wk": 514.05,
+    "assets": 0,
+    "aff-rent": 350,
+    "aff-net": 1167,
+    "aff-threshold": 30
+  };
+
+  // Current global display period
+  let CURRENT_PERIOD = "fortnightly";
+
+  const $ = id => document.getElementById(id);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  /* ---------- Money helpers ---------- */
+  const fmt = (n, d = 2) => Number(n).toLocaleString("en-AU", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const money = n => "$" + fmt(n, 2);
+  const money0 = n => "$" + fmt(n, 0);
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, isNaN(v) ? min : v));
+
+  // Convert a fortnightly amount to the current period
+  function fromFortnightly(fn, period = CURRENT_PERIOD) {
+    switch (period) {
+      case "weekly": return fn / 2;
+      case "fortnightly": return fn;
+      case "monthly": return fn * 26 / 12;
+      case "yearly": return fn * 26;
+      default: return fn;
+    }
+  }
+  function periodLabel(period = CURRENT_PERIOD) {
+    return { weekly: "/wk", fortnightly: "/fn", monthly: "/mo", yearly: "/yr" }[period] || "/fn";
+  }
+  function periodWord(period = CURRENT_PERIOD) {
+    return { weekly: "week", fortnightly: "fortnight", monthly: "month", yearly: "year" }[period] || "fortnight";
+  }
+  // For a given input field, return the value converted from fortnightly
+  function displayMoney(fortnightlyAmount, decimals = 2) {
+    const v = fromFortnightly(fortnightlyAmount);
+    return "$" + fmt(v, decimals);
+  }
+
+  function setBadge(id, text, cls) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "pct-badge" + (cls ? " " + cls : "");
+  }
+  function toast(msg, isError) {
+    const t = $("toast");
+    $("toast-text").textContent = msg;
+    t.classList.toggle("error", !!isError);
+    t.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove("show"), 2200);
+  }
+
+  /* ---------- Calculations ---------- */
+  function jobSeeker(earnings, maxJS) {
+    if (earnings <= FREE_AREA) return maxJS;
+    if (earnings <= BAND1_END) return Math.max(0, maxJS - (earnings - FREE_AREA) * TAPER_1);
+    const at256 = maxJS - (BAND1_END - FREE_AREA) * TAPER_1;
+    return Math.max(0, at256 - (earnings - BAND1_END) * TAPER_2);
+  }
+  function rentAssistance(earnings, maxRA) {
+    if (earnings <= FREE_AREA) return maxRA;
+    return Math.max(0, maxRA - (earnings - FREE_AREA) * RA_TAPER);
+  }
+  function totalIncome(earnings, maxJS, maxRA) {
+    return jobSeeker(earnings, maxJS) + rentAssistance(earnings, maxRA) + earnings;
+  }
+  function raCutoff(maxRA) { return FREE_AREA + maxRA / RA_TAPER; }
+  function jsCutoff(maxJS) { return BAND1_END + (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) / TAPER_2; }
+  function findSecondBreak(maxJS, maxRA) {
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) + (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    for (let e = raCutoff(maxRA); e < 2500; e += 0.5) {
+      if (totalIncome(e, maxJS, maxRA) >= peak) return e;
+    }
+    return null;
+  }
+
+  /* ============================================================
+     AUTH (client-side demo)
+     ============================================================ */
+  function getAuth() {
+    try { return JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); } catch (e) { return null; }
+  }
+  function setAuth(auth) {
+    if (auth) localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+    else localStorage.removeItem(AUTH_KEY);
+  }
+  function showLoginGate() {
+    $("login-gate").style.display = "flex";
+    $("app-shell").style.display = "none";
+  }
+  function showApp() {
+    $("login-gate").style.display = "none";
+    $("app-shell").style.display = "block";
+    const auth = getAuth();
+    if (auth) {
+      $("user-name").textContent = auth.email.split("@")[0];
+      $("user-avatar").textContent = auth.email[0].toUpperCase();
+      $("user-menu-summary").textContent = "Signed in as " + auth.email + " (" + auth.role + ")";
+      $("settings-user-email").textContent = auth.email;
+      $("settings-user-role").textContent = auth.role === "admin" ? "Administrator" : "Applicant";
+      $("tab-admin").classList.toggle("hidden", auth.role !== "admin");
+    } else {
+      $("user-name").textContent = "Guest";
+      $("user-avatar").textContent = "G";
+      $("user-menu-summary").textContent = "Signed in as Guest — data is stored in this browser only.";
+      $("settings-user-email").textContent = "Guest";
+      $("settings-user-role").textContent = "Not signed in";
+      $("tab-admin").classList.add("hidden");
+    }
+    // Greeting
+    const h = new Date().getHours();
+    const greet = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    $("hero-greeting").textContent = auth ? greet + " — your Victorian rental toolkit" : "Your Victorian rental toolkit";
+  }
+
+  function handleLoginApplicant(e) {
+    e.preventDefault();
+    const email = $("login-email").value.trim();
+    if (!email) return;
+    setAuth({ email, role: "applicant", created: Date.now() });
+    showApp();
+    toast("Signed in");
+  }
+  function handleLoginAdmin(e) {
+    e.preventDefault();
+    const email = $("admin-email").value.trim();
+    const pass = $("admin-password").value;
+    if (pass !== "admin") { toast("Wrong admin password (try 'admin')", true); return; }
+    setAuth({ email: email || "admin@rentready.vic", role: "admin", created: Date.now() });
+    showApp();
+    goToTab("admin");
+    toast("Signed in as admin");
+  }
+  function handleGuest() {
+    setAuth(null);
+    showApp();
+    toast("Continuing as guest");
+  }
+  function handleSignOut() {
+    setAuth(null);
+    closeDrawer(); closeModal("modal-user");
+    showLoginGate();
+    toast("Signed out");
+  }
+
+  /* ============================================================
+     TABS
+     ============================================================ */
+  function goToTab(id) {
+    $$(".tab-btn").forEach(t => t.classList.toggle("active", t.dataset.nav === id));
+    $$(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + id));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (id === "chart") setTimeout(drawChart, 50);
+  }
+  function bindNav() {
+    $$("[data-nav]").forEach(el => {
+      el.addEventListener("click", e => {
+        e.preventDefault();
+        goToTab(el.dataset.nav);
+      });
+    });
+  }
+
+  /* ============================================================
+     PERIOD TOGGLE
+     ============================================================ */
+  function bindPeriod() {
+    $$("#period-toggle button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        CURRENT_PERIOD = btn.dataset.period;
+        $$("#period-toggle button").forEach(b => b.classList.toggle("active", b === btn));
+        refreshAll();
+      });
+    });
+  }
+
+  /* ============================================================
+     SLIDERS
+     ============================================================ */
+  const sliderPairs = [
+    ["earn-fn","earn-fn-range"],["max-js","max-js-range"],["max-ra","max-ra-range"],
+    ["rent-wk","rent-wk-range"],["gross-wk","gross-wk-range"],["assets","assets-range"],
+    ["aff-rent","aff-rent-range"],["aff-net","aff-net-range"],["aff-threshold","aff-threshold-range"]
+  ];
+  function bindPair(key) {
+    const num = $(key), range = $(key + "-range");
+    if (!num || !range) return;
+    num.addEventListener("input", () => { range.value = num.value; onChange(key); });
+    range.addEventListener("input", () => { num.value = range.value; onChange(key); });
+  }
+  function setFieldValue(key, value, opts) {
+    opts = opts || {};
+    const num = $(key);
+    if (!num) return;
+    const min = parseFloat(num.min) || 0;
+    const max = parseFloat(num.max) || Infinity;
+    const v = clamp(value, min, max);
+    num.value = opts.round ? Math.round(v) : parseFloat(v.toFixed(2));
+    const range = $(key + "-range");
+    if (range) range.value = num.value;
+  }
+  function onChange(key) {
+    if (key.startsWith("earn") || key.startsWith("max-")) updateIncome();
+    else if (key === "household" || key.startsWith("rent-wk") || key.startsWith("gross-wk") || key.startsWith("assets")) updateRentAssist();
+    else if (key.startsWith("aff-")) updateAffordability();
+    save();
+    updateHomeStats();
+  }
+
+  /* ============================================================
+     NUDGES
+     ============================================================ */
+  function bindNudges() {
+    $$("[data-nudge]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.nudge;
+        const pct = btn.dataset.pct;
+        const set = btn.dataset.set;
+        const num = $(key);
+        if (!num) return;
+        if (set !== undefined) {
+          setFieldValue(key, parseFloat(set), { round: key === "assets" });
+        } else if (pct !== undefined) {
+          const cur = parseFloat(num.value) || 0;
+          setFieldValue(key, cur * (1 + parseFloat(pct) / 100), { round: key === "assets" });
+        }
+        onChange(key);
+      });
+    });
+  }
+
+  /* ============================================================
+     INCOME (with income support pre-population)
+     ============================================================ */
+  function updateIncome() {
+    const earn = Math.max(0, parseFloat($("earn-fn").value) || 0);
+    const maxJS = Math.max(0, parseFloat($("max-js").value) || 0);
+    const maxRA = Math.max(0, parseFloat($("max-ra").value) || 0);
+
+    const js = jobSeeker(earn, maxJS);
+    const ra = rentAssistance(earn, maxRA);
+    const total = js + ra + earn;
+
+    $("r-js").textContent = displayMoney(js);
+    $("r-js-sub").textContent = (js <= 0 ? "Cut out" : (js >= maxJS ? "Full rate" : "Reduced")) + " · " + periodLabel();
+    $("r-ra").textContent = displayMoney(ra);
+    $("r-ra-sub").textContent = (ra <= 0 ? "Cut out" : (ra >= maxRA ? "Full rate" : "Reduced")) + " · " + periodLabel();
+    $("r-wages").textContent = displayMoney(earn);
+    $("r-wages-sub").textContent = "per " + periodWord();
+    $("r-total").textContent = displayMoney(total);
+    $("r-total-week").textContent = displayMoney(total, 2) + " per " + periodWord();
+    $("earn-weekly").textContent = displayMoney(earn, 2) + " per " + periodWord();
+
+    const jsPct = maxJS > 0 ? (js / maxJS * 100) : 0;
+    const raPct = maxRA > 0 ? (ra / maxRA * 100) : 0;
+    setBadge("js-pct", fmt(jsPct, 0) + "% of max", jsPct >= 99.9 ? "ok" : jsPct > 0 ? "warn" : "bad");
+    setBadge("ra-pct", fmt(raPct, 0) + "% of max", raPct >= 99.9 ? "ok" : raPct > 0 ? "warn" : "bad");
+
+    const cutoff = jsCutoff(maxJS);
+    const earnPct = cutoff > 0 ? earn / cutoff * 100 : 0;
+    setBadge("earn-pct", fmt(earnPct, 0) + "% of JS cutoff", earnPct < 15 ? "ok" : earnPct < 40 ? "warn" : "bad");
+
+    const v = $("r-verdict");
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) + (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    const raCut = raCutoff(maxRA);
+    const second = findSecondBreak(maxJS, maxRA) || raCut + 100;
+    const jsCut = jsCutoff(maxJS);
+
+    let cls = "info", title = "", body = "";
+    if (earn <= FREE_AREA) {
+      cls = "pass"; title = "No reduction — within the free area";
+      body = "You can earn up to " + displayMoney(FREE_AREA) + " with no reduction to JobSeeker or Rent Assistance.";
+    } else if (earn <= BAND1_END) {
+      cls = "info"; title = "On the plateau — total income is unchanged";
+      body = "JobSeeker and Rent Assistance reduce at a combined $1.00 per $1.00 earned, so your total stays at " + displayMoney(peak) + " (" + periodLabel() + ") until earnings reach " + displayMoney(BAND1_END) + ".";
+    } else if (earn <= raCut) {
+      cls = "fail"; title = "Above the plateau — total income is falling";
+      body = "You are in the $1.10-per-dollar taper zone. Your total is below the peak of " + displayMoney(peak) + ".";
+    } else if (earn < second) {
+      cls = "fail"; title = "Still below the plateau peak";
+      body = "Your total income has not yet returned to " + displayMoney(peak) + ". The second break-even is at about " + displayMoney(second) + ".";
+    } else if (earn < jsCut) {
+      cls = "pass"; title = "Above the second break-even — you are gaining";
+      body = "Your total now exceeds the plateau peak of " + displayMoney(peak) + ". Every extra dollar adds to your total.";
+    } else {
+      cls = "info"; title = "JobSeeker has cut out";
+      body = "You receive no JobSeeker and no Rent Assistance. Your total income is your wages alone.";
+    }
+    v.className = "verdict " + cls;
+    v.innerHTML = "<strong>" + title + "</strong>" + body;
+
+    if ($("th-peak")) {
+      $("th-peak").textContent = displayMoney(peak);
+      $("th-second").textContent = displayMoney(second);
+      $("th-cutoff").textContent = displayMoney(jsCut);
+      $("th-weekly").textContent = displayMoney(peak);
+    }
+
+    drawChart();
+    updateHomeStats();
+  }
+
+  function bindIncomeSupport() {
+    const toggle = $("income-support-toggle");
+    const panel = $("income-support-panel");
+    if (!toggle) return;
+    toggle.addEventListener("change", () => {
+      panel.classList.toggle("hidden", !toggle.checked);
+      if (toggle.checked) {
+        // Pre-populate max-js with JobSeeker rate and max-ra with RA rate
+        $("max-js").value = RATES.jobseeker.toFixed(2);
+        $("max-ra").value = RATES.ra.toFixed(2);
+        $("max-js-range").value = RATES.jobseeker.toFixed(2);
+        $("max-ra-range").value = RATES.ra.toFixed(2);
+        updateIncome();
+        save();
+        toast("Pre-filled income support rates");
+      }
+    });
+    // Handle individual payment checkboxes
+    $$(".is-payment").forEach(cb => {
+      cb.addEventListener("change", () => {
+        const pay = cb.dataset.payment;
+        // Show/hide rates in the panel by greying inactive
+        cb.closest(".check").style.opacity = cb.checked ? "1" : ".5";
+      });
+    });
+  }
+
+  /* ============================================================
+     RENTASSIST
+     ============================================================ */
+  function updateRentAssist() {
+    const limit = parseFloat($("household").value) || 811;
+    const rent = Math.max(0, parseFloat($("rent-wk").value) || 0);
+    const gross = Math.max(0, parseFloat($("gross-wk").value) || 0);
+    const assets = Math.max(0, parseFloat($("assets").value) || 0);
+
+    const incomePass = gross <= limit;
+    const fiftyFivePass = gross > 0 && rent <= gross * 0.55;
+    const assetPass = assets <= ASSET_LIMIT;
+    const minIncome = rent / 0.55;
+
+    setBadge("rent-ra-pct", gross > 0 ? fmt(rent / gross * 100, 1) + "% of income" : "—", !gross ? "warn" : rent / gross <= 0.55 ? "ok" : "bad");
+    setBadge("gross-ra-pct", fmt(gross / limit * 100, 0) + "% of limit", incomePass ? "ok" : "bad");
+    setBadge("assets-pct", fmt(assets / ASSET_LIMIT * 100, 0) + "% of limit", assetPass ? "ok" : "bad");
+
+    const checks = [
+      { pass: incomePass, label: "Income limit",
+        detail: incomePass ? "Gross weekly income " + money(gross) + " is within the " + money0(limit) + " limit." : "Gross weekly income " + money(gross) + " exceeds the " + money0(limit) + " limit." },
+      { pass: fiftyFivePass, label: "55% rent-to-income rule",
+        detail: gross <= 0 ? "Enter a gross weekly income to test this rule." : fiftyFivePass ? "Rent " + money(rent) + "/week is " + fmt(rent / gross * 100, 1) + "% of gross income — within the 55% cap." : "Rent " + money(rent) + "/week is " + fmt(rent / gross * 100, 1) + "% of gross income — above the 55% cap. Need at least " + money(minIncome) + "/week gross." },
+      { pass: assetPass, label: "Asset limit",
+        detail: assetPass ? "Assets " + money0(assets) + " are within the " + money0(ASSET_LIMIT) + " limit." : "Assets " + money0(assets) + " exceed the " + money0(ASSET_LIMIT) + " limit." }
+    ];
+
+    $("ra-checks").innerHTML = checks.map(c => {
+      const icon = c.pass ? "✓" : "✕";
+      const cls = c.pass ? "pass" : "fail";
+      return '<div class="check ' + cls + '"><span class="icon">' + icon + '</span><span class="txt"><strong>' + c.label + '</strong><span class="detail">' + c.detail + '</span></span></div>';
+    }).join("");
+
+    const allPass = checks.every(c => c.pass);
+    const v = $("ra-verdict");
+    v.className = "verdict " + (allPass ? "pass" : "fail");
+    v.innerHTML = allPass
+      ? "<strong>Eligible on these figures</strong>You meet the income, 55% rent-to-income, and asset tests. Applications subject to final assessment by Homes Victoria."
+      : "<strong>Not eligible on these figures</strong>One or more tests are not met.";
+
+    updateHomeStats();
+  }
+
+  /* ============================================================
+     AFFORDABILITY
+     ============================================================ */
+  function updateAffordability() {
+    const rent = Math.max(0, parseFloat($("aff-rent").value) || 0);
+    const net = Math.max(0, parseFloat($("aff-net").value) || 0);
+    const threshold = Math.max(1, parseFloat($("aff-threshold").value) || 30) / 100;
+
+    const pct = net > 0 ? (rent / net) * 100 : 0;
+    const minNet = rent / threshold;
+    const maxRent = net * threshold;
+
+    $("aff-pct").textContent = net > 0 ? fmt(pct, 1) + "%" : "—";
+    $("aff-pct-sub").textContent = pct <= 30 ? "Within the 30% benchmark" : pct <= 40 ? "Above 30% — agents may still accept" : "Well above 40% — likely to be declined";
+    $("aff-min").textContent = net > 0 ? money0(minNet) : "—";
+    $("aff-min-sub").textContent = "for this rent at " + fmt(threshold * 100, 0) + "%";
+    $("aff-max").textContent = net > 0 ? money0(maxRent) : "—";
+    $("aff-max-sub").textContent = "at your income at " + fmt(threshold * 100, 0) + "%";
+
+    setBadge("aff-rent-pct", net > 0 ? fmt(pct, 0) + "% of net" : "—", net <= 0 ? "warn" : pct <= threshold * 100 ? "ok" : pct <= 40 ? "warn" : "bad");
+    setBadge("aff-net-pct", net > 0 ? fmt(net / minNet * 100, 0) + "% of need" : "—", net <= 0 ? "warn" : net >= minNet ? "ok" : "bad");
+    setBadge("aff-th-pct", fmt(threshold * 100, 0) + "%", "info");
+
+    const v = $("aff-verdict");
+    if (net <= 0) { v.className = "verdict info"; v.innerHTML = "<strong>Enter your net weekly income</strong>Then the calculator will show whether the rent is within the threshold you set."; return; }
+    if (pct <= threshold * 100) {
+      v.className = "verdict pass";
+      v.innerHTML = "<strong>Affordable at " + fmt(threshold * 100, 0) + "% benchmark</strong>Rent is " + fmt(pct, 1) + "% of net income.";
+    } else if (pct <= 40) {
+      v.className = "verdict warn";
+      v.innerHTML = "<strong>Above " + fmt(threshold * 100, 0) + "% — but within 40%</strong>Some agents will still accept, especially with strong rental history or a guarantor.";
+    } else {
+      v.className = "verdict fail";
+      v.innerHTML = "<strong>Above 40% of net income</strong>Most agents will decline. You would need at least " + money0(minNet) + "/week net.";
+    }
+
+    updateHomeStats();
+  }
+
+  /* ============================================================
+     LISTINGS
+     ============================================================ */
+  let listings = [];
+  let activeListingId = null;
+
+  function loadListings() {
+    try { listings = JSON.parse(localStorage.getItem(LISTINGS_KEY) || "[]"); } catch (e) { listings = []; }
+    activeListingId = localStorage.getItem(LISTINGS_KEY + "-active") || null;
+  }
+  function saveListings() {
+    localStorage.setItem(LISTINGS_KEY, JSON.stringify(listings));
+    if (activeListingId) localStorage.setItem(LISTINGS_KEY + "-active", activeListingId);
+  }
+
+  function parseListingText(text) {
+    const t = text.trim();
+    const out = { id: Date.now().toString(), raw: t };
+
+    // Address: first line that looks like an address (has a comma or suburb pattern)
+    const lines = t.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    let address = "";
+    for (const line of lines) {
+      if (/\d/.test(line) && /,/.test(line) && line.length < 120) { address = line; break; }
+    }
+    if (!address) {
+      // fallback: first line with a number
+      for (const line of lines) { if (/^\d/.test(line) && line.length < 120) { address = line; break; } }
+    }
+    if (!address && lines[0]) address = lines[0];
+    out.address = address.replace(/\s+/g, " ");
+
+    // Suburb (from address)
+    const subMatch = out.address.match(/,\s*([A-Za-z\s]+?)\s+(VIC|NSW|QLD|SA|WA|TAS|NT|ACT)\s*\d{4}/);
+    out.suburb = subMatch ? subMatch[1].trim() : "";
+    out.state = subMatch ? subMatch[2] : "";
+
+    // Rent
+    const rentPatterns = [
+      /\$\s?([\d,]+(?:\.\d{2})?)\s*(?:per\s*week|\/\s*week|pw|p\/w|per w)/i,
+      /\$\s?([\d,]+(?:\.\d{2})?)\s*w(?:ee)?k/i,
+      /rent[:\s]+\$\s?([\d,]+(?:\.\d{2})?)/i
+    ];
+    let rent = null;
+    for (const p of rentPatterns) {
+      const m = t.match(p);
+      if (m) { rent = parseFloat(m[1].replace(/,/g, "")); break; }
+    }
+    out.rent = rent;
+
+    // Bond
+    const bondPatterns = [
+      /bond[:\s]*\$\s?([\d,]+(?:\.\d{2})?)/i,
+      /\$\s?([\d,]+(?:\.\d{2})?)\s*(?:bond)/i
+    ];
+    let bond = null;
+    for (const p of bondPatterns) {
+      const m = t.match(p);
+      if (m) { bond = parseFloat(m[1].replace(/,/g, "")); break; }
+    }
+    if (!bond && rent) bond = rent * 4.33; // ~1 month
+    out.bond = bond;
+
+    // Available date
+    const datePatterns = [
+      /available[:\s]+([\d]{1,2}\s+\w+\s+\d{4})/i,
+      /available[:\s]+(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i,
+      /(?:from|on)\s+([\d]{1,2}\s+\w+\s+\d{4})/i
+    ];
+    let avail = "";
+    for (const p of datePatterns) {
+      const m = t.match(p);
+      if (m) { avail = m[1]; break; }
+    }
+    out.available = avail;
+
+    // Beds / baths / cars
+    const bedMatch = t.match(/(\d+)\s*(?:bed|bedroom|br)/i);
+    const bathMatch = t.match(/(\d+)\s*(?:bath|bathroom)/i);
+    const carMatch = t.match(/(\d+)\s*(?:car|parking|garage)/i);
+    out.beds = bedMatch ? parseInt(bedMatch[1]) : null;
+    out.baths = bathMatch ? parseInt(bathMatch[1]) : null;
+    out.cars = carMatch ? parseInt(carMatch[1]) : null;
+
+    // Property type
+    const types = ["apartment","house","unit","townhouse","studio","villa","duplex","flat"];
+    out.propertyType = "";
+    for (const tp of types) {
+      if (new RegExp("\\b" + tp + "\\b", "i").test(t)) { out.propertyType = tp; break; }
+    }
+
+    // Key features / summary
+    out.notes = t.slice(0, 600);
+
+    return out;
+  }
+
+  function addListingFromText(text) {
+    if (!text.trim()) { toast("Paste a listing first", true); return; }
+    const parsed = parseListingText(text);
+    if (!parsed.address) { toast("Couldn't find an address in that listing", true); return; }
+    listings.push(parsed);
+    if (!activeListingId) activeListingId = parsed.id;
+    saveListings();
+    renderShortlist();
+    updateHomeStats();
+    toast("Listing added");
+  }
+
+  function removeListing(id) {
+    listings = listings.filter(l => l.id !== id);
+    if (activeListingId === id) activeListingId = listings[0] ? listings[0].id : null;
+    saveListings();
+    renderShortlist();
+    updateHomeStats();
+  }
+
+  function renderShortlist() {
+    const grid = $("shortlist-grid");
+    const empty = $("shortlist-empty");
+    const container = $("shortlist-container");
+    if (!listings.length) {
+      grid.style.display = "none";
+      if (empty) empty.style.display = "block";
+      $("active-listing-card").style.display = "none";
+      $("tab-count-listings").textContent = "0";
+      return;
+    }
+    if (empty) empty.style.display = "none";
+    grid.style.display = "grid";
+    $("tab-count-listings").textContent = listings.length;
+
+    grid.innerHTML = listings.map(l => `
+      <div class="listing-card ${l.id === activeListingId ? 'active' : ''}" data-id="${l.id}">
+        <button class="lc-remove" data-remove="${l.id}" aria-label="Remove">✕</button>
+        ${l.id === activeListingId ? '<span class="lc-badge">Active</span>' : ''}
+        <div class="lc-address">${escapeHtml(l.address || "Unknown address")}</div>
+        <div class="lc-meta">
+          ${l.beds != null ? '<span><strong>' + l.beds + '</strong> bed</span>' : ''}
+          ${l.baths != null ? '<span><strong>' + l.baths + '</strong> bath</span>' : ''}
+          ${l.cars != null ? '<span><strong>' + l.cars + '</strong> car</span>' : ''}
+          ${l.propertyType ? '<span>' + escapeHtml(l.propertyType) + '</span>' : ''}
+        </div>
+        ${l.rent ? '<div class="lc-rent">' + money0(l.rent) + '<span class="lc-rent-sub">/wk</span></div>' : ''}
+        ${l.available ? '<div style="font-size:.78rem;color:var(--muted);margin-top:.35rem;">Available: ' + escapeHtml(l.available) + '</div>' : ''}
+      </div>
+    `).join("");
+
+    grid.querySelectorAll(".listing-card").forEach(card => {
+      card.addEventListener("click", e => {
+        if (e.target.closest("[data-remove]")) return;
+        activeListingId = card.dataset.id;
+        saveListings();
+        renderShortlist();
+        renderActiveListing();
+      });
+    });
+    grid.querySelectorAll("[data-remove]").forEach(btn => {
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        removeListing(btn.dataset.remove);
+      });
+    });
+
+    renderActiveListing();
+  }
+
+  function renderActiveListing() {
+    const active = listings.find(l => l.id === activeListingId);
+    const card = $("active-listing-card");
+    if (!active) { card.style.display = "none"; return; }
+    card.style.display = "block";
+    $("active-listing-body").innerHTML = `
+      <h3 style="font-size:1.1rem;margin-bottom:.5rem;">${escapeHtml(active.address)}</h3>
+      <div class="grid" style="margin-top:.75rem;">
+        <div class="field"><label>Weekly rent</label><div style="font-size:1.1rem;font-weight:700;color:var(--accent);">${active.rent ? money0(active.rent) : "—"}</div></div>
+        <div class="field"><label>Bond</label><div style="font-size:1.1rem;font-weight:700;">${active.bond ? money0(active.bond) : "—"}</div></div>
+        <div class="field"><label>Available</label><div style="font-size:.95rem;font-weight:500;">${active.available || "—"}</div></div>
+        <div class="field"><label>Type</label><div style="font-size:.95rem;font-weight:500;">${active.propertyType || "—"}</div></div>
+        <div class="field"><label>Bedrooms</label><div style="font-size:.95rem;font-weight:500;">${active.beds != null ? active.beds : "—"}</div></div>
+        <div class="field"><label>Bathrooms</label><div style="font-size:.95rem;font-weight:500;">${active.baths != null ? active.baths : "—"}</div></div>
+      </div>
+      ${active.notes ? '<div style="margin-top:1rem;"><strong style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:.35rem;">Listing excerpt</strong><div style="font-size:.83rem;color:var(--ink-soft);line-height:1.55;background:var(--surface-2);padding:.75rem;border-radius:var(--r-sm);border:1px solid var(--line);max-height:180px;overflow:auto;white-space:pre-wrap;">' + escapeHtml(active.notes) + '</div></div>' : ''}
+    `;
+  }
+
+  function useActiveListing() {
+    const active = listings.find(l => l.id === activeListingId);
+    if (!active) return;
+    if (active.address) $("s7-address").value = active.address;
+    if (active.rent) $("s7-rent").value = active.rent.toFixed(2);
+    if (active.bond) $("s7-bond").value = active.bond.toFixed(2);
+    if (active.address) $("s7-listing-id").value = active.id;
+    save();
+    toast("Applied to Form 3A");
+    goToTab("checklist");
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  /* ============================================================
+     REFERENCES
+     ============================================================ */
+  let refs = { r1: null, r2: null };
+
+  function loadRefs() {
+    try { refs = JSON.parse(localStorage.getItem(REFS_KEY) || '{"r1":null,"r2":null}'); } catch (e) { refs = { r1: null, r2: null }; }
+  }
+  function saveRefs() { localStorage.setItem(REFS_KEY, JSON.stringify(refs)); }
+
+  function generateRefEmail() {
+    const name1 = $("ref1-name").value.trim() || "[Referee name]";
+    const rel1 = $("ref1-rel").value.trim() || "[relationship]";
+    const name2 = $("ref2-name").value.trim() || "[Referee name]";
+    const rel2 = $("ref2-rel").value.trim() || "[relationship]";
+    const applicant = $("s3-a1-name").value.trim() || "[Applicant name]";
+
+    const template = (name, rel) => `Subject: Rental reference request for ${applicant}
+
+Dear ${name},
+
+${applicant} is applying for a rental property in Victoria and has listed you as a referee (${rel}).
+
+Under Form 3A (the prescribed residential rental application in Victoria), a rental provider may ask for up to two general references. References are not automatically verified — you'll only be contacted if the agent wants to confirm anything.
+
+Could you please reply to this email with your answers to the questions below? Just type your answer after each prompt. When you send it back, the applicant's tool will format your answers and generate a signed PDF reference.
+
+Thank you for helping.
+
+— — —
+
+Q1. Your full name
+A1.
+
+Q2. Your relationship to the applicant (e.g. former landlord, manager, colleague)
+A2.
+
+Q3. How long have you known the applicant?
+A3.
+
+Q4. In what context have you known them? (e.g. tenancy, employment, community)
+A4.
+
+Q5. Has the applicant ever been late with rent, payments, or obligations?
+A5.
+
+Q6. How would you describe the applicant's reliability and care of property?
+A6.
+
+Q7. Would you rent to this person again, or work with them again?
+A7.
+
+Q8. Anything else you'd like the rental provider to know?
+A8.
+
+— — —
+
+Reply with your answers under each A. You can keep it brief.
+
+This request was generated by RentReady VIC on behalf of ${applicant}.`;
+
+    $("ref-email-preview").textContent = template(name1, rel1);
+    return template(name1, rel1);
+  }
+
+  function parseRefReply(text) {
+    const lines = text.split(/\r?\n/);
+    const answers = {};
+    let currentQ = null;
+    for (const line of lines) {
+      const qMatch = line.match(/^\s*Q(\d+)\.?\s*(.+)/i);
+      const aMatch = line.match(/^\s*A(\d+)\.?\s*(.*)$/i);
+      if (qMatch) {
+        currentQ = "Q" + qMatch[1];
+        answers[currentQ] = { question: qMatch[2].trim(), answer: "" };
+      } else if (aMatch && currentQ) {
+        answers["Q" + aMatch[1]].answer = (answers["Q" + aMatch[1]] ? answers["Q" + aMatch[1]].answer : "") + aMatch[2].trim();
+      } else if (currentQ && answers[currentQ] && line.trim()) {
+        answers[currentQ].answer += (answers[currentQ].answer ? " " : "") + line.trim();
+      }
+    }
+    // If no Q/A format found, capture as raw text
+    if (!Object.keys(answers).length) {
+      answers.raw = { question: "Referee response", answer: text.trim() };
+    }
+    return answers;
+  }
+
+  function renderRefResult(answers) {
+    const container = $("ref-result");
+    const refId = "REF-" + Date.now().toString(36).toUpperCase();
+    const issued = new Date().toLocaleString("en-AU");
+    const rows = Object.entries(answers).map(([k, v]) =>
+      `<div style="margin-bottom:.85rem;padding-bottom:.85rem;border-bottom:1px solid var(--line);">
+        <div style="font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;margin-bottom:.25rem;">${escapeHtml(v.question)}</div>
+        <div style="font-size:.88rem;line-height:1.55;">${escapeHtml(v.answer || "—")}</div>
+      </div>`).join("");
+
+    container.innerHTML = `
+      <div class="callout ok">
+        <strong>Reference parsed and signed</strong>
+        Reference ID <strong>${refId}</strong> · Issued ${issued}
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:1rem;margin-top:.75rem;">
+        ${rows}
+        <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button type="button" class="action primary" onclick="window.print()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print / Save as PDF
+          </button>
+          <button type="button" class="action" id="btn-ref-download">Download JSON</button>
+        </div>
+      </div>
+    `;
+    $("btn-ref-download") && $("btn-ref-download").addEventListener("click", () => {
+      const data = { refId, issued, answers, applicant: $("s3-a1-name").value.trim() || "(unspecified)" };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = refId + ".json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast("Reference exported");
+    });
+
+    // Also update the checklist status text
+    const statusText = refId + " · signed " + issued;
+    if (refs.r1 == null) {
+      refs.r1 = { refId, issued, answers };
+      $("ref1-status").textContent = statusText;
+    } else {
+      refs.r2 = { refId, issued, answers };
+      $("ref2-status").textContent = statusText;
+    }
+    saveRefs();
+    updateHomeStats();
+  }
+
+  function bindReferences() {
+    $("btn-ref-generate").addEventListener("click", () => {
+      generateRefEmail();
+      toast("Email generated");
+    });
+    $("btn-ref-copy").addEventListener("click", async () => {
+      const t = $("ref-email-preview").textContent;
+      if (!t || t.startsWith("Click")) { generateRefEmail(); }
+      try {
+        await navigator.clipboard.writeText($("ref-email-preview").textContent);
+        toast("Copied to clipboard");
+      } catch (e) { toast("Couldn't copy", true); }
+    });
+    $("btn-ref-open-mail").addEventListener("click", () => {
+      const email = generateRefEmail();
+      const subject = "Rental reference request";
+      const mailto = "mailto:" + encodeURIComponent($("ref1-email").value.trim()) + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(email);
+      window.location.href = mailto;
+    });
+    $("btn-ref-parse").addEventListener("click", () => {
+      const txt = $("ref-reply-input").value;
+      if (!txt.trim()) { toast("Paste the referee reply first", true); return; }
+      const answers = parseRefReply(txt);
+      renderRefResult(answers);
+      toast("Reference parsed");
+      goToTab("references");
+    });
+    $("btn-ref-parse-demo").addEventListener("click", () => {
+      $("ref-reply-input").value = `Q1. Your full name
+A1. Sam Lee
+
+Q2. Your relationship to the applicant
+A2. Former landlord
+
+Q3. How long have you known the applicant?
+A3. About two years.
+
+Q4. In what context have you known them?
+A4. They rented a one-bedroom apartment from me in Preston from 2023 to 2025.
+
+Q5. Has the applicant ever been late with rent, payments, or obligations?
+A5. Never. Rent was always paid on time.
+
+Q6. How would you describe the applicant's reliability and care of property?
+A6. Extremely reliable. The apartment was always clean and well maintained. Any small issues were reported promptly.
+
+Q7. Would you rent to this person again?
+A7. Yes, without hesitation.
+
+Q8. Anything else you'd like the rental provider to know?
+A8. I'd be happy to be contacted if further detail is helpful.`;
+      toast("Sample inserted — click Parse reply");
+    });
+  }
+
+  /* ============================================================
+     ATTRIBUTES / INFO / DISCRIMINATION (condensed)
+     ============================================================ */
+  const ATTRIBUTES = [
+    { label: "Age", title: "Age", body: "Unlawful to treat you unfavourably because of your age.", examples: ["Higher bond or guarantor from a younger applicant.", "Refusing an older applicant on assumptions about their needs."] },
+    { label: "Disability", title: "Disability", body: "Unlawful to refuse accommodation, impose different terms, or refuse reasonable modifications.", examples: ["Refusing to rent because you use a wheelchair.", "Refusing an assistance dog.", "Requiring a higher bond because of disability."] },
+    { label: "Employment activity", title: "Employment activity", body: "Unlawful to discriminate based on employment status or activity.", examples: ["Refusing an unemployed applicant with savings.", "Treating you differently on carer's leave."] },
+    { label: "Expunged homosexual conviction", title: "Expunged homosexual conviction", body: "Expunged historical convictions must not be used to discriminate.", examples: ["Refusing your application because of an expunged conviction."] },
+    { label: "Gender identity", title: "Gender identity", body: "Unlawful to discriminate because of gender identity.", examples: ["Refusing a trans or non-binary applicant.", "Refusing to use your correct name or pronouns."] },
+    { label: "Industrial activity", title: "Industrial activity", body: "Unlawful to discriminate for lawful union or industrial activity.", examples: ["Refusing because you are a union delegate."] },
+    { label: "Marital status", title: "Marital status", body: "Unlawful to discriminate because of marital or relationship status.", examples: ["Refusing a single applicant on assumptions.", "Refusing a recently separated applicant."] },
+    { label: "Parental status / carer", title: "Parental status or carer", body: "Unlawful to refuse accommodation because you have children or care for someone — unless the premises is genuinely unsuitable.", examples: ["Refusing simply because you have children.", "Higher bond because you are a parent.", "Note: genuine unsuitability (e.g. unfenced pool) may not be unlawful."] },
+    { label: "Physical features", title: "Physical features", body: "Unlawful to discriminate based on appearance.", examples: ["Refusing because of tattoos or piercings."] },
+    { label: "Political belief or activity", title: "Political belief or activity", body: "Unlawful to discriminate for political beliefs or lawful activity.", examples: ["Refusing because of political affiliations."] },
+    { label: "Pregnancy or breastfeeding", title: "Pregnancy or breastfeeding", body: "Unlawful to discriminate against a pregnant or breastfeeding person.", examples: ["Refusing a pregnant applicant.", "Refusing to rent for fear of future children."] },
+    { label: "Race", title: "Race", body: "Unlawful to discriminate because of race, colour, descent, nationality, or ethnicity.", examples: ["Refusing because of your name or accent.", "Not passing your application to the provider because of race."] },
+    { label: "Religious belief or activity", title: "Religious belief or activity", body: "Unlawful to discriminate for religious beliefs or lawful activity.", examples: ["Refusing because you wear religious dress."] },
+    { label: "Lawful sexual activity / sexual orientation", title: "Sexual orientation", body: "Unlawful to discriminate because of sexual orientation or lawful sexual activity.", examples: ["Refusing a same-sex couple.", "Treating couples differently."] },
+    { label: "Sex or intersex status", title: "Sex or intersex status", body: "Unlawful to discriminate because of sex or intersex status.", examples: ["Refusing an applicant because of their sex.", "Treating an intersex applicant unfavourably."] },
+    { label: "Association", title: "Association with a protected person", body: "Unlawful to discriminate because you associate with someone who has a protected attribute.", examples: ["Refusing you because you have a child with a disability.", "Refusing because your partner is of a particular race."] }
+  ];
+
+  const INFO = {
+    "s1-received": { title: "Form 3 — Statement of Information", body: "Must be given to you before or at the time you apply. Required under s 29C of the Residential Tenancies Act 1997 (Regulation 14).", bullets: ["Ask the agent if you haven't received it.", "Sets out your discrimination protections."] },
+    "s1-what-is-discrimination": { title: "What counts as discrimination", body: "Treating someone unfavourably because of a personal attribute, or imposing an unreasonable requirement that disadvantages persons with a personal attribute.", bullets: ["Direct — rejecting you because of your race.", "Indirect — a rule that disadvantages people with a disability without good reason."] },
+    "s1-unlawful": { title: "Discrimination in renting is unlawful", body: "Rental providers and agents cannot refuse accommodation or discriminate during your tenancy because of a protected attribute.", bullets: ["Applies when applying, occupying, or leaving.", "Contraventions can be heard at VCAT and VEOHRC."] },
+    "s1-attributes": { title: "Your protected attributes", body: "16 attributes are protected under Victorian and Commonwealth law.", bullets: ["Apply at application, during tenancy, and on leaving.", "Also apply if you associate with someone with a protected attribute."] },
+    "s1-laws": { title: "Laws that protect you", body: "Victorian and Commonwealth laws both apply.", bullets: ["Residential Tenancies Act 1997 (Vic).", "Equal Opportunity Act 2010 (Vic).", "Commonwealth Discrimination Acts."] },
+    "s1-exceptions": { title: "Limited exceptions", body: "A few narrow circumstances may not be unlawful.", bullets: ["Accommodation for children.", "Shared family accommodation.", "Student accommodation.", "Positive discrimination (e.g. funded youth housing)."] },
+    "s1-examples-applying": { title: "Unlawful discrimination when applying", body: "Examples drawn from Form 3.", bullets: ["Refusing because you have children (unless premises genuinely unsuitable).", "Processing your application differently due to disability or race.", "Different terms because of age.", "Refusing because you have an assistance dog."] },
+    "s1-help": { title: "Where to get help", body: "Three main avenues.", bullets: ["VCAT — compensation under s 210AA. 1300 018 228", "Victoria Legal Aid — 1300 792 387", "VEOHRC — 1300 292 153"] },
+    "s2-form3a": { title: "Why Form 3A matters", body: "From 31 March 2026, Form 3A is the only lawful rental application form in Victoria.", bullets: ["Agents can only ask for Form 3A information.", "Refusing to provide anything outside Form 3A is not discrimination."] },
+    "s2-part-a": { title: "Part A — Important information", body: "Contains info for the rental provider and the applicant.", bullets: ["Explains how the form will be used.", "Covers auctions, fees, condition reports."] },
+    "s2-part-b": { title: "Part B — Statement of information", body: "The Form 3 content reproduced inside Form 3A.", bullets: ["Same as Form 3.", "Lists protected attributes."] },
+    "s2-part-c": { title: "Part C — Mandatory disclosures", body: "Must be completed by the rental provider before the form is given to you.", bullets: ["If missing, ask the agent.", "You're entitled to see it before signing."] },
+    "s3-applicant1": { title: "What Form 3A collects", body: "Full name, date of birth, current address, phone, email. Nothing more.", bullets: ["No emergency contacts.", "No pet details.", "No age of occupants."] },
+    "s3-applicant2": { title: "Additional applicants", body: "Each applicant provides the same details.", bullets: ["All applicants must sign."] },
+    "s4-employed": { title: "What employment info Form 3A collects", body: "Employer name, address, net weekly income, start date.", bullets: ["No payslips.", "No bank statements."] },
+    "s4-not-employed": { title: "If not currently employed", body: "Most recent employer and date employment ended.", bullets: ["No explanation of why required."] },
+    "s5-photo-id": { title: "Photo ID", body: "Standard primary document.", bullets: ["Driver's licence, passport, or proof of age card."] },
+    "s5-secondary-id": { title: "Secondary ID", body: "Used alongside photo ID.", bullets: ["Medicare, birth certificate, citizenship, concession card."] },
+    "s5-visa": { title: "Visa / residency", body: "If not a citizen or permanent resident.", bullets: ["Visa grant notice or VEVO check."] },
+    "s6-ref1": { title: "Reference 1", body: "Two general references required. Name and contact only.", bullets: ["Not automatically verified.", "Can be a former landlord, employer, or colleague.", "Open the References tab for the full workflow."] },
+    "s6-ref2": { title: "Reference 2", body: "Same as Reference 1.", bullets: ["No requirement for a rental reference."] },
+    "s7-property": { title: "Property details", body: "Not part of Form 3A. For your own reference.", bullets: ["Advertised rent must be fixed.", "Rent bidding is unlawful in Victoria."] },
+    "s8-consent": { title: "Consent", body: "Lets the provider verify your information.", bullets: ["Limited to what's needed.", "You can request access to information held about you."] },
+    "s8-signature": { title: "Signing the form", body: "Every applicant must sign and date.", bullets: ["Electronic signatures acceptable.", "Keep a copy."] }
+  };
+
+  const DISCRIM = {
+    "s1-received": { type: "no", text: "Not providing Form 3 is a breach of s 29C — but it is not discrimination." },
+    "s1-what-is-discrimination": { type: "no", text: "Not understanding this is not discrimination." },
+    "s1-unlawful": { type: "no", text: "Not knowing the law is not discrimination." },
+    "s1-attributes": { type: "no", text: "Not knowing your attributes is not discrimination." },
+    "s1-laws": { type: "no", text: "Not knowing the laws is not discrimination." },
+    "s1-exceptions": { type: "no", text: "Not knowing the exceptions is not discrimination." },
+    "s1-examples-applying": { type: "no", text: "Not reading the examples is not discrimination." },
+    "s1-help": { type: "no", text: "Not seeking help is not discrimination." },
+    "s2-form3a": { type: "no", text: "Not checking the form is not discrimination. Using a non-Form 3A form is unlawful." },
+    "s2-part-a": { type: "no", text: "Not reading Part A is not discrimination." },
+    "s2-part-b": { type: "no", text: "Not reading Part B is not discrimination." },
+    "s2-part-c": { type: "no", text: "Not checking Part C is not discrimination." },
+    "s3-applicant1": { type: "no", text: "Refusing to provide your own details is not discrimination." },
+    "s3-applicant2": { type: "no", text: "Refusing to provide a second applicant's details is not discrimination." },
+    "s4-employed": { type: "no", text: "Refusing to provide employment details is not discrimination." },
+    "s4-not-employed": { type: "no", text: "Refusing to provide most recent employment details is not discrimination." },
+    "s5-photo-id": { type: "no", text: "Refusing to provide photo ID is not discrimination." },
+    "s5-secondary-id": { type: "no", text: "Refusing to provide secondary ID is not discrimination." },
+    "s5-visa": { type: "no", text: "Refusing to provide visa details is not discrimination." },
+    "s6-ref1": { type: "no", text: "Refusing to provide a reference is not discrimination." },
+    "s6-ref2": { type: "no", text: "Refusing to provide a second reference is not discrimination." },
+    "s7-property": { type: "no", text: "Not filling in this section is not discrimination." },
+    "s8-consent": { type: "no", text: "Refusing to consent is not discrimination." },
+    "s8-signature": { type: "no", text: "Refusing to sign is not discrimination." }
+  };
+
+  function buildAttributes() {
+    const wrap = $("attributes-list");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    ATTRIBUTES.forEach((attr, idx) => {
+      const chip = document.createElement("span");
+      chip.className = "attr";
+      chip.innerHTML = "<span>" + attr.label + "</span>";
+      const btn = document.createElement("button");
+      btn.type = "button"; btn.className = "info-btn";
+      btn.setAttribute("aria-label", "More info about " + attr.label);
+      btn.textContent = "!";
+      chip.appendChild(btn);
+      wrap.appendChild(chip);
+
+      const explain = document.createElement("div");
+      explain.className = "attr-explain hidden";
+      explain.innerHTML = "<strong>" + attr.title + "</strong><div>" + attr.body + "</div><ul>" + attr.examples.map(e => "<li>" + e + "</li>").join("") + "</ul>";
+      wrap.parentElement.appendChild(explain);
+
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        const isHidden = explain.classList.contains("hidden");
+        document.querySelectorAll(".attr-explain").forEach(p => p.classList.add("hidden"));
+        document.querySelectorAll(".attr.open").forEach(a => a.classList.remove("open"));
+        if (isHidden) { explain.classList.remove("hidden"); chip.classList.add("open"); explain.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+      });
+    });
+  }
+
+  function injectInfo() {
+    $$(".item[data-info]").forEach(item => {
+      const key = item.dataset.info;
+      const info = INFO[key];
+      const discrim = DISCRIM[key];
+      if (!info) return;
+      const title = item.querySelector(".title");
+      if (title && !title.querySelector(".info-inline")) {
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.className = "info-inline";
+        btn.setAttribute("aria-label", "More info: " + info.title);
+        btn.textContent = "!";
+        title.appendChild(btn);
+        if (discrim) {
+          const badge = document.createElement("span");
+          badge.className = "discrim-badge " + discrim.type;
+          badge.textContent = discrim.type === "no" ? "Not discriminatory if refused" : "Discriminatory if asked without written reason";
+          title.appendChild(badge);
+        }
+        const body = item.querySelector(".body");
+        const panel = document.createElement("div");
+        panel.className = "info-panel hidden";
+        panel.innerHTML = "<strong>" + info.title + "</strong>" + (info.body ? "<div>" + info.body + "</div>" : "") + (info.bullets ? "<ul>" + info.bullets.map(b => "<li>" + b + "</li>").join("") + "</ul>" : "");
+        if (body) body.appendChild(panel);
+        if (discrim) {
+          const dNote = document.createElement("div");
+          dNote.className = "discrim-note " + discrim.type;
+          dNote.innerHTML = "<strong>" + (discrim.type === "no" ? "Not discrimination" : "Discrimination risk") + "</strong>" + discrim.text;
+          body.appendChild(dNote);
+        }
+        btn.addEventListener("click", e => {
+          e.preventDefault();
+          const isHidden = panel.classList.contains("hidden");
+          item.querySelectorAll(".info-panel").forEach(p => p.classList.add("hidden"));
+          document.querySelectorAll(".info-inline").forEach(b => b.classList.remove("open"));
+          if (isHidden) { panel.classList.remove("hidden"); btn.classList.add("open"); }
+        });
+      }
+    });
+  }
+
+  function injectCant() {
+    $$(".item").forEach(item => {
+      if (item.hasAttribute("data-no-cant")) return;
+      const body = item.querySelector(".body");
+      if (!body) return;
+      if (item.querySelector(".cant")) return;
+      const label = document.createElement("label");
+      label.className = "cant";
+      label.innerHTML = '<input type="checkbox" class="cant-toggle"> Can\'t provide';
+      body.appendChild(label);
+    });
+  }
+
+  function bindCant() {
+    $$(".cant-toggle").forEach(t => {
+      t.addEventListener("change", () => {
+        t.closest(".item").classList.toggle("cant-mark", t.checked);
+        if (t.checked) {
+          const cb = t.closest(".item").querySelector('input[type="checkbox"][data-key]');
+          if (cb) cb.checked = false;
+        }
+        save(); updateProgress(); updateHomeStats();
+      });
+    });
+  }
+
+  function bindAddDetails() {
+    $$("[data-add-details]").forEach(btn => {
+      const key = btn.dataset.addDetails;
+      const item = btn.closest(".item");
+      const blockId = "details-" + key;
+      let block = $(blockId);
+      if (!block) {
+        block = document.createElement("div");
+        block.className = "details-block hidden";
+        block.id = blockId;
+        block.innerHTML = '<label for="' + blockId + '-ta">Additional details (optional)</label><textarea id="' + blockId + '-ta" data-input="' + blockId + '" placeholder="Notes, extra context, or specifics…"></textarea>';
+        item.appendChild(block);
+      }
+      btn.addEventListener("click", () => {
+        block.classList.toggle("hidden");
+        if (!block.classList.contains("hidden")) { block.querySelector("textarea").focus(); btn.textContent = "− Hide details"; }
+        else btn.textContent = "+ Add details";
+      });
+    });
+  }
+
+  function bindSectionToggles() {
+    $$("[data-toggle-section]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const items = document.querySelector('.items[data-section="' + btn.dataset.toggleSection + '"]');
+        if (!items) return;
+        const hidden = items.classList.toggle("hidden");
+        btn.textContent = hidden ? "Expand" : "Collapse";
+      });
+    });
+  }
+
+  /* ============================================================
+     PROGRESS
+     ============================================================ */
+  function updateProgress() {
+    const boxes = $$('input[type="checkbox"][data-key]');
+    const done = boxes.filter(b => b.checked).length;
+    $("count").textContent = done + " / " + boxes.length;
+    $("bar-fill").style.width = boxes.length ? (done / boxes.length * 100) + "%" : "0%";
+    $$(".items[data-section]").forEach(section => {
+      const id = section.dataset.section;
+      const sectionBoxes = section.querySelectorAll('input[type="checkbox"][data-key]');
+      const checked = Array.from(sectionBoxes).filter(b => b.checked).length;
+      const badge = document.querySelector('[data-badge="' + id + '"]');
+      if (!badge) return;
+      if (checked === 0) { badge.textContent = ""; badge.className = "badge"; }
+      else if (checked === sectionBoxes.length) { badge.textContent = "Done"; badge.className = "badge done"; }
+      else { badge.textContent = checked + "/" + sectionBoxes.length; badge.className = "badge partial"; }
+    });
+  }
+
+  /* ============================================================
+     SUMMARY
+     ============================================================ */
+  function renderSummary() {
+    const lines = [];
+    const get = k => { const el = document.querySelector('[data-input="' + k + '"]'); return el && el.value ? el.value : ""; };
+    const line = (label, val) => { if (val) lines.push(label + ": " + val); };
+
+    lines.push("=== RentReady VIC ===");
+    lines.push("Exported " + new Date().toLocaleString("en-AU"));
+    lines.push("Period: " + CURRENT_PERIOD);
+    lines.push("");
+
+    const active = listings.find(l => l.id === activeListingId);
+    if (active) {
+      lines.push("=== Active listing ===");
+      line("Address", active.address);
+      line("Rent", active.rent ? "$" + active.rent + "/wk" : "");
+      line("Bond", active.bond ? "$" + active.bond : "");
+      lines.push("");
+    }
+
+    lines.push("=== Applicant 1 ===");
+    line("Name", get("s3-a1-name"));
+    line("DOB", get("s3-a1-dob"));
+    line("Address", get("s3-a1-address"));
+    line("Phone", get("s3-a1-phone"));
+    line("Email", get("s3-a1-email"));
+
+    lines.push("", "=== Employment ===");
+    line("Employer", get("s4-employer-name"));
+    line("Net weekly income", get("s4-net-income"));
+
+    lines.push("", "=== References ===");
+    if (refs.r1) lines.push("Ref 1: " + refs.r1.refId + " (" + refs.r1.issued + ")");
+    if (refs.r2) lines.push("Ref 2: " + refs.r2.refId + " (" + refs.r2.issued + ")");
+    if (!refs.r1 && !refs.r2) lines.push("(none generated yet)");
+
+    lines.push("", "=== Property ===");
+    line("Address", get("s7-address"));
+    line("Advertised rent", get("s7-rent"));
+    line("Bond", get("s7-bond"));
+
+    return lines.join("\n");
+  }
+
+  /* ============================================================
+     SAVE / LOAD
+     ============================================================ */
+  function save() {
+    const data = { checkboxes: {}, inputs: {}, cants: {}, values: {}, household: $("household").value, period: CURRENT_PERIOD };
+    $$('input[type="checkbox"][data-key]').forEach(cb => { data.checkboxes[cb.dataset.key] = cb.checked; });
+    $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => {
+      data.inputs[inp.dataset.input] = inp.value;
+    });
+    $$(".cant-toggle").forEach((t, i) => { data.cants["cant-" + i] = t.checked; });
+    Object.keys(DEFAULTS).forEach(k => { const el = $(k); if (el) data.values[k] = el.value; });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function load() {
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) {}
+    if (data.checkboxes) $$('input[type="checkbox"][data-key]').forEach(cb => { if (data.checkboxes[cb.dataset.key] !== undefined) cb.checked = data.checkboxes[cb.dataset.key]; });
+    if (data.inputs) $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => { if (data.inputs[inp.dataset.input] !== undefined) inp.value = data.inputs[inp.dataset.input]; });
+    if (data.values) Object.keys(data.values).forEach(k => { const el = $(k); if (el) el.value = data.values[k]; });
+    if (data.household) $("household").value = data.household;
+    if (data.period) { CURRENT_PERIOD = data.period; $$("#period-toggle button").forEach(b => b.classList.toggle("active", b.dataset.period === data.period)); }
+    if (data.cants) $$(".cant-toggle").forEach((t, i) => { if (data.cants["cant-" + i]) { t.checked = true; t.closest(".item").classList.add("cant-mark"); } });
+    sliderPairs.forEach(([k]) => { const num = $(k), range = $(k + "-range"); if (num && range) range.value = num.value; });
+    document.querySelectorAll(".details-block textarea").forEach(ta => {
+      if (ta.value && ta.value.trim()) {
+        ta.closest(".details-block").classList.remove("hidden");
+        const key = ta.id.replace(/^details-/, "").replace(/-ta$/, "");
+        const btn = document.querySelector('[data-add-details="' + key + '"]');
+        if (btn) btn.textContent = "− Hide details";
+      }
+    });
+  }
+
+  /* ============================================================
+     DRAWER / MODAL
+     ============================================================ */
+  function openDrawer() { $("drawer-settings").classList.add("open"); $("drawer-backdrop").classList.add("open"); document.body.style.overflow = "hidden"; }
+  function closeDrawer() { $("drawer-settings").classList.remove("open"); $("drawer-backdrop").classList.remove("open"); document.body.style.overflow = ""; }
+  function openModal(id) { $(id).classList.add("open"); document.body.style.overflow = "hidden"; }
+  function closeModal(id) { $(id).classList.remove("open"); document.body.style.overflow = ""; }
+
+  /* ============================================================
+     THEME
+     ============================================================ */
+  function applyTheme(theme) {
+    let resolved = theme;
+    if (theme === "auto") resolved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", resolved);
+    $$("#theme-segmented button").forEach(b => b.classList.toggle("active", b.dataset.themeValue === theme));
+  }
+  function setThemeSetting(theme) {
+    const s = getSettings(); s.theme = theme; setSettings(s);
+    applyTheme(theme);
+    if (CURRENT_PERIOD) drawChart();
+  }
+  function getSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}"); } catch (e) { return {}; } }
+  function setSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+
+  /* ============================================================
+     EXPORT / IMPORT / RESET
+     ============================================================ */
+  function exportData() {
+    save();
+    const data = localStorage.getItem(STORAGE_KEY) || "{}";
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rentready-vic-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("Exported JSON");
+  }
+  function resetAll() {
+    if (!confirm("Clear all data? Cannot be undone.")) return;
+    [STORAGE_KEY, LISTINGS_KEY, LISTINGS_KEY + "-active", REFS_KEY].forEach(k => localStorage.removeItem(k));
+    location.reload();
+  }
+
+  /* ============================================================
+     HOME STATS
+     ============================================================ */
+  function updateHomeStats() {
+    const boxes = $$('input[type="checkbox"][data-key]');
+    const done = boxes.filter(b => b.checked).length;
+    const pct = boxes.length ? Math.round((done / boxes.length) * 100) : 0;
+    if ($("home-checklist-value")) {
+      $("home-checklist-value").textContent = pct + "%";
+      $("home-checklist-sub").textContent = done === 0 ? "Nothing started" : done === boxes.length ? "All complete" : done + " of " + boxes.length;
+    }
+    if ($("tab-count-checklist")) $("tab-count-checklist").textContent = done + "/" + boxes.length;
+    if ($("home-listings-value")) {
+      $("home-listings-value").textContent = listings.length;
+      $("home-listings-sub").textContent = listings.length === 0 ? "No properties yet" : listings.length + " shortlisted";
+    }
+    const refCount = (refs.r1 ? 1 : 0) + (refs.r2 ? 1 : 0);
+    if ($("home-refs-value")) {
+      $("home-refs-value").textContent = refCount + "/2";
+      $("home-refs-sub").textContent = refCount === 2 ? "Both signed" : refCount === 0 ? "Two required" : "One remaining";
+    }
+    if ($("home-income-value")) {
+      $("home-income-value").textContent = $("r-total").textContent;
+      $("home-income-sub").textContent = "per " + periodWord() + " · total";
+    }
+    if ($("admin-users")) {
+      $("admin-users").textContent = getAuth() ? "1" : "0";
+      $("admin-apps").textContent = boxes.filter(b => b.checked).length;
+      $("admin-refs").textContent = refCount;
+    }
+  }
+
+  /* ============================================================
+     CHART
+     ============================================================ */
+  const canvas = $("chart");
+  const ctx = canvas.getContext("2d");
+
+  function drawChart() {
+    if (!canvas || canvas.offsetParent === null) return;
+    const maxJS = Math.max(0, parseFloat($("max-js").value) || 0);
+    const maxRA = Math.max(0, parseFloat($("max-ra").value) || 0);
+    const markerEarn = Math.max(0, parseFloat($("earn-fn").value) || 0);
+
+    const styles = getComputedStyle(document.documentElement);
+    const cLine = styles.getPropertyValue("--line").trim() || "#e2e8f0";
+    const cLineStrong = styles.getPropertyValue("--line-strong").trim() || "#cbd5e1";
+    const cMuted = styles.getPropertyValue("--muted").trim() || "#64748b";
+    const cInk = styles.getPropertyValue("--ink").trim() || "#0f172a";
+    const cSurface = styles.getPropertyValue("--surface").trim() || "#fff";
+    const cAccent = styles.getPropertyValue("--accent").trim() || "#2563eb";
+    const cOk = styles.getPropertyValue("--ok").trim() || "#16a34a";
+    const cWarn = styles.getPropertyValue("--warn").trim() || "#d97706";
+    const cBad = styles.getPropertyValue("--bad").trim() || "#dc2626";
+
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvas.clientWidth || 880;
+    const cssH = 400;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const W = cssW, H = cssH;
+    const pad = { top: 24, right: 24, bottom: 52, left: 68 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+    const xMax = 1600, yMax = 1800;
+    const x = e => pad.left + (e / xMax) * plotW;
+    const y = v => pad.top + plotH - (v / yMax) * plotH;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cSurface;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = cLine; ctx.lineWidth = 1;
+    ctx.font = "11px " + getComputedStyle(document.body).fontFamily;
+    ctx.fillStyle = cMuted;
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (let v = 0; v <= yMax; v += 300) {
+      const yy = y(v);
+      ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(pad.left + plotW, yy); ctx.stroke();
+      ctx.fillText("$" + v, pad.left - 8, yy);
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (let e = 0; e <= xMax; e += 200) {
+      const xx = x(e);
+      ctx.beginPath(); ctx.moveTo(xx, pad.top); ctx.lineTo(xx, pad.top + plotH); ctx.stroke();
+      ctx.fillText("$" + e, xx, pad.top + plotH + 8);
+    }
+    ctx.fillStyle = cInk;
+    ctx.font = "600 12px " + getComputedStyle(document.body).fontFamily;
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    ctx.fillText("Gross earnings per fortnight", pad.left + plotW / 2, pad.top + plotH + 30);
+    ctx.save(); ctx.translate(18, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textBaseline = "middle"; ctx.fillText("Total income per fortnight", 0, 0); ctx.restore();
+
+    ctx.strokeStyle = cBad; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x(0), y(0)); ctx.lineTo(x(xMax), y(Math.min(xMax, yMax))); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle = cAccent; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    let started = false;
+    for (let e = 0; e <= xMax; e += 4) {
+      const t = Math.min(totalIncome(e, maxJS, maxRA), yMax);
+      const px = x(e), py = y(t);
+      if (!started) { ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) + (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    ctx.strokeStyle = cOk; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(pad.left, y(peak)); ctx.lineTo(pad.left + plotW, y(peak)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    const second = findSecondBreak(maxJS, maxRA);
+    const markers = [{ e: BAND1_END, color: cOk, label: "$256" }];
+    if (second) markers.push({ e: second, color: cWarn, label: "$" + Math.round(second) });
+    markers.forEach(m => {
+      if (m.e > xMax) return;
+      const mx = x(m.e), my = y(Math.min(totalIncome(m.e, maxJS, maxRA), yMax));
+      ctx.fillStyle = m.color;
+      ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = cInk;
+      ctx.font = "600 10px " + getComputedStyle(document.body).fontFamily;
+      ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+      ctx.fillText(m.label, mx, my - 8);
+    });
+
+    if (markerEarn > 0 && markerEarn <= xMax) {
+      const mx = x(markerEarn), my = y(Math.min(totalIncome(markerEarn, maxJS, maxRA), yMax));
+      ctx.strokeStyle = cInk; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mx, pad.top); ctx.lineTo(mx, pad.top + plotH); ctx.stroke();
+      ctx.fillStyle = cInk;
+      ctx.beginPath(); ctx.arc(mx, my, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = cSurface;
+      ctx.beginPath(); ctx.arc(mx, my, 2.5, 0, Math.PI * 2); ctx.fill();
+    }
+
+    ctx.strokeStyle = cLineStrong; ctx.lineWidth = 1;
+    ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+  }
+
+  /* ============================================================
+     REFRESH ALL
+     ============================================================ */
+  function refreshAll() {
+    updateIncome();
+    updateRentAssist();
+    updateAffordability();
+    updateHomeStats();
+    drawChart();
+  }
+
+  /* ============================================================
+     BINDINGS
+     ============================================================ */
+  function bindAll() {
+    // Auth
+    $("login-applicant").addEventListener("submit", handleLoginApplicant);
+    $("login-admin").addEventListener("submit", handleLoginAdmin);
+    $("btn-guest").addEventListener("click", handleGuest);
+    $$(".login-tabs button").forEach(b => {
+      b.addEventListener("click", () => {
+        $$(".login-tabs button").forEach(x => x.classList.toggle("active", x === b));
+        $("login-applicant").classList.toggle("hidden", b.dataset.loginTab !== "applicant");
+        $("login-admin").classList.toggle("hidden", b.dataset.loginTab !== "admin");
+      });
+    });
+    $("btn-account-signout").addEventListener("click", handleSignOut);
+    $("btn-admin-signout").addEventListener("click", handleSignOut);
+    $("btn-signout-drawer").addEventListener("click", handleSignOut);
+
+    // Nav
+    bindNav();
+    bindPeriod();
+
+    // Sliders + nudges
+    sliderPairs.forEach(([k]) => bindPair(k));
+    bindNudges();
+    $("household").addEventListener("change", () => { updateRentAssist(); save(); });
+
+    // Income support
+    bindIncomeSupport();
+
+    // Use Centrelink total
+    $("btn-use-cl-total").addEventListener("click", () => {
+      const total = parseFloat($("r-total").textContent.replace(/[$,]/g, "")) || 0;
+      // Convert from current period back to fortnightly
+      let fn = total;
+      if (CURRENT_PERIOD === "weekly") fn = total * 2;
+      else if (CURRENT_PERIOD === "monthly") fn = total * 12 / 26;
+      else if (CURRENT_PERIOD === "yearly") fn = total / 26;
+      setFieldValue("gross-wk", fn / 2); // weekly
+      updateRentAssist(); save();
+    });
+    $("btn-use-cl-net").addEventListener("click", () => {
+      const total = parseFloat($("r-total").textContent.replace(/[$,]/g, "")) || 0;
+      let fn = total;
+      if (CURRENT_PERIOD === "weekly") fn = total * 2;
+      else if (CURRENT_PERIOD === "monthly") fn = total * 12 / 26;
+      else if (CURRENT_PERIOD === "yearly") fn = total / 26;
+      setFieldValue("aff-net", fn / 2);
+      updateAffordability(); save();
+    });
+
+    // Checklist
+    $$('input[type="checkbox"][data-key]').forEach(cb => cb.addEventListener("change", () => { save(); updateProgress(); updateHomeStats(); }));
+    $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => {
+      inp.addEventListener("input", save);
+      inp.addEventListener("change", save);
+    });
+    injectCant(); bindCant(); bindAddDetails(); bindSectionToggles();
+
+    $("btn-expand").addEventListener("click", () => { $$(".items[data-section]").forEach(s => s.classList.remove("hidden")); $$("[data-toggle-section]").forEach(b => b.textContent = "Collapse"); });
+    $("btn-collapse").addEventListener("click", () => { $$(".items[data-section]").forEach(s => s.classList.add("hidden")); $$("[data-toggle-section]").forEach(b => b.textContent = "Expand"); });
+
+    $("btn-reset-checklist").addEventListener("click", () => {
+      if (!confirm("Clear the application checklist?")) return;
+      $$('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
+      $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => inp.value = "");
+      $$(".cant-toggle").forEach(t => { t.checked = false; t.closest(".item").classList.remove("cant-mark"); });
+      $$(".details-block").forEach(b => b.classList.add("hidden"));
+      $$("[data-add-details]").forEach(b => b.textContent = "+ Add details");
+      $$(".info-panel").forEach(p => p.classList.add("hidden"));
+      $$(".info-inline").forEach(b => b.classList.remove("open"));
+      save(); updateProgress(); updateHomeStats();
+      toast("Checklist cleared");
+    });
+
+    // Summary
+    $("btn-toggle-summary").addEventListener("click", () => {
+      const box = $("summary-box");
+      box.classList.toggle("hidden");
+      if (!box.classList.contains("hidden")) { $("summary-content").textContent = renderSummary(); $("btn-toggle-summary").textContent = "Hide"; }
+      else $("btn-toggle-summary").textContent = "Show";
+    });
+    $("btn-copy-summary").addEventListener("click", async () => {
+      const text = renderSummary();
+      try { await navigator.clipboard.writeText(text); toast("Summary copied"); }
+      catch (e) { $("summary-content").textContent = text; $("summary-box").classList.remove("hidden"); toast("Summary shown"); }
+    });
+
+    // Listings
+    $("btn-listing-parse").addEventListener("click", () => addListingFromText($("listing-input").value));
+    $("btn-listing-parse-2").addEventListener("click", () => addListingFromText($("listing-input").value));
+    $("btn-listing-clear").addEventListener("click", () => { $("listing-input").value = ""; });
+    $("btn-listing-demo").addEventListener("click", () => {
+      $("listing-input").value = `12 Sample Street, Brunswick VIC 3056
+$350 per week
+Bond: $1,520
+Available: 15 April 2026
+2 bed 1 bath 1 car
+Freshly renovated apartment in the heart of Brunswick. Close to Sydney Road trams, cafes and parks. Heating and cooling. Minimum 12-month lease.
+
+Apply online via 2Apply. Inspections by appointment.`;
+    });
+    $("btn-listing-clear-all").addEventListener("click", () => {
+      if (!confirm("Remove all listings from your shortlist?")) return;
+      listings = []; activeListingId = null;
+      saveListings(); renderShortlist(); updateHomeStats();
+    });
+    $("btn-use-listing").addEventListener("click", useActiveListing);
+
+    // References
+    bindReferences();
+
+    // Print
+    $("btn-print-checklist").addEventListener("click", () => window.print());
+    $("btn-print-all").addEventListener("click", () => { closeDrawer(); setTimeout(() => window.print(), 200); });
+
+    // Export / import
+    $("btn-export-json").addEventListener("click", exportData);
+    $("btn-export").addEventListener("click", exportData);
+    $("btn-import").addEventListener("click", () => $("file-import").click());
+    $("file-import").addEventListener("change", e => {
+      const f = e.target.files[0]; if (!f) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          JSON.parse(ev.target.result);
+          localStorage.setItem(STORAGE_KEY, ev.target.result);
+          location.reload();
+        } catch (err) { toast("Invalid JSON", true); }
+      };
+      reader.readAsText(f);
+    });
+    $("btn-reset-all").addEventListener("click", resetAll);
+
+    // Drawer / modals
+    $("btn-open-settings").addEventListener("click", openDrawer);
+    $("btn-close-settings").addEventListener("click", closeDrawer);
+    $("drawer-backdrop").addEventListener("click", closeDrawer);
+    $("btn-open-help").addEventListener("click", () => openModal("modal-about"));
+    $("btn-close-about").addEventListener("click", () => closeModal("modal-about"));
+    $("modal-about").addEventListener("click", e => { if (e.target.id === "modal-about") closeModal("modal-about"); });
+    $("btn-user-menu").addEventListener("click", () => openModal("modal-user"));
+    $("btn-account-close").addEventListener("click", () => closeModal("modal-user"));
+    $("modal-user").addEventListener("click", e => { if (e.target.id === "modal-user") closeModal("modal-user"); });
+    $("btn-account-settings").addEventListener("click", () => { closeModal("modal-user"); openDrawer(); });
+
+    // Theme
+    $$("#theme-segmented button").forEach(b => b.addEventListener("click", () => setThemeSetting(b.dataset.themeValue)));
+
+    // Admin
+    $("btn-admin-refresh-rates").addEventListener("click", () => toast("Backend not connected — using defaults"));
+    $("btn-admin-edit-rates").addEventListener("click", () => toast("Rate editing would open here"));
+
+    // Resize
+    let rt;
+    window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(drawChart, 150); });
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+      const s = getSettings();
+      if (s.theme === "auto") applyTheme("auto");
+    });
+
+    // Escape
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") { closeModal("modal-about"); closeModal("modal-user"); closeDrawer(); }
+    });
+  }
+
+  /* ============================================================
+     ADMIN RENDER
+     ============================================================ */
+  function renderAdmin() {
+    const auth = getAuth();
+    const usersTable = $("admin-users-table");
+    if (usersTable && auth) {
+      usersTable.innerHTML = `
+        <tr>
+          <td>${escapeHtml(auth.email)}</td>
+          <td>${auth.role}</td>
+          <td>${new Date(auth.created || Date.now()).toLocaleDateString("en-AU")}</td>
+          <td>Just now</td>
+          <td><span class="pill ok">Active</span></td>
+        </tr>`;
+    }
+    const refsTable = $("admin-refs-table");
+    if (refsTable) {
+      const rows = [];
+      if (refs.r1) rows.push(`<tr><td>Reference 1</td><td>${escapeHtml($("s3-a1-name").value || "(not set)")}</td><td>${escapeHtml(refs.r1.issued)}</td><td><span class="pill ok">Signed</span></td></tr>`);
+      if (refs.r2) rows.push(`<tr><td>Reference 2</td><td>${escapeHtml($("s3-a1-name").value || "(not set)")}</td><td>${escapeHtml(refs.r2.issued)}</td><td><span class="pill ok">Signed</span></td></tr>`);
+      if (!rows.length) rows.push(`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:1rem;">No references generated yet</td></tr>`);
+      refsTable.innerHTML = rows.join("");
+    }
+    if ($("admin-users")) $("admin-users").textContent = auth ? "1" : "0";
+    if ($("admin-refs")) $("admin-refs").textContent = ((refs.r1 ? 1 : 0) + (refs.r2 ? 1 : 0));
+  }
+
+  /* ============================================================
+     INIT
+     ============================================================ */
+  function init() {
+    const settings = getSettings();
+    applyTheme(settings.theme || "auto");
+
+    loadListings();
+    loadRefs();
+    buildAttributes();
+    injectInfo();
+    bindAll();
+
+    load();
+    updateProgress();
+    renderShortlist();
+    updateIncome();
+    updateRentAssist();
+    updateAffordability();
+    updateHomeStats();
+    renderAdmin();
+
+    // Show login gate or app
+    const auth = getAuth();
+    if (auth) showApp();
+    else showLoginGate();
+
+    setTimeout(drawChart, 100);
+
+    console.log("%cRentReady VIC v" + VERSION, "color:#4f46e5;font-weight:700;font-size:14px;");
+    console.log("Demo: all data stays in this browser. Backend hooks marked in code.");
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>
