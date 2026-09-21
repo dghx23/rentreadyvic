@@ -1,387 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-AU">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="RentReady VIC helps Victorian renters understand income support, work, rental affordability, RentAssist, Form 3A and references in one connected toolkit.">
-<meta name="theme-color" content="#4f46e5">
-<title>RentReady VIC — Understand work, income support and renting</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="RentReady VIC helps Victorian renters work from income to affordability, RentAssist bond-loan eligibility and rental applications.">
+<title>RentReady VIC — Start with your income</title>
 <style>
-:root{
-  --brand:#4f46e5;--brand2:#7c3aed;--brandSoft:#eef2ff;--brandLine:#c7d2fe;
-  --bg:#f1f4f9;--surface:#fff;--surface2:#f8fafc;--ink:#0f172a;--ink2:#334155;
-  --muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--okSoft:#dcfce7;
-  --warn:#d97706;--warnSoft:#fef3c7;--info:#2563eb;--infoSoft:#dbeafe;
-  --radius:14px;--radiusLg:22px;--shadow:0 10px 30px rgba(15,23,42,.08);
-  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:var(--font);font-size:16px;line-height:1.6;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-button,a{transition:.15s ease}
-.container{width:min(1160px,calc(100% - 32px));margin:0 auto}
-.header{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.header-inner{height:66px;display:flex;align-items:center;gap:20px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:750;letter-spacing:-.02em}
-.brand-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 4px 14px rgba(79,70,229,.28)}
-.brand-copy{display:flex;flex-direction:column;line-height:1.05}
-.brand-copy small{margin-top:4px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:650}
-.nav{margin-left:auto;display:flex;align-items:center;gap:22px;font-size:14px;color:var(--ink2)}
-.nav a:hover{color:var(--brand)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 18px;font-weight:700;font-size:14px;border:1px solid transparent;cursor:pointer}
-.btn-primary{background:var(--ink);color:#fff}
-.btn-primary:hover{background:var(--brand);transform:translateY(-1px)}
-.btn-secondary{background:#fff;border-color:var(--line);color:var(--ink)}
-.btn-secondary:hover{border-color:var(--brandLine);color:var(--brand)}
-.hero{padding:72px 0 46px;background:
-  radial-gradient(circle at 18% 0%,rgba(79,70,229,.13),transparent 34%),
-  radial-gradient(circle at 88% 16%,rgba(124,58,237,.10),transparent 30%)}
-.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:54px;align-items:center}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 11px;border-radius:999px;background:var(--brandSoft);border:1px solid var(--brandLine);color:var(--brand);font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.06em}
-.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
-h1{font-size:clamp(38px,5.2vw,66px);line-height:1.02;letter-spacing:-.045em;margin:18px 0 20px;max-width:780px}
-.gradient{background:linear-gradient(135deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-lead{font-size:19px;color:var(--ink2);max-width:690px;line-height:1.65}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
-.hero-note{margin-top:18px;color:var(--muted);font-size:13px}
-.journey{background:#fff;border:1px solid var(--line);border-radius:var(--radiusLg);padding:20px;box-shadow:var(--shadow)}
-.journey-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.journey-head strong{font-size:14px}
-.journey-head span{font-size:11px;color:var(--brand);background:var(--brandSoft);padding:4px 8px;border-radius:999px;font-weight:700}
-.step{display:grid;grid-template-columns:34px 1fr;gap:11px;position:relative;padding:10px 0}
-.step:not(:last-child)::after{content:"";position:absolute;left:16px;top:42px;bottom:-6px;width:2px;background:var(--line)}
-.step-num{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:#fff;font-size:12px;font-weight:800;z-index:1}
-.step strong{display:block;font-size:14px}
-.step p{margin:2px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
-.trust{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.trust-grid{padding:18px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.trust-item{display:flex;gap:9px;align-items:flex-start;color:var(--ink2);font-size:13px}
-.tick{width:20px;height:20px;border-radius:50%;background:var(--okSoft);color:var(--ok);display:grid;place-items:center;font-weight:900;flex:none}
-.section{padding:72px 0}
-.section.alt{background:#fff}
-.section-head{max-width:760px;margin-bottom:32px}
-.kicker{font-size:12px;color:var(--brand);font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
-h2{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.035em;margin:0 0 13px}
-.section-head p{color:var(--muted);font-size:17px;margin:0}
-.flow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;min-height:330px}
-.tool:hover{border-color:var(--brandLine);box-shadow:0 10px 26px rgba(15,23,42,.06);transform:translateY(-2px)}
-.tool-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:850;margin-bottom:16px}
-.i-brand{background:var(--brandSoft);color:var(--brand)}
-.i-info{background:var(--infoSoft);color:var(--info)}
-.i-ok{background:var(--okSoft);color:var(--ok)}
-.i-warn{background:var(--warnSoft);color:var(--warn)}
-.tool h3{font-size:19px;letter-spacing:-.02em;margin:0 0 8px}
-.tool>p{color:var(--muted);font-size:14px;margin:0 0 14px}
-.tool ul{padding-left:18px;margin:0 0 18px;color:var(--ink2);font-size:13px}
-.tool li{margin:7px 0}
-.tool .tool-link{margin-top:auto;color:var(--brand);font-size:13px;font-weight:750;display:flex;align-items:center;gap:7px}
-.calculator{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.calc-panel{background:linear-gradient(135deg,#111827,#0f172a);color:#fff;border-radius:var(--radiusLg);padding:28px;min-height:100%}
-.calc-panel h3{font-size:26px;margin:0 0 9px;letter-spacing:-.03em}
-.calc-panel p{color:#cbd5e1;margin:0 0 20px}
-.calc-points{display:grid;gap:10px}
-.calc-point{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:#e2e8f0}
-.calc-point b{color:#fff}
-.period{display:inline-flex;padding:3px;border-radius:999px;background:#fff;border:1px solid var(--line);gap:2px;margin-top:19px}
-.period span{padding:7px 10px;border-radius:999px;font-size:11px;font-weight:700;color:var(--muted)}
-.period .active{background:var(--ink);color:#fff}
-.period .year{opacity:.55;font-size:10px}
-.calc-explain{display:grid;gap:12px}
-.explain-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px}
-.explain-card strong{font-size:14px}
-.explain-card p{font-size:13px;color:var(--muted);margin:5px 0 0}
-.connected{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:25px}
-.connected div{border:1px solid var(--line);background:var(--surface2);border-radius:12px;padding:12px;text-align:center;font-size:12px;font-weight:700;position:relative}
-.connected div:not(:last-child)::after{content:"→";position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--muted);z-index:2}
-.reference-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:22px}
-.reference-card{background:#fff;border:1px solid var(--line);border-radius:var(--radiusLg);padding:26px}
-.reference-card h3{margin:0 0 9px;font-size:22px}
-.reference-card p{color:var(--muted);font-size:14px}
-.ref-steps{display:grid;gap:10px;margin-top:17px}
-.ref-row{display:grid;grid-template-columns:30px 1fr;gap:10px}
-.ref-row span{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--brandSoft);color:var(--brand);font-size:11px;font-weight:800}
-.ref-row strong{font-size:13px;display:block}
-.ref-row p{font-size:12px;margin:2px 0 0}
-.status{margin-top:18px;padding:11px 13px;border-radius:10px;background:var(--warnSoft);color:#92400e;font-size:12px;border-left:4px solid var(--warn)}
-.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.rule{background:var(--surface2);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-.rule h3{font-size:16px;margin:0 0 6px}
-.rule p{font-size:13px;color:var(--muted);margin:0}
-.cta{padding:30px;border-radius:var(--radiusLg);background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;gap:30px;justify-content:space-between}
-.cta h2{font-size:30px;margin:0 0 7px;color:#fff}
-.cta p{margin:0;color:rgba(255,255,255,.86);max-width:650px}
-.cta .btn{background:#fff;color:var(--brand);flex:none}
-.footer{padding:38px 0 50px;color:var(--muted);font-size:12px}
-.footer-grid{display:flex;justify-content:space-between;gap:30px;align-items:flex-start}
-.footer strong{color:var(--ink)}
-.footer a{color:var(--brand);font-weight:700}
-@media(max-width:940px){
-  .hero-grid,.calculator,.reference-grid{grid-template-columns:1fr}
-  .flow-grid{grid-template-columns:1fr 1fr}
-  .trust-grid{grid-template-columns:1fr 1fr}
-  .connected{grid-template-columns:1fr}
-  .connected div:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-15px}
-  .rules{grid-template-columns:1fr}
-}
-@media(max-width:680px){
-  .nav a:not(.btn){display:none}
-  .header-inner{height:60px}
-  .hero{padding:48px 0 34px}
-  .flow-grid,.trust-grid{grid-template-columns:1fr}
-  .section{padding:52px 0}
-  .tool{min-height:0}
-  .cta{flex-direction:column;align-items:flex-start}
-  .footer-grid{flex-direction:column}
-}
+:root{--brand:#4f46e5;--brand2:#7c3aed;--bg:#f4f6fa;--surface:#fff;--ink:#0f172a;--ink2:#334155;--muted:#64748b;--line:#e2e8f0;--soft:#eef2ff;--ok:#15803d;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--font);-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}.shell{width:min(1160px,calc(100% - 32px));margin:auto}
+header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.head{height:66px;display:flex;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center}.brand span:last-child{display:grid;line-height:1.08}.brand small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}.nav{margin-left:auto;display:flex;gap:20px;align-items:center;font-size:13px;color:var(--ink2)}.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:999px;background:var(--ink);color:#fff;font-weight:800}.btn:hover{background:var(--brand)}
+.hero{padding:76px 0 48px;background:radial-gradient(circle at 15% 0%,rgba(79,70,229,.12),transparent 35%),radial-gradient(circle at 90% 20%,rgba(124,58,237,.1),transparent 28%)}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}.eyebrow{display:inline-flex;background:var(--soft);color:var(--brand);border:1px solid #c7d2fe;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}.hero h1{font-size:clamp(40px,5.5vw,68px);line-height:1.01;letter-spacing:-.05em;margin:16px 0 18px}.gradient{background:linear-gradient(135deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:18px;color:var(--ink2);max-width:720px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:25px}.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}.note{font-size:12px;color:var(--muted);margin-top:15px}
+.flow{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 32px rgba(15,23,42,.07)}.flow h2{font-size:14px;margin:0 0 11px}.step{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:9px 0;position:relative}.step:not(:last-child):after{content:"";position:absolute;left:15px;top:40px;bottom:-4px;width:2px;background:var(--line)}.n{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:850;z-index:1}.step b{display:block;font-size:13px}.step p{margin:2px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.section{padding:66px 0}.section.white{background:#fff}.section-head{max-width:760px;margin-bottom:28px}.kicker{font-size:11px;color:var(--brand);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.section h2{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.035em;margin:8px 0 11px}.section-head p{margin:0;color:var(--muted);font-size:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}.white .card{background:#f8fafc}.num{width:38px;height:38px;border-radius:11px;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-weight:850;margin-bottom:13px}.card h3{font-size:17px;margin:0 0 7px}.card p{font-size:13px;color:var(--muted);margin:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel{border-radius:18px;padding:25px;background:#111827;color:#fff}.panel.light{background:#fff;border:1px solid var(--line);color:var(--ink)}.panel h3{font-size:23px;margin:0 0 9px;letter-spacing:-.03em}.panel p{color:#cbd5e1;margin:0}.panel.light p{color:var(--muted)}.panel ul{padding-left:18px;color:#e2e8f0;font-size:13px}.panel.light ul{color:var(--ink2)}.panel li{margin:8px 0}.cta{display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:20px;padding:28px}.cta h2{color:#fff;margin:0 0 7px;font-size:30px}.cta p{margin:0;color:rgba(255,255,255,.85)}.cta .btn{background:#fff;color:var(--brand);flex:none}
+footer{background:#fff;border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:11px}.foot{display:grid;grid-template-columns:1fr 1fr auto;gap:25px}.foot b{color:var(--ink)}.foot a{color:var(--brand);font-weight:800}
+@media(max-width:900px){.hero-grid,.cards,.split,.foot{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.cta{flex-direction:column;align-items:flex-start}}@media(max-width:620px){.nav a:not(.btn){display:none}.hero{padding-top:50px}.cards{grid-template-columns:1fr}.hero h1{font-size:40px}}
 </style>
 </head>
 <body>
-<header class="header">
-  <div class="container header-inner">
-    <a class="brand" href="index.html">
-      <span class="brand-mark">R</span>
-      <span class="brand-copy">RentReady VIC<small>Work · Rent · Support</small></span>
-    </a>
-    <nav class="nav">
-      <a href="#tools">Tools</a>
-      <a href="#calculator">How calculations work</a>
-      <a href="#references">References</a>
-      <a href="app.html" class="btn btn-primary">Open RentReady</a>
-    </nav>
-  </div>
-</header>
+<header><div class="shell head">
+<a class="brand" href="index.html"><span class="mark">R</span><span>RentReady VIC<small>Work · Rent · Support</small></span></a>
+<nav class="nav"><a href="#how">How it works</a><a href="#rules">Application rules</a><a class="btn" href="app.html">Start with my income</a></nav>
+</div></header>
 
 <main>
 <section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <span class="eyebrow"><span class="eyebrow-dot"></span>Victoria-first renter toolkit</span>
-      <h1>Understand what <span class="gradient">working, payments and rent</span> mean together.</h1>
-      <p class="hero-lead">RentReady VIC brings the numbers and the rental process into one place. Add a property, tell us about your income and income support, then use the same information to understand working more, rent affordability, RentAssist bond-loan eligibility, Form 3A and references.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="app.html?tool=listings">Add a rental listing</a>
-        <a class="btn btn-secondary" href="app.html">Explore all tools</a>
-      </div>
-      <p class="hero-note">Enter information once. RentReady reuses it across the tools so you do not have to keep typing the same figures.</p>
-    </div>
-    <aside class="journey" aria-label="RentReady journey">
-      <div class="journey-head"><strong>How RentReady fits together</strong><span>ONE WORKSPACE</span></div>
-      <div class="step"><span class="step-num">1</span><div><strong>Add the property</strong><p>Paste the rental listing or enter the figures. RentReady extracts the important details and saves the property to your shortlist.</p></div></div>
-      <div class="step"><span class="step-num">2</span><div><strong>Set your income and payments</strong><p>Record work income and, if relevant, JobSeeker, DSP, Rent Assistance or other configured support.</p></div></div>
-      <div class="step"><span class="step-num">3</span><div><strong>See what the numbers mean</strong><p>Test working more, payment changes, rent affordability and RentAssist eligibility using the same saved information.</p></div></div>
-      <div class="step"><span class="step-num">4</span><div><strong>Prepare the application</strong><p>Work through Form 3A, understand the rules and organise references for the selected property.</p></div></div>
-    </aside>
-  </div>
+<div class="shell hero-grid">
+<div>
+<span class="eyebrow">Income first · property second</span>
+<h1>Know your <span class="gradient">rental range</span> before you apply.</h1>
+<p class="lead">RentReady begins with the income-support payment you already receive, adds your work and household income, allows for future Rent Assistance, checks the RentAssist bond-loan requirements, and only then tests the actual property.</p>
+<div class="actions"><a class="btn" href="app.html">Start with my income →</a><a class="btn ghost" href="#how">See the full journey</a></div>
+<p class="note">Enter the important information once. The same income and property figures flow through every later step.</p>
+</div>
+<aside class="flow">
+<h2>Your RentReady journey</h2>
+<div class="step"><span class="n">1</span><div><b>Start with income</b><p>Choose your payment, work income, household income and future Rent Assistance assumption.</p></div></div>
+<div class="step"><span class="n">2</span><div><b>Check bond-loan requirements</b><p>Income, assets, residency and property-ownership tests before you spend time on a property.</p></div></div>
+<div class="step"><span class="n">3</span><div><b>Add the property</b><p>Paste the listing, pull out rent, bond and bedrooms, and save properties to a shortlist.</p></div></div>
+<div class="step"><span class="n">4</span><div><b>Understand the application</b><p>See what can be requested, what cannot, and what unlawful discrimination means.</p></div></div>
+<div class="step"><span class="n">5</span><div><b>See the shortfalls</b><p>Compare the property with a general affordability benchmark and the bond-loan rent test.</p></div></div>
+<div class="step"><span class="n">6</span><div><b>Optimise</b><p>Move work-income and rent sliders until you find a range that works.</p></div></div>
+</aside>
+</div>
 </section>
 
-<section class="trust">
-  <div class="container trust-grid">
-    <div class="trust-item"><span class="tick">✓</span><div><strong>Property-aware</strong><br>Your selected rent flows into relevant calculators.</div></div>
-    <div class="trust-item"><span class="tick">✓</span><div><strong>Income-support aware</strong><br>Payment type and work income are kept together.</div></div>
-    <div class="trust-item"><span class="tick">✓</span><div><strong>Period controls</strong><br>View money weekly, fortnightly or monthly; yearly is available but quieter.</div></div>
-    <div class="trust-item"><span class="tick">✓</span><div><strong>Connected application</strong><br>Shortlist, calculations, Form 3A and references share the same workspace.</div></div>
-  </div>
-</section>
+<section class="section" id="how"><div class="shell">
+<div class="section-head"><span class="kicker">What the tool actually does</span><h2>It works forward from the money you have.</h2><p>Instead of asking you to choose a property first and discover later that the numbers do not work, RentReady builds your rental range from your income and eligibility position.</p></div>
+<div class="cards">
+<div class="card"><span class="num">01</span><h3>Income-support profile</h3><p>Select the payment and circumstance that applies to you. Add work income, other household income and Working Credits where relevant.</p></div>
+<div class="card"><span class="num">02</span><h3>Future Rent Assistance</h3><p>Assume you may receive Rent Assistance after moving into an eligible private rental. Before a property is selected, the tool can use the potential maximum for the chosen household situation.</p></div>
+<div class="card"><span class="num">03</span><h3>Bond-loan requirements</h3><p>Check the configured RentAssist income, asset, residency and property-ownership requirements. The rent-share test waits until a property is selected.</p></div>
+<div class="card"><span class="num">04</span><h3>Property and shortlist</h3><p>Paste the ad or enter the property manually. RentReady uses weekly rent, bond and bedroom count in the next calculations.</p></div>
+<div class="card"><span class="num">05</span><h3>Affordability and shortfalls</h3><p>See how far the property sits above or below a general budget benchmark and the RentAssist rent-share threshold, plus any bond-cap shortfall.</p></div>
+<div class="card"><span class="num">06</span><h3>Optimisation sliders</h3><p>Adjust work income and target rent. The tool recalculates support-payment estimates, Rent Assistance and the affordability gaps as you move.</p></div>
+</div>
+</div></section>
 
-<section class="section" id="tools">
-  <div class="container">
-    <div class="section-head">
-      <div class="kicker">What each tool does</div>
-      <h2>Every tool answers a specific question.</h2>
-      <p>The point is not just to return a number. Each tool is designed to explain the inputs, the result and what changed when you adjust a figure.</p>
-    </div>
+<section class="section white" id="rules"><div class="shell">
+<div class="section-head"><span class="kicker">Application rights</span><h2>Then it explains what the agent can and cannot ask you for.</h2><p>RentReady turns the Victorian application rules into a practical checklist once you have worked out whether the property is financially viable.</p></div>
+<div class="split">
+<div class="panel light"><h3>What may be requested</h3><ul><li>Personal and employment details from the prescribed application.</li><li>Limited financial evidence to show capacity to pay.</li><li>Limited identity documents.</li><li>Rental or residential history.</li><li>Personal-referee contact details if requested.</li></ul></div>
+<div class="panel"><h3>What is off limits</h3><ul><li>Questions about previous rental disputes or legal action.</li><li>Bond-history questions.</li><li>Daily bank transaction details.</li><li>Extra questions outside the prescribed application form.</li><li>Protected-attribute questions without the required written reason.</li></ul></div>
+</div>
+</div></section>
 
-    <div class="flow-grid">
-      <a class="tool" href="app.html?tool=listings">
-        <span class="tool-icon i-brand">01</span>
-        <h3>Property listing & shortlist</h3>
-        <p>Start with the property so the rest of RentReady knows which rent and bond you are working with.</p>
-        <ul>
-          <li>Paste a rental advertisement.</li>
-          <li>Extract address, weekly rent, bond, availability and other recognised details.</li>
-          <li>Review the important information from the listing.</li>
-          <li>Add more properties and move between a shortlist.</li>
-          <li>Use the selected property's rent in affordability and eligibility tools.</li>
-        </ul>
-        <span class="tool-link">Add or compare properties →</span>
-      </a>
-
-      <a class="tool" href="app.html?tool=income">
-        <span class="tool-icon i-info">02</span>
-        <h3>Income support & working more</h3>
-        <p>See work income and income-support payments together instead of looking at them separately.</p>
-        <ul>
-          <li>Identify whether you receive income support.</li>
-          <li>Select configured payments such as JobSeeker, DSP and Rent Assistance.</li>
-          <li>Enter earnings and adjust them with sliders.</li>
-          <li>Apply configured free areas, tapers and payment reductions.</li>
-          <li>See the combined result as work income changes.</li>
-        </ul>
-        <span class="tool-link">Open income calculator →</span>
-      </a>
-
-      <a class="tool" href="app.html?tool=chart">
-        <span class="tool-icon i-brand">03</span>
-        <h3>Break-even chart</h3>
-        <p>Visualise the relationship between earnings, payment reductions and total income.</p>
-        <ul>
-          <li>Plot earnings against income-support changes.</li>
-          <li>Show where configured taper rules change.</li>
-          <li>See sections where total income rises, flattens or changes more slowly.</li>
-          <li>Use the graph alongside the same figures in the income calculator.</li>
-        </ul>
-        <span class="tool-link">View the chart →</span>
-      </a>
-
-      <a class="tool" href="app.html?tool=affordability">
-        <span class="tool-icon i-warn">04</span>
-        <h3>Rent affordability</h3>
-        <p>Put the selected property's rent beside the income figures you have already entered.</p>
-        <ul>
-          <li>Reuse weekly rent from the active shortlist property.</li>
-          <li>Compare rent with your saved income.</li>
-          <li>Calculate rent as a percentage of income.</li>
-          <li>Adjust the affordability threshold you want to examine.</li>
-          <li>Compare properties without rebuilding the calculation.</li>
-        </ul>
-        <span class="tool-link">Check affordability →</span>
-      </a>
-
-      <a class="tool" href="app.html?tool=rentassist">
-        <span class="tool-icon i-ok">05</span>
-        <h3>RentAssist bond-loan eligibility</h3>
-        <p>Work through the eligibility tests together and see which test changes the result.</p>
-        <ul>
-          <li>Use household and property information.</li>
-          <li>Test configured income limits.</li>
-          <li>Test configured asset limits.</li>
-          <li>Use the rent/property figures already saved.</li>
-          <li>Show each check separately so a failed test is understandable.</li>
-        </ul>
-        <span class="tool-link">Check RentAssist →</span>
-      </a>
-
-      <a class="tool" href="app.html?tool=checklist">
-        <span class="tool-icon i-info">06</span>
-        <h3>Form 3 & Form 3A guide</h3>
-        <p>Turn the Victorian rental-application requirements into a guided checklist rather than a blank form.</p>
-        <ul>
-          <li>Explain Form 3 and Form 3A in context.</li>
-          <li>Guide the applicant through the information collected.</li>
-          <li>Explain protected attributes and discrimination issues where relevant.</li>
-          <li>Track progress through the application.</li>
-          <li>Reuse applicant, employment and property details where the prototype supports it.</li>
-        </ul>
-        <span class="tool-link">Prepare the application →</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section class="section alt" id="calculator">
-  <div class="container">
-    <div class="section-head">
-      <div class="kicker">How the calculator works</div>
-      <h2>Change one figure and see the whole picture move.</h2>
-      <p>The money tools are designed to make the interaction between work, payments and rent visible.</p>
-    </div>
-
-    <div class="calculator">
-      <div class="calc-panel">
-        <h3>What you put in</h3>
-        <p>Your saved profile provides the shared inputs used across the calculators.</p>
-        <div class="calc-points">
-          <div class="calc-point">✓ <div><b>Work income</b> — change earnings to test different hours or wages.</div></div>
-          <div class="calc-point">✓ <div><b>Income-support payment</b> — choose the payment variables that apply to you.</div></div>
-          <div class="calc-point">✓ <div><b>Property rent</b> — pull the figure from the property you selected in your shortlist.</div></div>
-          <div class="calc-point">✓ <div><b>Household / assets</b> — use these where an eligibility test needs them.</div></div>
-        </div>
-        <div class="period" aria-label="Example period selector">
-          <span>Weekly</span><span class="active">Fortnightly</span><span>Monthly</span><span class="year">Yearly</span>
-        </div>
-      </div>
-      <div class="calc-explain">
-        <div class="explain-card"><strong>1. Convert the display period</strong><p>The same underlying values can be shown weekly, fortnightly or monthly. Yearly remains available but is intentionally less prominent.</p></div>
-        <div class="explain-card"><strong>2. Apply the configured payment rules</strong><p>The income calculator uses the current configured free areas, taper rates, maximum payment amounts and related variables in the prototype.</p></div>
-        <div class="explain-card"><strong>3. Combine work + payment</strong><p>Instead of only showing “Centrelink goes down”, RentReady shows the payment alongside earnings so you can see the combined result.</p></div>
-        <div class="explain-card"><strong>4. Feed the result into renting tools</strong><p>The same income and selected-property information can then be used for affordability and eligibility checks.</p></div>
-      </div>
-    </div>
-
-    <div class="connected" aria-label="Connected data flow">
-      <div>Property shortlist</div><div>Income & payments</div><div>Affordability</div><div>RentAssist</div><div>Application pack</div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="references">
-  <div class="container">
-    <div class="section-head">
-      <div class="kicker">References</div>
-      <h2>A reference workflow, not just two empty boxes.</h2>
-      <p>RentReady explains what the reference is for, helps prepare the request and turns the response into a structured record.</p>
-    </div>
-    <div class="reference-grid">
-      <div class="reference-card">
-        <h3>What the References tool explains</h3>
-        <p>The dedicated References section explains the reference requirement in the context of the rental application, what information the prototype asks the referee for, and how the response becomes part of your saved application material.</p>
-        <div class="ref-steps">
-          <div class="ref-row"><span>1</span><div><strong>Enter referee details</strong><p>Name, relationship and email are used to build the request.</p></div></div>
-          <div class="ref-row"><span>2</span><div><strong>Generate the questions</strong><p>RentReady creates a structured email with prompts the referee can answer directly.</p></div></div>
-          <div class="ref-row"><span>3</span><div><strong>Capture the reply</strong><p>The prototype can parse a pasted response into structured answers.</p></div></div>
-          <div class="ref-row"><span>4</span><div><strong>Create a printable record</strong><p>The formatted result can currently be printed or saved as PDF from the browser.</p></div></div>
-        </div>
-        <div class="status"><strong>Prototype status:</strong> outbound email currently opens the user's mail client and inbound replies are pasted manually. Automatic send/receive and cryptographic signing still require the backend connection described in the project.</div>
-        <div style="margin-top:18px"><a class="btn btn-primary" href="app.html?tool=references">Open References</a></div>
-      </div>
-      <div class="reference-card">
-        <h3>Saved work & administration</h3>
-        <p>The prototype also demonstrates the account and administration experience around the tools.</p>
-        <div class="ref-steps">
-          <div class="ref-row"><span>✓</span><div><strong>Applicant sign-in / guest mode</strong><p>The current prototype keeps user work in browser storage so the experience can be tested end to end.</p></div></div>
-          <div class="ref-row"><span>✓</span><div><strong>Saved shortlist and references</strong><p>Property and reference records persist locally in the browser.</p></div></div>
-          <div class="ref-row"><span>✓</span><div><strong>Export and import</strong><p>The user can export the prototype's saved data and import it again.</p></div></div>
-          <div class="ref-row"><span>✓</span><div><strong>Admin interface</strong><p>An admin UI exists for demonstrating management of configured data and system information.</p></div></div>
-        </div>
-        <div class="status"><strong>Prototype status:</strong> login and admin are currently browser-only demonstrations. Real accounts and server-side persistence still need to be connected.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section alt">
-  <div class="container">
-    <div class="section-head">
-      <div class="kicker">Rules and explanations</div>
-      <h2>The answer should include the reason.</h2>
-      <p>RentReady is intended to place plain-language explanations and source information beside the action a renter is taking.</p>
-    </div>
-    <div class="rules">
-      <div class="rule"><h3>Rental application rules</h3><p>Explain the Victorian application process, Form 3 / Form 3A and what the prototype understands to be collected or not collected.</p></div>
-      <div class="rule"><h3>Protected attributes</h3><p>Surface the protected-attribute and discrimination information already built into the application checklist.</p></div>
-      <div class="rule"><h3>Payment and eligibility variables</h3><p>Show which configured payment or eligibility rules are driving a result rather than hiding the calculation.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <div class="cta">
-      <div><h2>Start with the property you are considering.</h2><p>Add a listing once, then carry the same property and income information through the rest of RentReady.</p></div>
-      <a class="btn" href="app.html?tool=listings">Open RentReady VIC →</a>
-    </div>
-  </div>
-</section>
+<section class="section"><div class="shell"><div class="cta"><div><h2>Start with the number that matters first: your income.</h2><p>Build the income profile, check the bond requirements, then see which properties are actually worth applying for.</p></div><a class="btn" href="app.html">Open RentReady VIC →</a></div></div></section>
 </main>
 
-<footer class="footer">
-  <div class="container footer-grid">
-    <div><strong>RentReady VIC</strong><br>Independent guidance prototype · Victoria, Australia.</div>
-    <div>Current prototype uses locally configured payment figures and browser storage. Live RiskAtlas rates, server accounts and automated reference email handling are still integration work.</div>
-    <div><a href="app.html">Open tools</a></div>
-  </div>
-</footer>
+<footer><div class="shell foot"><div><b>RentReady VIC</b><br>Independent guidance prototype for Victorian renters.</div><div>Check important decisions against the official sources linked inside the tool.</div><div>Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div></div></footer>
 </body>
 </html>
