@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RentReady VIC — Admin configuration</title>
+<style>
+:root{--brand:#4f46e5;--bg:#f4f6fa;--surface:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#15803d;--bad:#b91c1c;--warn:#b45309;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}a{color:var(--brand);text-decoration:none}.shell{width:min(980px,calc(100% - 28px));margin:auto}.top{background:#111827;color:#fff;padding:16px 0}.top .shell{display:flex;align-items:center;gap:14px}.top b{font-size:16px}.top a{margin-left:auto;color:#c7d2fe;font-size:12px}.main{padding:28px 0 60px}.intro{margin-bottom:18px}.intro h1{margin:0 0 6px;font-size:28px}.intro p{margin:0;color:var(--muted);font-size:13px}.notice{padding:12px 14px;background:#fef3c7;color:#78350f;border-left:4px solid #d97706;border-radius:9px;margin:14px 0;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.head{padding:12px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:13px}.body{padding:14px;display:grid;gap:10px}label{display:grid;gap:4px;font-size:11px;font-weight:750;color:#334155}input{width:100%;padding:8px 9px;border:1px solid #cbd5e1;border-radius:8px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.status{display:flex;align-items:center;justify-content:space-between;padding:10px;background:#f8fafc;border-radius:8px;font-size:11px}.pill{padding:3px 6px;border-radius:999px;font-weight:800}.pill.ok{background:#dcfce7;color:var(--ok)}.pill.bad{background:#fee2e2;color:var(--bad)}button{border:0;border-radius:8px;padding:9px 12px;font-weight:800;cursor:pointer}.primary{background:#111827;color:#fff}.secondary{background:#eef2ff;color:var(--brand)}.actions{display:flex;gap:8px;margin-top:14px}.small{font-size:11px;color:var(--muted)}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f1f5f9;padding:2px 4px;border-radius:4px}@media(max-width:700px){.grid,.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top"><div class="shell"><b>RentReady VIC · Admin</b><span style="font-size:11px;color:#94a3b8">Internal configuration</span><a href="index.html">← Public site</a></div></header>
+<main class="shell main">
+<section class="intro">
+  <h1>Calculation and data configuration</h1>
+  <p>This screen is for internal administration. Public pages do not expose backend data-source names or connector settings.</p>
+</section>
+
+<div class="notice">
+  Payment rates are fetched through RentReady's server-side social-security proxy. The upstream connector is set with the deployment environment variable <code>SOCIAL_SECURITY_COMPASS_BASE</code>. The public application only calls <code>/api/social-security</code>.
+</div>
+
+<div class="grid">
+  <section class="card">
+    <div class="head">Payment data connector</div>
+    <div class="body">
+      <div class="status"><span>Social Security Compass connection</span><span id="api-status" class="pill">Checking…</span></div>
+      <div class="small">This is deliberately an admin-only reference. The public renter experience only shows that payment data is current or unavailable.</div>
+      <button class="secondary" id="check-api">Check connection</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">Affordability settings</div>
+    <div class="body">
+      <label>General planning benchmark (%)<input id="generalPct" type="number" min="1" max="100" step="1"></label>
+      <label>RentAssist rent-share threshold (%)<input id="bondPct" type="number" min="1" max="100" step="1"></label>
+      <label>RentAssist asset limit ($)<input id="assetLimit" type="number" step="1"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">RentAssist weekly income limits</div>
+    <div class="body row">
+      <label>Single<input id="incomeSingle" type="number"></label>
+      <label>Couple<input id="incomeCouple" type="number"></label>
+      <label>Family + 1 child<input id="incomeFamily1" type="number"></label>
+      <label>Family + 2 children<input id="incomeFamily2" type="number"></label>
+      <label>Family + 3 children<input id="incomeFamily3" type="number"></label>
+      <label>Each extra child<input id="extraChild" type="number"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">Published bond caps by property size</div>
+    <div class="body row">
+      <label>Bedsit / 1 bedroom<input id="capOne" type="number"></label>
+      <label>2 bedrooms<input id="capTwo" type="number"></label>
+      <label>3 bedrooms<input id="capThree" type="number"></label>
+      <label>4+ bedrooms<input id="capFour" type="number"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">JobSeeker work-income rule</div>
+    <div class="body row">
+      <label>Income-free area / fortnight<input id="jsFree" type="number"></label>
+      <label>Second threshold / fortnight<input id="jsSecond" type="number"></label>
+      <label>First taper<input id="jsTaper1" type="number" step=".01"></label>
+      <label>Second taper<input id="jsTaper2" type="number" step=".01"></label>
+      <label>Principal-carer taper<input id="jsCarer" type="number" step=".01"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">Configuration notes</div>
+    <div class="body">
+      <div class="small">Current public defaults were set from the official Victorian RentAssist and Services Australia rules checked in September 2026. Updating these values here changes the browser prototype on this origin. Production should persist the same configuration server-side with audit history and effective dates.</div>
+      <div class="small">Official RentAssist income/asset limits currently used by the prototype are effective from 28 May 2026; bedroom-based maximum loan amounts are effective from 1 October 2025.</div>
+    </div>
+  </section>
+</div>
+
+<div class="actions"><button class="primary" id="save">Save configuration</button><button class="secondary" id="reset">Reset defaults</button></div>
+<p id="saved" class="small"></p>
+</main>
+<script>
+const KEY="rentready-admin-config-v1";
+const defaults={generalAffordabilityPct:.30,bondRentPct:.55,bondAssetLimit:27644,bondIncomeLimits:{single:811,couple:1385,family1:1419,family2:1462,family3:1505},extraChildIncomeLimit:43,bondCaps:{one:2150,two:2650,three:2900,fourPlus:2600},jobseeker:{freeArea:150,secondThreshold:256,taper1:.5,taper2:.6,principalCarerTaper:.4}};
+const $=id=>document.getElementById(id);
+function load(){let c={};try{c=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){};return {...defaults,...c,bondIncomeLimits:{...defaults.bondIncomeLimits,...(c.bondIncomeLimits||{})},bondCaps:{...defaults.bondCaps,...(c.bondCaps||{})},jobseeker:{...defaults.jobseeker,...(c.jobseeker||{})}}}
+function fill(){const c=load();$("generalPct").value=c.generalAffordabilityPct*100;$("bondPct").value=c.bondRentPct*100;$("assetLimit").value=c.bondAssetLimit;$("incomeSingle").value=c.bondIncomeLimits.single;$("incomeCouple").value=c.bondIncomeLimits.couple;$("incomeFamily1").value=c.bondIncomeLimits.family1;$("incomeFamily2").value=c.bondIncomeLimits.family2;$("incomeFamily3").value=c.bondIncomeLimits.family3;$("extraChild").value=c.extraChildIncomeLimit;$("capOne").value=c.bondCaps.one;$("capTwo").value=c.bondCaps.two;$("capThree").value=c.bondCaps.three;$("capFour").value=c.bondCaps.fourPlus;$("jsFree").value=c.jobseeker.freeArea;$("jsSecond").value=c.jobseeker.secondThreshold;$("jsTaper1").value=c.jobseeker.taper1;$("jsTaper2").value=c.jobseeker.taper2;$("jsCarer").value=c.jobseeker.principalCarerTaper}
+async function check(){const el=$("api-status");el.textContent="Checking…";el.className="pill";try{const r=await fetch("/api/social-security?mode=status");const d=await r.json();if(!r.ok||!d.ok)throw 0;el.textContent="Connected · "+d.paymentCount+" programmes";el.className="pill ok"}catch(e){el.textContent="Unavailable";el.className="pill bad"}}
+$("save").onclick=()=>{const c={generalAffordabilityPct:Number($("generalPct").value)/100,bondRentPct:Number($("bondPct").value)/100,bondAssetLimit:Number($("assetLimit").value),bondIncomeLimits:{single:Number($("incomeSingle").value),couple:Number($("incomeCouple").value),family1:Number($("incomeFamily1").value),family2:Number($("incomeFamily2").value),family3:Number($("incomeFamily3").value)},extraChildIncomeLimit:Number($("extraChild").value),bondCaps:{one:Number($("capOne").value),two:Number($("capTwo").value),three:Number($("capThree").value),fourPlus:Number($("capFour").value)},jobseeker:{freeArea:Number($("jsFree").value),secondThreshold:Number($("jsSecond").value),taper1:Number($("jsTaper1").value),taper2:Number($("jsTaper2").value),principalCarerTaper:Number($("jsCarer").value)}};localStorage.setItem(KEY,JSON.stringify(c));$("saved").textContent="Saved. Reload the public app to use the new configuration."};
+$("reset").onclick=()=>{localStorage.removeItem(KEY);fill();$("saved").textContent="Defaults restored."};
+$("check-api").onclick=check;fill();check();
+</script>
+</body>
+</html>
