@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentReady VIC — Victorian Rental Toolkit</title>
+<style>
+:root {
+  --brand:#4f46e5; --brand-2:#7c3aed; --brand-soft:#eef2ff; --brand-line:#c7d2fe;
+  --bg:#f1f4f9; --surface:#fff; --surface-2:#f8fafc; --surface-3:#f1f5f9;
+  --ink:#0f172a; --ink-soft:#334155; --muted:#64748b; --faint:#94a3b8;
+  --line:#e2e8f0; --line-strong:#cbd5e1;
+  --accent:#2563eb; --accent-soft:#dbeafe; --accent-line:#93c5fd;
+  --ok:#16a34a; --ok-soft:#dcfce7; --ok-line:#86efac;
+  --warn:#d97706; --warn-soft:#fef3c7; --warn-line:#fcd34d;
+  --bad:#dc2626; --bad-soft:#fee2e2; --bad-line:#fca5a5;
+  --rights:#9a3412; --rights-soft:#ffedd5; --rights-line:#fdba74;
+  --info:#0369a1; --info-soft:#e0f2fe; --info-line:#7dd3fc;
+  --r-sm:6px; --r:10px; --r-lg:14px; --r-xl:20px;
+  --sh-sm:0 1px 2px rgba(15,23,42,.04); --sh:0 1px 3px rgba(15,23,42,.06);
+  --sh-md:0 4px 6px -1px rgba(15,23,42,.07); --sh-lg:0 10px 25px -5px rgba(15,23,42,.08);
+  --sh-xl:0 20px 40px -10px rgba(15,23,42,.15);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --t:150ms cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"] {
+  --brand:#818cf8; --brand-2:#a78bfa; --brand-soft:#1e1b4b; --brand-line:#3730a3;
+  --bg:#0b1220; --surface:#131c31; --surface-2:#1a2438; --surface-3:#1e293b;
+  --ink:#f1f5f9; --ink-soft:#cbd5e1; --muted:#94a3b8; --faint:#64748b;
+  --line:#1e293b; --line-strong:#334155;
+  --accent:#60a5fa; --accent-soft:#1e3a8a; --accent-line:#1d4ed8;
+  --ok:#4ade80; --ok-soft:#14532d; --ok-line:#166534;
+  --warn:#fbbf24; --warn-soft:#78350f; --warn-line:#92400e;
+  --bad:#f87171; --bad-soft:#7f1d1d; --bad-line:#991b1b;
+  --rights:#fb923c; --rights-soft:#7c2d12; --rights-line:#9a3412;
+  --info:#38bdf8; --info-soft:#0c4a6e; --info-line:#075985;
+  --sh-sm:0 1px 2px rgba(0,0,0,.3); --sh:0 1px 3px rgba(0,0,0,.4);
+  --sh-md:0 4px 6px -1px rgba(0,0,0,.4); --sh-lg:0 10px 25px -5px rgba(0,0,0,.5);
+  --sh-xl:0 20px 40px -10px rgba(0,0,0,.6);
+}
+*,*::before,*::after{box-sizing:border-box}
+::selection{background:var(--accent-soft);color:var(--accent)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;font-family:var(--font);font-size:15px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;transition:background-color var(--t),color var(--t)}
+h1,h2,h3,h4,h5{margin:0;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+p{margin:0}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+:root{--header-h:60px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* HEADER */
+.app-header{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--line)}
+[data-theme="light"] .app-header{background:rgba(255,255,255,.92);backdrop-filter:blur(8px)}
+[data-theme="dark"] .app-header{background:rgba(19,28,49,.92);backdrop-filter:blur(8px)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 1rem;height:var(--header-h);display:flex;align-items:center;gap:1rem}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:1.02rem;color:var(--ink);text-decoration:none}
+.brand:hover{text-decoration:none}
+.brand-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;font-weight:800;box-shadow:0 2px 8px rgba(79,70,229,.3)}
+.brand-name{display:flex;flex-direction:column;line-height:1.1}
+.brand-name small{font-size:.66rem;font-weight:500;color:var(--muted);letter-spacing:.02em;text-transform:uppercase}
+.header-actions{margin-left:auto;display:flex;gap:.4rem;align-items:center;flex-wrap:wrap}
+.icon-btn{width:36px;height:36px;border-radius:9px;border:1px solid transparent;background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;transition:all var(--t)}
+.icon-btn:hover{background:var(--surface-2);color:var(--ink);border-color:var(--line)}
+.icon-btn svg{width:18px;height:18px}
+
+/* PERIOD TOGGLE */
+.period-toggle{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:2px;gap:2px}
+.period-toggle button{font:inherit;font-size:.75rem;font-weight:600;padding:.35rem .65rem;border-radius:999px;border:none;background:transparent;color:var(--muted);transition:all var(--t);white-space:nowrap}
+.period-toggle button:hover{color:var(--ink)}
+.period-toggle button.active{background:var(--surface);color:var(--ink);box-shadow:var(--sh-sm)}
+.period-toggle button.less-prominent{font-weight:500;font-size:.7rem;opacity:.65}
+.period-toggle button.less-prominent.active{opacity:1}
+@media(max-width:720px){.period-toggle button{padding:.3rem .5rem;font-size:.7rem}.period-toggle button.less-prominent{font-size:.65rem}}
+
+.user-chip{display:inline-flex;align-items:center;gap:.5rem;padding:.3rem .3rem .3rem .7rem;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);cursor:pointer;transition:all var(--t);font-size:.82rem}
+.user-chip:hover{border-color:var(--accent-line)}
+.user-chip .avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.user-chip .name{font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:560px){.user-chip .name{display:none}}
+
+/* MAIN */
+.app-main{max-width:1200px;margin:0 auto;padding:1.25rem 1rem 4rem}
+
+/* TABS */
+.tabs-nav{display:flex;gap:.25rem;overflow-x:auto;padding-bottom:.2rem;margin-bottom:1.25rem;scrollbar-width:thin}
+.tabs-nav::-webkit-scrollbar{height:4px}
+.tabs-nav::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:2px}
+.tab-btn{flex-shrink:0;font-size:.875rem;font-weight:500;padding:.55rem .9rem;border-radius:999px;border:1px solid transparent;background:transparent;color:var(--muted);display:inline-flex;align-items:center;gap:.45rem;transition:all var(--t);white-space:nowrap}
+.tab-btn:hover{background:var(--surface);color:var(--ink)}
+.tab-btn.active{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tab-btn svg{width:16px;height:16px}
+.tab-btn .tab-count{font-size:.68rem;font-weight:700;padding:.05rem .4rem;border-radius:999px;background:var(--surface-3);color:var(--muted);font-variant-numeric:tabular-nums}
+.tab-btn.active .tab-count{background:rgba(255,255,255,.18);color:var(--surface)}
+
+/* PANELS */
+.panel{display:none;animation:panelFade var(--t)}
+.panel.active{display:block}
+@keyframes panelFade{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:.85rem;box-shadow:var(--sh-sm);overflow:hidden}
+.card-head{padding:.9rem 1.15rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.65rem;font-weight:600;font-size:.95rem;background:var(--surface)}
+.card-head .num{width:24px;height:24px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;flex-shrink:0}
+.card-head .head-actions{margin-left:auto;display:flex;gap:.35rem}
+.card-body{padding:1rem 1.15rem 1.15rem}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-2) 100%);border-radius:var(--r-xl);padding:1.75rem 1.5rem;color:#fff;margin-bottom:1rem;position:relative;overflow:hidden;box-shadow:var(--sh-lg)}
+.hero::before{content:'';position:absolute;top:-40%;right:-10%;width:320px;height:320px;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);border-radius:50%}
+.hero-content{position:relative;max-width:680px}
+.hero h1{font-size:1.6rem;letter-spacing:-.02em;margin-bottom:.4rem}
+.hero p{font-size:.95rem;opacity:.92;line-height:1.5}
+.hero-actions{margin-top:1.1rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.hero-btn{font:inherit;font-size:.85rem;font-weight:600;padding:.55rem 1rem;border-radius:999px;border:1px solid transparent;background:#fff;color:var(--brand);transition:all var(--t);display:inline-flex;align-items:center;gap:.4rem}
+.hero-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.hero-btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.25)}
+.hero-btn.ghost:hover{background:rgba(255,255,255,.2)}
+.hero-btn svg{width:15px;height:15px}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.75rem;margin-bottom:1rem}
+.stat-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1rem 1.1rem;box-shadow:var(--sh-sm);display:flex;flex-direction:column;gap:.5rem;transition:all var(--t)}
+.stat-card.clickable{cursor:pointer}
+.stat-card.clickable:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:var(--accent-line)}
+.stat-card .stat-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.stat-card .stat-value{font-size:1.5rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat-card .stat-sub{font-size:.78rem;color:var(--muted);line-height:1.4}
+.stat-card .stat-icon{width:32px;height:32px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.2rem}
+.stat-card .stat-icon svg{width:17px;height:17px}
+.stat-card.brand .stat-icon{background:var(--brand-soft);color:var(--brand)}
+.stat-card.accent .stat-icon{background:var(--accent-soft);color:var(--accent)}
+.stat-card.ok .stat-icon{background:var(--ok-soft);color:var(--ok)}
+.stat-card.warn .stat-icon{background:var(--warn-soft);color:var(--warn)}
+.stat-card.bad .stat-icon{background:var(--bad-soft);color:var(--bad)}
+
+/* QUICK LINKS */
+.quick-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.75rem}
+.quick-link{display:flex;align-items:center;gap:.85rem;padding:1rem 1.1rem;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);cursor:pointer;transition:all var(--t);text-align:left;font:inherit;color:var(--ink)}
+.quick-link:hover{border-color:var(--accent-line);transform:translateX(2px);box-shadow:var(--sh-sm)}
+.quick-link .ql-icon{width:40px;height:40px;border-radius:11px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.quick-link .ql-icon svg{width:20px;height:20px}
+.quick-link .ql-text{flex:1;min-width:0}
+.quick-link .ql-title{font-weight:600;font-size:.92rem}
+.quick-link .ql-desc{font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.quick-link .ql-arrow{color:var(--faint);flex-shrink:0}
+
+/* FORMS */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem 1.25rem}
+.field{display:flex;flex-direction:column;min-width:0}
+.field.full{grid-column:1/-1}
+.field-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.35rem;min-width:0}
+.field-head label{font-size:.82rem;color:var(--ink-soft);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis}
+input[type="text"],input[type="number"],input[type="date"],input[type="tel"],input[type="email"],input[type="password"],select,textarea{font:inherit;font-size:.9rem;padding:.5rem .7rem;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);width:100%;transition:border-color var(--t),box-shadow var(--t)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+input[type="number"]{font-variant-numeric:tabular-nums}
+textarea{resize:vertical;min-height:62px;font-family:inherit}
+.input-row{display:flex;align-items:center;gap:.65rem;min-width:0}
+.input-row input[type="number"]{width:120px;flex-shrink:0}
+.slider-wrap{flex:1;min-width:80px;display:flex;align-items:center}
+input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;margin:0}
+input[type="range"]::-webkit-slider-runnable-track{height:5px;background:var(--line);border-radius:999px}
+input[type="range"]::-moz-range-track{height:5px;background:var(--line);border-radius:999px}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 1px 3px rgba(15,23,42,.25);margin-top:-6px;transition:transform var(--t)}
+input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type="range"]::-moz-range-thumb{width:17px;height:17px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);box-shadow:0 1px 3px rgba(15,23,42,.25)}
+input[type="range"].ok::-webkit-slider-thumb{background:var(--ok)}
+input[type="range"].ok::-moz-range-thumb{background:var(--ok)}
+input[type="range"].warn::-webkit-slider-thumb{background:var(--warn)}
+input[type="range"].warn::-moz-range-thumb{background:var(--warn)}
+input[type="range"].bad::-webkit-slider-thumb{background:var(--bad)}
+input[type="range"].bad::-moz-range-thumb{background:var(--bad)}
+
+.pct-badge{font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;background:var(--surface-3);color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;flex-shrink:0;transition:all var(--t)}
+.pct-badge.ok{background:var(--ok-soft);color:var(--ok)}
+.pct-badge.warn{background:var(--warn-soft);color:var(--warn)}
+.pct-badge.bad{background:var(--bad-soft);color:var(--bad)}
+.pct-badge.info{background:var(--info-soft);color:var(--info)}
+
+.nudge-row{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
+.nudge-row button{font-size:.72rem;font-weight:500;padding:.22rem .55rem;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface);color:var(--muted);transition:all var(--t);font-variant-numeric:tabular-nums}
+.nudge-row button:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.nudge-row button.primary-nudge{background:var(--accent-soft);border-color:var(--accent-line);color:var(--accent)}
+.nudge-row button.primary-nudge:hover{background:var(--accent);color:#fff}
+.field .suffix{font-size:.72rem;color:var(--faint);margin-top:.3rem}
+.field .suffix.mono{font-variant-numeric:tabular-nums}
+
+/* BUTTONS */
+button.action{font:inherit;font-size:.82rem;font-weight:500;padding:.45rem .85rem;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);transition:all var(--t);display:inline-flex;align-items:center;gap:.35rem}
+button.action:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+button.action.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+button.action.primary:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+button.action.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+button.action.ghost:hover{background:var(--surface-2);color:var(--accent)}
+button.action.danger:hover{border-color:var(--bad);color:var(--bad)}
+button.action.small{padding:.25rem .55rem;font-size:.75rem}
+button.action svg{width:14px;height:14px}
+
+/* RESULTS */
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.65rem;margin-top:1rem}
+.stat{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:.7rem .85rem;transition:all var(--t)}
+.stat .lbl{font-size:.68rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.stat .val{font-size:1.15rem;font-weight:700;margin-top:.2rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.stat .val-sub{font-size:.7rem;color:var(--faint);font-weight:500;margin-top:.1rem}
+.stat .sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+.stat.highlight{background:var(--accent-soft);border-color:var(--accent-line)}
+.stat.highlight .val{color:var(--accent)}
+.stat.peak{background:var(--ok-soft);border-color:var(--ok-line)}
+.stat.peak .val{color:var(--ok)}
+.stat.warn{background:var(--warn-soft);border-color:var(--warn-line)}
+.stat.warn .val{color:var(--warn)}
+.stat.bad{background:var(--bad-soft);border-color:var(--bad-line)}
+.stat.bad .val{color:var(--bad)}
+
+.verdict{margin-top:.9rem;padding:.75rem .9rem;border-radius:var(--r);font-size:.86rem;border-left:4px solid;line-height:1.55;transition:all var(--t)}
+.verdict.pass{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.verdict.fail{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.verdict.info{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.verdict.warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.verdict strong{display:block;margin-bottom:.2rem;font-weight:700;color:inherit}
+
+.checks{display:grid;gap:.45rem;margin-top:.9rem}
+.check{display:flex;align-items:flex-start;gap:.55rem;font-size:.85rem;padding:.55rem .75rem;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--surface-2)}
+.check .icon{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin-top:1px}
+.check.pass .icon{background:var(--ok);color:#fff}
+.check.fail .icon{background:var(--bad);color:#fff}
+.check .txt{flex:1;min-width:0}
+.check .txt strong{display:block;font-weight:600}
+.check .txt .detail{color:var(--muted);font-size:.8rem;margin-top:.15rem}
+
+/* CALLOUTS */
+.callout{border-radius:var(--r);padding:.75rem .95rem;font-size:.83rem;line-height:1.55;margin-bottom:.9rem;border-left:4px solid}
+.callout strong{display:block;margin-bottom:.25rem;font-weight:700}
+.callout ul{margin:.35rem 0 0;padding-left:1.15rem}
+.callout li{margin-bottom:.2rem}
+.callout.info{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.callout.warn{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.callout.bad{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.callout.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.callout.rights{background:var(--rights-soft);border-color:var(--rights);color:var(--rights)}
+
+/* INFO PANELS */
+.info-panel{margin-top:.55rem;background:var(--info-soft);border:1px solid var(--info-line);border-left:4px solid var(--info);border-radius:var(--r-sm);padding:.7rem .85rem;font-size:.83rem;color:var(--info);line-height:1.55}
+.info-panel strong{display:block;margin-bottom:.25rem;font-weight:700}
+.info-panel ul{margin:.35rem 0 0;padding-left:1.15rem}
+.info-panel li{margin-bottom:.2rem}
+.attr-explain{grid-column:1/-1;background:var(--surface);border:1px solid var(--rights-line);border-left:4px solid var(--rights);border-radius:var(--r-sm);padding:.7rem .85rem;font-size:.83rem;color:var(--ink);line-height:1.55;margin-top:.5rem}
+.attr-explain strong{color:var(--rights);display:block;margin-bottom:.25rem;font-weight:700}
+.attr-explain ul{margin:.35rem 0 0;padding-left:1.15rem}
+.attr-explain li{margin-bottom:.18rem}
+.attributes{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem}
+.attr{display:inline-flex;align-items:center;gap:.4rem;background:var(--rights-soft);color:var(--rights);border:1px solid var(--rights-line);padding:.25rem .55rem .25rem .7rem;border-radius:999px;font-size:.79rem;font-weight:500}
+.attr .info-btn{width:17px;height:17px;border-radius:50%;border:1.5px solid currentColor;background:var(--surface);color:inherit;font-size:.66rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0;line-height:1;transition:all var(--t)}
+.attr .info-btn:hover{background:var(--rights);color:#fff;transform:scale(1.1)}
+.attr.open .info-btn{background:var(--rights);color:#fff}
+.info-inline{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;border:1.5px solid var(--info);background:var(--surface);color:var(--info);font-size:.66rem;font-weight:800;padding:0;margin-left:.4rem;vertical-align:middle;line-height:1;transition:all var(--t);flex-shrink:0}
+.info-inline:hover{background:var(--info);color:#fff;transform:scale(1.1)}
+.info-inline.open{background:var(--info);color:#fff}
+.discrim-badge{display:inline-flex;align-items:center;font-size:.66rem;font-weight:700;padding:.12rem .45rem;border-radius:999px;margin-left:.4rem;vertical-align:middle;white-space:nowrap}
+.discrim-badge.no{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok-line)}
+.discrim-badge.yes{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad-line)}
+.discrim-note{margin-top:.5rem;font-size:.79rem;padding:.5rem .7rem;border-radius:var(--r-sm);line-height:1.5}
+.discrim-note.no{background:var(--ok-soft);border-left:3px solid var(--ok);color:var(--ok)}
+.discrim-note.yes{background:var(--bad-soft);border-left:3px solid var(--bad);color:var(--bad)}
+.discrim-note strong{display:block;font-weight:700;margin-bottom:.1rem}
+
+/* LISTING */
+.listing-paste{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1rem 1.15rem}
+.listing-textarea{min-height:130px;font-family:var(--mono);font-size:.82rem;line-height:1.5}
+.shortlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin-top:1rem}
+.listing-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1rem;cursor:pointer;transition:all var(--t);position:relative}
+.listing-card:hover{border-color:var(--accent-line);box-shadow:var(--sh-md);transform:translateY(-2px)}
+.listing-card.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.listing-card .lc-address{font-weight:600;font-size:.92rem;margin-bottom:.4rem;padding-right:2rem}
+.listing-card .lc-meta{display:flex;gap:.75rem;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin-bottom:.5rem}
+.listing-card .lc-meta strong{color:var(--ink);font-weight:600}
+.listing-card .lc-rent{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);letter-spacing:-.02em}
+.listing-card .lc-rent-sub{font-size:.7rem;color:var(--muted);font-weight:500}
+.listing-card .lc-remove{position:absolute;top:.6rem;right:.6rem;width:26px;height:26px;border-radius:50%;border:1px solid transparent;background:transparent;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;transition:all var(--t)}
+.listing-card .lc-remove:hover{background:var(--bad-soft);color:var(--bad);border-color:var(--bad-line)}
+.listing-card .lc-badge{position:absolute;top:.65rem;right:2.5rem;font-size:.65rem;font-weight:700;padding:.1rem .45rem;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted)}
+.empty-state svg{width:48px;height:48px;color:var(--faint);margin-bottom:.75rem;opacity:.5}
+.empty-state h3{font-size:1rem;color:var(--ink);margin-bottom:.3rem}
+.empty-state p{font-size:.85rem;max-width:340px;margin:0 auto}
+
+/* REFERENCES */
+.ref-flow{display:grid;gap:1rem}
+.ref-step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:1rem 1.15rem;position:relative}
+.ref-step .step-num{position:absolute;top:-10px;left:1rem;width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;box-shadow:0 2px 6px rgba(79,70,229,.3)}
+.ref-step h3{font-size:.95rem;margin:.35rem 0 .5rem;padding-left:.4rem}
+.ref-step p{font-size:.85rem;color:var(--muted);line-height:1.6}
+.email-preview{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-sm);padding:.85rem;font-family:var(--mono);font-size:.78rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow:auto;color:var(--ink-soft)}
+
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.modal-backdrop.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border-radius:var(--r-xl);padding:1.5rem;max-width:480px;width:100%;box-shadow:var(--sh-xl);transform:scale(.96);transition:transform var(--t);max-height:90vh;overflow-y:auto}
+.modal-backdrop.open .modal{transform:scale(1)}
+.modal h2{font-size:1.3rem;margin-bottom:.5rem;letter-spacing:-.02em}
+.modal p{color:var(--muted);font-size:.9rem;line-height:1.55;margin-bottom:1rem}
+.modal-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.1rem}
+.modal-actions button{flex:1;justify-content:center;min-width:120px}
+
+/* DRAWER */
+.drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(2px);z-index:200;opacity:0;pointer-events:none;transition:opacity var(--t)}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100vw);background:var(--surface);border-left:1px solid var(--line);z-index:201;transform:translateX(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--sh-xl)}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:1rem 1.25rem;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:.6rem}
+.drawer-head h2{font-size:1.05rem}
+.drawer-body{flex:1;overflow-y:auto;padding:1rem 1.25rem 2rem}
+.setting-group{padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid var(--line)}
+.setting-group:last-child{border-bottom:none}
+.setting-group h3{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.7rem}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.5rem 0}
+.setting-row .label-group{flex:1;min-width:0}
+.setting-row .label-group strong{font-size:.88rem;font-weight:500;display:block}
+.setting-row .label-group small{font-size:.75rem;color:var(--muted);display:block;margin-top:.1rem}
+.segmented{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:2px;gap:2px}
+.segmented button{font:inherit;font-size:.78rem;font-weight:500;padding:.35rem .7rem;border-radius:6px;border:none;background:transparent;color:var(--muted);transition:all var(--t)}
+.segmented button.active{background:var(--surface);color:var(--ink);box-shadow:var(--sh-sm)}
+.switch{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.switch .slider-sw{position:absolute;inset:0;background:var(--line-strong);border-radius:999px;cursor:pointer;transition:background var(--t)}
+.switch .slider-sw::before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform var(--t);box-shadow:var(--sh-sm)}
+.switch input:checked+.slider-sw{background:var(--accent)}
+.switch input:checked+.slider-sw::before{transform:translateX(18px)}
+.drawer-actions{display:flex;flex-direction:column;gap:.5rem}
+.drawer-actions button{justify-content:center}
+
+/* PROGRESS */
+.progress-shell{position:sticky;top:calc(var(--header-h) + .5rem);z-index:20;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:.75rem 1rem;margin-bottom:.9rem;box-shadow:var(--sh)}
+.progress-row{display:flex;align-items:center;gap:.85rem;flex-wrap:wrap}
+.progress-row .label{font-size:.82rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.bar{flex:1 1 180px;height:8px;border-radius:999px;background:var(--line);overflow:hidden;min-width:120px}
+.bar>span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--brand),var(--brand-2));transition:width .3s ease;border-radius:999px}
+.count{font-variant-numeric:tabular-nums;font-weight:700;font-size:.85rem}
+.progress-actions{margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap}
+.badge{font-size:.68rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;background:var(--surface-3);color:var(--muted);font-variant-numeric:tabular-nums;flex-shrink:0}
+.badge.done{background:var(--ok-soft);color:var(--ok)}
+.badge.partial{background:var(--warn-soft);color:var(--warn)}
+
+/* CHECKLIST ITEMS */
+.items{padding:.25rem 0}
+.item{padding:.8rem 1.15rem;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:none}
+.item-head{display:flex;gap:.7rem;align-items:flex-start}
+.item-head input[type="checkbox"]{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);flex-shrink:0;cursor:pointer}
+.item .body{flex:1;min-width:0}
+.item .title{font-weight:500;font-size:.92rem;cursor:pointer;display:inline}
+.item.cant-mark .title{text-decoration:line-through;color:var(--muted)}
+.item .hint{color:var(--muted);font-size:.8rem;margin-top:.2rem;line-height:1.5}
+.item-tools{margin-top:.55rem;display:flex;gap:.4rem;flex-wrap:wrap}
+.item .cant{margin-top:.5rem;font-size:.78rem;color:var(--muted);display:inline-flex;align-items:center;gap:.4rem;cursor:pointer;user-select:none}
+.item .cant input{width:14px;height:14px;accent-color:var(--warn)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.65rem 1rem;margin-top:.7rem;padding-top:.7rem;border-top:1px dashed var(--line)}
+.fields .field{gap:.2rem}
+.fields label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.fields .field.full{grid-column:1/-1}
+.details-block{margin-top:.6rem;background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:var(--r-sm);padding:.65rem .8rem}
+.details-block label{font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:.3rem}
+.details-block textarea{font-size:.85rem;min-height:55px;background:var(--surface)}
+.hidden{display:none!important}
+
+/* HELP */
+.help-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.65rem;margin-top:.7rem}
+.help-card{border:1px solid var(--rights-line);background:var(--rights-soft);border-radius:var(--r-sm);padding:.7rem .85rem;font-size:.82rem;color:var(--rights);line-height:1.5}
+.help-card strong{display:block;margin-bottom:.2rem;font-weight:700;color:var(--rights)}
+.help-card a{color:var(--rights);font-weight:500}
+
+/* CHART */
+canvas{width:100%;height:auto;display:block}
+.chart-wrap{background:var(--surface);border-radius:var(--r);padding:.5rem;border:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.85rem;font-size:.78rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:.4rem}
+.legend .swatch{width:16px;height:3px;border-radius:2px}
+.legend .swatch.dashed{border-top:2px dashed currentColor;background:none;height:0}
+.legend .dot{width:9px;height:9px;border-radius:50%}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--surface);padding:.65rem 1rem;border-radius:999px;font-size:.85rem;font-weight:500;box-shadow:var(--sh-lg);z-index:400;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.4,0,.2,1);display:inline-flex;align-items:center;gap:.5rem;max-width:calc(100vw - 2rem)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px;height:16px;flex-shrink:0}
+.toast.error{background:var(--bad);color:#fff}
+
+/* LOGIN */
+.login-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;background:radial-gradient(circle at 20% 20%,color-mix(in srgb,var(--brand) 12%,transparent),transparent 60%),radial-gradient(circle at 80% 80%,color-mix(in srgb,var(--brand-2) 12%,transparent),transparent 60%),var(--bg)}
+.login-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:2rem 1.75rem;max-width:420px;width:100%;box-shadow:var(--sh-xl)}
+.login-brand{display:flex;align-items:center;gap:.65rem;margin-bottom:1.25rem}
+.login-brand .brand-mark{width:40px;height:40px;font-size:1.15rem}
+.login-card h1{font-size:1.4rem;margin-bottom:.4rem;letter-spacing:-.02em}
+.login-card>p{color:var(--muted);font-size:.9rem;margin-bottom:1.35rem;line-height:1.55}
+.login-tabs{display:flex;gap:.25rem;background:var(--surface-2);border-radius:999px;padding:3px;margin-bottom:1.25rem}
+.login-tabs button{flex:1;font:inherit;font-size:.82rem;font-weight:500;padding:.45rem .75rem;border-radius:999px;border:none;background:transparent;color:var(--muted);transition:all var(--t)}
+.login-tabs button.active{background:var(--surface);color:var(--ink);box-shadow:var(--sh-sm)}
+.login-form{display:flex;flex-direction:column;gap:.85rem}
+.login-form .field label{font-size:.78rem;color:var(--ink-soft);font-weight:500}
+.login-form button[type="submit"]{margin-top:.5rem;justify-content:center;padding:.6rem 1rem;font-size:.88rem}
+.login-divider{display:flex;align-items:center;gap:.75rem;margin:1rem 0;color:var(--faint);font-size:.75rem}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.login-footer{text-align:center;margin-top:1.25rem;font-size:.78rem;color:var(--muted)}
+.login-footer a{cursor:pointer;font-weight:500}
+.mock-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:.7rem;font-weight:600;padding:.15rem .5rem;border-radius:999px;background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn-line)}
+.mock-badge svg{width:12px;height:12px}
+
+/* ADMIN */
+.admin-header{background:var(--ink);color:var(--surface);padding:1rem 1.25rem;border-radius:var(--r-lg);margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.admin-header h2{font-size:1.05rem;color:var(--surface)}
+.admin-header .admin-tag{font-size:.7rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;background:var(--bad);color:#fff}
+.admin-header .admin-back{margin-left:auto}
+.admin-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.admin-table th{text-align:left;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:.5rem .65rem;border-bottom:1px solid var(--line)}
+.admin-table td{padding:.65rem;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.admin-table tr:last-child td{border-bottom:none}
+.admin-table .pill{display:inline-block;font-size:.7rem;font-weight:600;padding:.1rem .5rem;border-radius:999px}
+.admin-table .pill.ok{background:var(--ok-soft);color:var(--ok)}
+.admin-table .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.admin-table .pill.info{background:var(--accent-soft);color:var(--accent)}
+
+/* FOOTER */
+.app-footer{text-align:center;padding:2rem 1rem 1rem;color:var(--faint);font-size:.78rem;line-height:1.6}
+.app-footer a{color:var(--muted)}
+.app-footer .rate-source{display:inline-flex;align-items:center;gap:.35rem;margin-top:.35rem;font-size:.72rem}
+
+/* PRINT */
+@media print{
+  body{background:#fff;padding:0;font-size:11pt;color:#000}
+  .app-header,.tabs-nav,.toolbar,.progress-shell,.nudge-row,input[type="range"],.info-inline,.info-btn,.cant,.item-tools,.action,.drawer,.drawer-backdrop,.modal-backdrop,.toast,.hero,.stat-grid,.quick-links,.progress-actions,.head-actions,.period-toggle,.user-chip,.app-footer{display:none!important}
+  .panel{display:block!important}
+  .card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .item{page-break-inside:avoid}
+  .info-panel,.attr-explain,.discrim-note{display:block!important;page-break-inside:avoid}
+  input,select,textarea{border:1px solid #ccc!important;background:#fff!important;box-shadow:none!important}
+}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  :root{--header-h:56px}
+  .header-inner{padding:0 .75rem;gap:.5rem}
+  .brand-name small{display:none}
+  .app-main{padding:1rem .75rem 3rem}
+  .card-body{padding:.85rem .9rem 1rem}
+  .item{padding:.7rem .9rem}
+  .card-head{padding:.8rem .9rem}
+  .input-row input[type="number"]{width:100px}
+  .grid{gap:.85rem}
+  .progress-shell{top:calc(var(--header-h) + .3rem);padding:.6rem .75rem}
+  .progress-row .label{display:none}
+  .hero{padding:1.35rem 1.15rem;border-radius:var(--r-lg)}
+  .hero h1{font-size:1.35rem}
+  .stat-card .stat-value{font-size:1.3rem}
+  .login-card{padding:1.5rem 1.25rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN GATE (initially hidden if already signed in)
+     ============================================================ -->
+<div id="login-gate" class="login-shell" style="display:none;">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="brand-mark">R</span>
+      <div class="brand-name" style="display:flex;flex-direction:column;">
+        <strong style="font-size:1rem;">RentReady VIC</strong>
+        <small style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;">Victorian Rental Toolkit</small>
+      </div>
+    </div>
+    <h1>Sign in</h1>
+    <p>Save your application progress, shortlist, and references across sessions.</p>
+
+    <div class="login-tabs">
+      <button class="active" data-login-tab="applicant">Applicant</button>
+      <button data-login-tab="admin">Admin</button>
+    </div>
+
+    <!-- Applicant login -->
+    <form class="login-form" id="login-applicant" autocomplete="on">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Any password (demo)" required>
+      </div>
+      <button type="submit" class="action primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign in
+      </button>
+    </form>
+
+    <!-- Admin login -->
+    <form class="login-form hidden" id="login-admin" autocomplete="off">
+      <div class="field">
+        <label for="admin-email">Admin email</label>
+        <input type="email" id="admin-email" placeholder="admin@rentready.vic" required>
+      </div>
+      <div class="field">
+        <label for="admin-password">Admin password</label>
+        <input type="password" id="admin-password" placeholder="admin" required>
+      </div>
+      <button type="submit" class="action primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Sign in as admin
+      </button>
+    </form>
+
+    <div class="login-divider">or</div>
+
+    <button type="button" class="action" id="btn-guest" style="width:100%;justify-content:center;padding:.6rem 1rem;">
+      Continue as guest
+    </button>
+
+    <div class="login-footer">
+      <span class="mock-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Demo mode · data stored in this browser only
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP SHELL
+     ============================================================ -->
+<div id="app-shell" style="display:none;">
+
+<header class="app-header">
+  <div class="header-inner">
+    <a class="brand" href="#" data-nav="home">
+      <span class="brand-mark">R</span>
+      <span class="brand-name">
+        RentReady VIC
+        <small>Victorian Rental Toolkit</small>
+      </span>
+    </a>
+
+    <!-- Global period toggle -->
+    <div class="period-toggle" id="period-toggle" role="group" aria-label="Time period">
+      <button data-period="weekly">Weekly</button>
+      <button data-period="fortnightly" class="active">Fortnightly</button>
+      <button data-period="monthly">Monthly</button>
+      <button data-period="yearly" class="less-prominent">Yearly</button>
+    </div>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="btn-open-settings" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-open-help" aria-label="About" title="About">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+      <button class="user-chip" id="btn-user-menu" title="Account">
+        <span class="avatar" id="user-avatar">G</span>
+        <span class="name" id="user-name">Guest</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="app-main">
+
+  <nav class="tabs-nav" role="tablist">
+    <button class="tab-btn active" data-nav="home" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </button>
+    <button class="tab-btn" data-nav="listings" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Listings
+      <span class="tab-count" id="tab-count-listings">0</span>
+    </button>
+    <button class="tab-btn" data-nav="checklist" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Application
+      <span class="tab-count" id="tab-count-checklist">0/0</span>
+    </button>
+    <button class="tab-btn" data-nav="references" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      References
+    </button>
+    <button class="tab-btn" data-nav="income" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Income
+    </button>
+    <button class="tab-btn" data-nav="rentassist" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      RentAssist
+    </button>
+    <button class="tab-btn" data-nav="affordability" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Affordability
+    </button>
+    <button class="tab-btn" data-nav="chart" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-8"/></svg>
+      Chart
+    </button>
+    <button class="tab-btn hidden" data-nav="admin" id="tab-admin" role="tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Admin
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       HOME
+       ============================================================ -->
+  <section class="panel active" id="panel-home" role="tabpanel">
+    <div class="hero">
+      <div class="hero-content">
+        <h1 id="hero-greeting">Your Victorian rental toolkit</h1>
+        <p>Paste a rental listing, shortlist properties, and work through the prescribed forms — with discrimination protections, income testing, bond loan eligibility, and a full references workflow built in.</p>
+        <div class="hero-actions">
+          <button class="hero-btn" data-nav="listings">
+            Add a listing
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+          <button class="hero-btn ghost" data-nav="checklist">Start application</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card brand clickable" data-nav="listings">
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <div class="stat-label">Shortlist</div>
+        <div class="stat-value" id="home-listings-value">0</div>
+        <div class="stat-sub" id="home-listings-sub">No properties yet</div>
+      </div>
+      <div class="stat-card accent clickable" data-nav="checklist">
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+        <div class="stat-label">Application</div>
+        <div class="stat-value" id="home-checklist-value">0%</div>
+        <div class="stat-sub" id="home-checklist-sub">Nothing started</div>
+      </div>
+      <div class="stat-card warn clickable" data-nav="references">
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        <div class="stat-label">References</div>
+        <div class="stat-value" id="home-refs-value">0/2</div>
+        <div class="stat-sub" id="home-refs-sub">Two required</div>
+      </div>
+      <div class="stat-card ok clickable" data-nav="income">
+        <span class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+        <div class="stat-label">Total income</div>
+        <div class="stat-value" id="home-income-value">—</div>
+        <div class="stat-sub" id="home-income-sub">per fortnight</div>
+      </div>
+    </div>
+
+    <h3 style="font-size:.95rem;margin:1.5rem 0 .7rem;color:var(--muted);font-weight:600;">Jump to a tool</h3>
+    <div class="quick-links">
+      <button class="quick-link" data-nav="listings">
+        <span class="ql-icon" style="background:var(--brand-soft);color:var(--brand);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <span class="ql-text">
+          <span class="ql-title">Listings &amp; shortlist</span>
+          <span class="ql-desc">Paste a listing to auto-populate every form</span>
+        </span>
+        <svg class="ql-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="quick-link" data-nav="references">
+        <span class="ql-icon" style="background:var(--warn-soft);color:var(--warn);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        <span class="ql-text">
+          <span class="ql-title">References</span>
+          <span class="ql-desc">Request, receive, and generate signed PDFs</span>
+        </span>
+        <svg class="ql-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="quick-link" data-nav="income">
+        <span class="ql-icon" style="background:var(--accent-soft);color:var(--accent);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
+        <span class="ql-text">
+          <span class="ql-title">Income &amp; payments</span>
+          <span class="ql-desc">JobSeeker, DSP, Rent Assistance with live rates</span>
+        </span>
+        <svg class="ql-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="quick-link" data-nav="rentassist">
+        <span class="ql-icon" style="background:var(--ok-soft);color:var(--ok);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+        <span class="ql-text">
+          <span class="ql-title">RentAssist bond loan</span>
+          <span class="ql-desc">Eligibility check for the Victorian scheme</span>
+        </span>
+        <svg class="ql-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       LISTINGS
+       ============================================================ -->
+  <section class="panel" id="panel-listings" role="tabpanel">
+
+    <div class="callout info">
+      <strong>Paste a rental listing</strong>
+      Copy the whole listing from realestate.com.au, Domain, or the agent's page and paste it below. RentReady will extract the address, rent, bond, available date, and key facts, and add it to your shortlist. You can paste as many as you like.
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">+</span>
+        Add a listing
+        <div class="head-actions">
+          <button type="button" class="action small ghost" id="btn-listing-clear">Clear</button>
+          <button type="button" class="action small primary" id="btn-listing-parse">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+            Parse &amp; add
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="listing-paste">
+          <label for="listing-input" style="font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;display:block;margin-bottom:.4rem;">Paste full listing text</label>
+          <textarea id="listing-input" class="listing-textarea" placeholder="Example:
+
+12 Sample Street, Brunswick VIC 3056
+$350 per week
+Bond: $1,520
+Available: 15 April 2026
+2 bed 1 bath 1 car
+Freshly renovated apartment in the heart of Brunswick. Close to Sydney Road trams, cafes and parks. Heating and cooling. Minimum 12-month lease.
+
+Apply online via 2Apply. Inspections by appointment."></textarea>
+          <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+            <button type="button" class="action primary" id="btn-listing-parse-2">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+              Parse &amp; add to shortlist
+            </button>
+            <button type="button" class="action" id="btn-listing-demo">Load demo listing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">★</span>
+        Your shortlist
+        <div class="head-actions">
+          <button type="button" class="action small ghost" id="btn-listing-clear-all">Remove all</button>
+        </div>
+      </div>
+      <div class="card-body" id="shortlist-container">
+        <div class="empty-state" id="shortlist-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <h3>No listings yet</h3>
+          <p>Paste a rental listing above and it will appear here. You can navigate between them and select the active one for your application.</p>
+        </div>
+        <div class="shortlist" id="shortlist-grid" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div class="card" id="active-listing-card" style="display:none;">
+      <div class="card-head">
+        <span class="num">★</span>
+        Active listing
+        <div class="head-actions">
+          <button type="button" class="action small ghost" id="btn-use-listing">Use in application</button>
+        </div>
+      </div>
+      <div class="card-body" id="active-listing-body"></div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       CHECKLIST
+       ============================================================ -->
+  <section class="panel" id="panel-checklist" role="tabpanel">
+
+    <div class="callout warn">
+      <strong>The two prescribed forms</strong>
+      <strong style="display:inline;margin-right:.4rem;">Form 3</strong> — Statement of Information for Rental Applicants (s 29C; Regulation 14). Must be <em>given to you</em> by the rental provider or agent.
+      <br><strong style="display:inline;margin-right:.4rem;">Form 3A</strong> — Residential rental application (Regulation 14A/14B). The <em>only</em> lawful application form in Victoria from 31 March 2026.
+    </div>
+
+    <div class="callout ok">
+      <strong>Not collected under Form 3A</strong>
+      Emergency contacts · Age of occupants · Pet information · Detailed financial information beyond net employment income · Bank statements · Payslips · Employment references · Rent offers · Utility connection preferences · Bond history · Legal action or dispute history.
+    </div>
+
+    <div class="callout bad">
+      <strong>Discrimination — what it means here</strong>
+      Refusing to provide your own personal information is <strong>not</strong> discrimination. Discrimination is when a rental provider treats you unfavourably because of a protected attribute. If an agent asks about a protected attribute without a written reason, you can refuse. Complaints: VEOHRC 1300 292 153 · VCAT compensation under s 210AA.
+    </div>
+
+    <div class="progress-shell">
+      <div class="progress-row">
+        <span class="label">Progress</span>
+        <div class="bar"><span id="bar-fill"></span></div>
+        <span class="count" id="count">0 / 0</span>
+        <div class="progress-actions">
+          <button type="button" class="action small ghost" id="btn-expand">Expand all</button>
+          <button type="button" class="action small ghost" id="btn-collapse">Collapse all</button>
+          <button type="button" class="action small ghost" id="btn-reset-checklist">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sections 1-8 abbreviated, matching prior version -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">1</span>Form 3 — Statement of Information
+        <span class="badge" data-badge="s1"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s1">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s1">
+        <div class="item" data-no-cant data-info="s1-received" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-received" id="s1-received"><div class="body"><label class="title" for="s1-received">Confirm you have been given Form 3</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-what-is-discrimination" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-what-is-discrimination" id="s1-what-is-discrimination"><div class="body"><label class="title" for="s1-what-is-discrimination">Understand what discrimination is</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-unlawful" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-unlawful" id="s1-unlawful"><div class="body"><label class="title" for="s1-unlawful">Know discrimination in renting is unlawful in Victoria</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-attributes" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-attributes" id="s1-attributes"><div class="body"><label class="title" for="s1-attributes">Know your protected attributes</label><div class="hint">Click the <strong>!</strong> next to any attribute for what it means and examples.</div><div class="attributes" id="attributes-list"></div></div></div></div>
+        <div class="item" data-no-cant data-info="s1-laws" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-laws" id="s1-laws"><div class="body"><label class="title" for="s1-laws">Know which laws protect you</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-exceptions" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-exceptions" id="s1-exceptions"><div class="body"><label class="title" for="s1-exceptions">Know the limited exceptions</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-examples-applying" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-examples-applying" id="s1-examples-applying"><div class="body"><label class="title" for="s1-examples-applying">Examples of unlawful discrimination when applying</label></div></div></div>
+        <div class="item" data-no-cant data-info="s1-help" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s1-help" id="s1-help"><div class="body"><label class="title" for="s1-help">Know where to get help</label>
+          <div class="help-grid">
+            <div class="help-card"><strong>VCAT — compensation</strong>s 210AA of the Act.<br><a href="https://www.vcat.vic.gov.au" target="_blank" rel="noopener">vcat.vic.gov.au</a> · 1300 018 228</div>
+            <div class="help-card"><strong>Victoria Legal Aid</strong>Free advice about discrimination in rental.<br>1300 792 387</div>
+            <div class="help-card"><strong>VEOHRC — complaints</strong><a href="https://humanrightscommission.vic.gov.au" target="_blank" rel="noopener">humanrightscommission.vic.gov.au</a> · 1300 292 153</div>
+          </div>
+        </div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">2</span>Form 3A — Parts A, B, C
+        <span class="badge" data-badge="s2"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s2">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s2">
+        <div class="item" data-no-cant data-info="s2-form3a" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s2-form3a" id="s2-form3a"><div class="body"><label class="title" for="s2-form3a">Confirm the agency is using Form 3A</label></div></div></div>
+        <div class="item" data-no-cant data-info="s2-part-a" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s2-part-a" id="s2-part-a"><div class="body"><label class="title" for="s2-part-a">Read Part A — Important information</label></div></div></div>
+        <div class="item" data-no-cant data-info="s2-part-b" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s2-part-b" id="s2-part-b"><div class="body"><label class="title" for="s2-part-b">Read Part B — Statement of information</label></div></div></div>
+        <div class="item" data-no-cant data-info="s2-part-c" data-discrim="no"><div class="item-head"><input type="checkbox" data-key="s2-part-c" id="s2-part-c"><div class="body"><label class="title" for="s2-part-c">Check Part C — Mandatory disclosures checklist</label></div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">3</span>Applicant details
+        <span class="badge" data-badge="s3"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s3">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s3">
+        <div class="item" data-info="s3-applicant1" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s3-applicant1" id="s3-applicant1"><div class="body"><label class="title" for="s3-applicant1">Applicant 1 — personal details</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Full name</label><input type="text" data-input="s3-a1-name" placeholder="Jane Alex Smith"></div>
+            <div class="field"><label>Date of birth</label><input type="date" data-input="s3-a1-dob"></div>
+            <div class="field full"><label>Current address</label><input type="text" data-input="s3-a1-address" placeholder="Street, suburb, state, postcode"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s3-a1-phone" placeholder="04XX XXX XXX"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s3-a1-email" placeholder="name@example.com"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s3-a1">+ Add details</button></div>
+        </div>
+        <div class="item" data-info="s3-applicant2" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s3-applicant2" id="s3-applicant2"><div class="body"><label class="title" for="s3-applicant2">Applicant 2 — personal details (if applicable)</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Full name</label><input type="text" data-input="s3-a2-name"></div>
+            <div class="field"><label>Date of birth</label><input type="date" data-input="s3-a2-dob"></div>
+            <div class="field full"><label>Current address</label><input type="text" data-input="s3-a2-address"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s3-a2-phone"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s3-a2-email"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s3-a2">+ Add details</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">4</span>Employment details
+        <span class="badge" data-badge="s4"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s4">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s4">
+        <div class="item" data-info="s4-employed" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s4-employed" id="s4-employed"><div class="body"><label class="title" for="s4-employed">Currently employed — employment details</label></div></div>
+          <div class="fields">
+            <div class="field full"><label>Employer name</label><input type="text" data-input="s4-employer-name"></div>
+            <div class="field full"><label>Employer address</label><input type="text" data-input="s4-employer-address"></div>
+            <div class="field"><label>Net weekly income (AUD)</label><input type="number" data-input="s4-net-income" step="0.01" placeholder="1200"></div>
+            <div class="field"><label>Date employment started</label><input type="date" data-input="s4-start-date"></div>
+            <div class="field"><label>Job title / role</label><input type="text" data-input="s4-job-title"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s4-employed">+ Add details</button></div>
+        </div>
+        <div class="item" data-info="s4-not-employed" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s4-not-employed" id="s4-not-employed"><div class="body"><label class="title" for="s4-not-employed">Not currently employed — most recent employment</label></div></div>
+          <div class="fields">
+            <div class="field full"><label>Most recent employer name</label><input type="text" data-input="s4-prev-employer"></div>
+            <div class="field"><label>Date employment ended</label><input type="date" data-input="s4-end-date"></div>
+            <div class="field full"><label>Reason employment ended (optional)</label><input type="text" data-input="s4-end-reason"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s4-not-employed">+ Add details</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">5</span>Identity
+        <span class="badge" data-badge="s5"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s5">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s5">
+        <div class="item" data-info="s5-photo-id" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s5-photo-id" id="s5-photo-id"><div class="body"><label class="title" for="s5-photo-id">Photo identification</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Document type</label><select data-input="s5-photo-id-type"><option value="">— select —</option><option>Australian driver's licence</option><option>Australian passport</option><option>Foreign passport with Australian visa</option><option>Proof of age card (Keypass)</option><option>Other</option></select></div>
+            <div class="field"><label>Document number</label><input type="text" data-input="s5-photo-id-number"></div>
+            <div class="field"><label>Expiry date</label><input type="date" data-input="s5-photo-id-expiry"></div>
+            <div class="field"><label>Attached?</label><select data-input="s5-photo-id-attached"><option value="">—</option><option>Ready to upload</option><option>Already uploaded</option><option>Need to obtain</option></select></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-photo-id">+ Add details</button></div>
+        </div>
+        <div class="item" data-info="s5-secondary-id" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s5-secondary-id" id="s5-secondary-id"><div class="body"><label class="title" for="s5-secondary-id">Secondary identification</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Document type</label><select data-input="s5-secondary-id-type"><option value="">— select —</option><option>Medicare card</option><option>Birth certificate</option><option>Certificate of Australian citizenship</option><option>Health care card</option><option>Concession card</option><option>Other</option></select></div>
+            <div class="field"><label>Document number</label><input type="text" data-input="s5-secondary-id-number"></div>
+            <div class="field"><label>Attached?</label><select data-input="s5-secondary-id-attached"><option value="">—</option><option>Ready to upload</option><option>Already uploaded</option><option>Need to obtain</option></select></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-secondary-id">+ Add details</button></div>
+        </div>
+        <div class="item" data-info="s5-visa" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s5-visa" id="s5-visa"><div class="body"><label class="title" for="s5-visa">Visa / residency documents (if applicable)</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Visa subclass / type</label><input type="text" data-input="s5-visa-type"></div>
+            <div class="field"><label>Visa expiry</label><input type="date" data-input="s5-visa-expiry"></div>
+            <div class="field"><label>VEVO checked?</label><select data-input="s5-visa-vevo"><option value="">—</option><option>Yes</option><option>No</option><option>Will check</option></select></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-visa">+ Add details</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- References section links to dedicated page -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">6</span>References
+        <span class="badge" data-badge="s6"></span>
+        <div class="head-actions">
+          <button type="button" class="action small primary" data-nav="references">Open references workflow →</button>
+        </div>
+      </div>
+      <div class="items" data-section="s6">
+        <div class="item" data-info="s6-ref1" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s6-ref1" id="s6-ref1"><div class="body"><label class="title" for="s6-ref1">Reference 1 — sent and returned</label><div class="hint" id="ref1-status">Not started</div></div></div>
+        </div>
+        <div class="item" data-info="s6-ref2" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s6-ref2" id="s6-ref2"><div class="body"><label class="title" for="s6-ref2">Reference 2 — sent and returned</label><div class="hint" id="ref2-status">Not started</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">7</span>Property you're applying for
+        <span class="badge" data-badge="s7"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s7">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s7">
+        <div class="item" data-no-cant data-info="s7-property" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s7-property" id="s7-property"><div class="body"><label class="title" for="s7-property">Property details</label></div></div>
+          <div class="fields">
+            <div class="field full"><label>Address</label><input type="text" data-input="s7-address"></div>
+            <div class="field"><label>Listing ID / reference</label><input type="text" data-input="s7-listing-id"></div>
+            <div class="field"><label>Advertised weekly rent (AUD)</label><input type="number" data-input="s7-rent" step="0.01"></div>
+            <div class="field"><label>Bond (AUD)</label><input type="number" data-input="s7-bond" step="0.01"></div>
+            <div class="field"><label>Preferred move-in date</label><input type="date" data-input="s7-movein"></div>
+            <div class="field"><label>Agency / agent name</label><input type="text" data-input="s7-agent"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s7-property">+ Add details</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="num">8</span>Consent &amp; signature
+        <span class="badge" data-badge="s8"></span>
+        <div class="head-actions"><button type="button" class="action small ghost" data-toggle-section="s8">Collapse</button></div>
+      </div>
+      <div class="items" data-section="s8">
+        <div class="item" data-no-cant data-info="s8-consent" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s8-consent" id="s8-consent"><div class="body"><label class="title" for="s8-consent">Consent to the rental provider checking your information</label></div></div>
+        </div>
+        <div class="item" data-no-cant data-info="s8-signature" data-discrim="no">
+          <div class="item-head"><input type="checkbox" data-key="s8-signature" id="s8-signature"><div class="body"><label class="title" for="s8-signature">Sign and date the form (every applicant)</label></div></div>
+          <div class="fields">
+            <div class="field"><label>Date signed</label><input type="date" data-input="s8-sign-date"></div>
+            <div class="field full"><label>Notes</label><input type="text" data-input="s8-sign-notes"></div>
+          </div>
+        </div>
+      </div>
+    </div>
