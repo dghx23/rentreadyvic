@@ -998,3 +998,2068 @@
     </button>
     <button class="tab" data-tab="affordability" role="tab">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v12M4 6h8M4 10h8"/></svg>
+      Rent Affordability
+    </button>
+    <button class="tab" data-tab="chart" role="tab">
+      <svg class="tab-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 14L6 8l4 3 4-7"/></svg>
+      Break-even Chart
+    </button>
+  </nav>
+
+  <!-- ============================================================
+       PANEL 1: APPLICATION CHECKLIST
+       ============================================================ -->
+  <section class="panel active" id="panel-checklist" role="tabpanel">
+
+    <div class="callout form3a">
+      <strong>The two prescribed forms</strong>
+      <strong style="display:inline;margin-right:0.4rem;">Form 3</strong> — Statement of Information for Rental Applicants (s 29C; Regulation 14). Must be <em>given to you</em> by the rental provider or agent.
+      <br><strong style="display:inline;margin-right:0.4rem;">Form 3A</strong> — Residential rental application (Regulation 14A/14B). The <em>only</em> lawful application form in Victoria from 31 March 2026.
+    </div>
+
+    <div class="callout ok">
+      <strong>Not collected under Form 3A</strong>
+      Emergency contacts · Age of occupants · Pet information · Detailed financial information beyond net employment income · Bank statements · Payslips · Employment references · Rent offers · Utility connection preferences · Bond history · Legal action or dispute history.
+    </div>
+
+    <div class="callout bad">
+      <strong>Discrimination — what it means here</strong>
+      Refusing to provide your own personal information is <strong>not</strong> discrimination. Discrimination is when a rental provider treats you unfavourably because of a protected attribute. If an agent asks about a protected attribute without a written reason, you can refuse. Complaints: VEOHRC 1300 292 153 · VCAT compensation under s 210AA.
+    </div>
+
+    <div class="progress-shell">
+      <div class="progress-row">
+        <span class="label">Progress</span>
+        <div class="bar"><span id="bar-fill"></span></div>
+        <span class="count" id="count">0 / 0</span>
+        <div class="progress-actions">
+          <button type="button" class="action small ghost" id="btn-expand">Expand all</button>
+          <button type="button" class="action small ghost" id="btn-collapse">Collapse all</button>
+          <button type="button" class="action small ghost" id="btn-reset-checklist">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Form 3 -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">1</span>
+        Form 3 — Statement of Information
+        <span class="badge" data-badge="s1"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s1" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s1">
+
+        <div class="item" data-no-cant data-info="s1-received" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-received" id="s1-received">
+            <div class="body">
+              <label class="title" for="s1-received">Confirm you have been given Form 3</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-what-is-discrimination" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-what-is-discrimination" id="s1-what-is-discrimination">
+            <div class="body">
+              <label class="title" for="s1-what-is-discrimination">Understand what discrimination is</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-unlawful" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-unlawful" id="s1-unlawful">
+            <div class="body">
+              <label class="title" for="s1-unlawful">Know discrimination in renting is unlawful in Victoria</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-attributes" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-attributes" id="s1-attributes">
+            <div class="body">
+              <label class="title" for="s1-attributes">Know your protected attributes</label>
+              <div class="hint">Click the <strong>!</strong> next to any attribute to see what that protection means and examples of unlawful discrimination.</div>
+              <div class="attributes" id="attributes-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-laws" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-laws" id="s1-laws">
+            <div class="body">
+              <label class="title" for="s1-laws">Know which laws protect you</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-exceptions" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-exceptions" id="s1-exceptions">
+            <div class="body">
+              <label class="title" for="s1-exceptions">Know the limited exceptions</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-examples-applying" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-examples-applying" id="s1-examples-applying">
+            <div class="body">
+              <label class="title" for="s1-examples-applying">Examples of unlawful discrimination when applying</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-examples-occupying" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-examples-occupying" id="s1-examples-occupying">
+            <div class="body">
+              <label class="title" for="s1-examples-occupying">Examples when occupying or leaving</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s1-help" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s1-help" id="s1-help">
+            <div class="body">
+              <label class="title" for="s1-help">Know where to get help</label>
+              <div class="help-grid">
+                <div class="help-card">
+                  <strong>VCAT — compensation</strong>
+                  s 210AA of the Act.<br>
+                  <a href="https://www.vcat.vic.gov.au" target="_blank" rel="noopener">vcat.vic.gov.au</a> · 1300 018 228
+                </div>
+                <div class="help-card">
+                  <strong>Victoria Legal Aid</strong>
+                  Free advice about discrimination in rental.<br>
+                  1300 792 387
+                </div>
+                <div class="help-card">
+                  <strong>VEOHRC — complaints</strong>
+                  <a href="https://humanrightscommission.vic.gov.au" target="_blank" rel="noopener">humanrightscommission.vic.gov.au</a> · 1300 292 153
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. Form 3A parts -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">2</span>
+        Form 3A — Parts A, B, C
+        <span class="badge" data-badge="s2"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s2" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s2">
+
+        <div class="item" data-no-cant data-info="s2-form3a" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s2-form3a" id="s2-form3a">
+            <div class="body"><label class="title" for="s2-form3a">Confirm the agency is using Form 3A</label></div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s2-part-a" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s2-part-a" id="s2-part-a">
+            <div class="body"><label class="title" for="s2-part-a">Read Part A — Important information</label></div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s2-part-b" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s2-part-b" id="s2-part-b">
+            <div class="body"><label class="title" for="s2-part-b">Read Part B — Statement of information (Form 3 content)</label></div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s2-part-c" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s2-part-c" id="s2-part-c">
+            <div class="body"><label class="title" for="s2-part-c">Check Part C — Mandatory disclosures checklist</label></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 3. Applicant details -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">3</span>
+        Applicant details
+        <span class="badge" data-badge="s3"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s3" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s3">
+
+        <div class="item" data-info="s3-applicant1" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s3-applicant1" id="s3-applicant1">
+            <div class="body"><label class="title" for="s3-applicant1">Applicant 1 — personal details</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Full name</label><input type="text" data-input="s3-a1-name" placeholder="Jane Alex Smith"></div>
+            <div class="field"><label>Date of birth</label><input type="date" data-input="s3-a1-dob"></div>
+            <div class="field full"><label>Current address</label><input type="text" data-input="s3-a1-address" placeholder="Street, suburb, state, postcode"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s3-a1-phone" placeholder="04XX XXX XXX"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s3-a1-email" placeholder="name@example.com"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s3-a1">+ Add details</button></div>
+        </div>
+
+        <div class="item" data-info="s3-applicant2" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s3-applicant2" id="s3-applicant2">
+            <div class="body"><label class="title" for="s3-applicant2">Applicant 2 — personal details (if applicable)</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Full name</label><input type="text" data-input="s3-a2-name"></div>
+            <div class="field"><label>Date of birth</label><input type="date" data-input="s3-a2-dob"></div>
+            <div class="field full"><label>Current address</label><input type="text" data-input="s3-a2-address"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s3-a2-phone"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s3-a2-email"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s3-a2">+ Add details</button></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 4. Employment -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">4</span>
+        Employment details
+        <span class="badge" data-badge="s4"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s4" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s4">
+
+        <div class="item" data-info="s4-employed" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s4-employed" id="s4-employed">
+            <div class="body"><label class="title" for="s4-employed">Currently employed — employment details</label></div>
+          </div>
+          <div class="fields">
+            <div class="field full"><label>Employer name</label><input type="text" data-input="s4-employer-name"></div>
+            <div class="field full"><label>Employer address</label><input type="text" data-input="s4-employer-address"></div>
+            <div class="field"><label>Net weekly income (AUD)</label><input type="number" data-input="s4-net-income" step="0.01" placeholder="1200"></div>
+            <div class="field"><label>Date employment started</label><input type="date" data-input="s4-start-date"></div>
+            <div class="field"><label>Job title / role</label><input type="text" data-input="s4-job-title"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s4-employed">+ Add details</button></div>
+        </div>
+
+        <div class="item" data-info="s4-not-employed" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s4-not-employed" id="s4-not-employed">
+            <div class="body"><label class="title" for="s4-not-employed">Not currently employed — most recent employment</label></div>
+          </div>
+          <div class="fields">
+            <div class="field full"><label>Most recent employer name</label><input type="text" data-input="s4-prev-employer"></div>
+            <div class="field"><label>Date employment ended</label><input type="date" data-input="s4-end-date"></div>
+            <div class="field full"><label>Reason employment ended (optional)</label><input type="text" data-input="s4-end-reason"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s4-not-employed">+ Add details</button></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 5. Identity -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">5</span>
+        Identity
+        <span class="badge" data-badge="s5"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s5" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s5">
+
+        <div class="item" data-info="s5-photo-id" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s5-photo-id" id="s5-photo-id">
+            <div class="body"><label class="title" for="s5-photo-id">Photo identification</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Document type</label>
+              <select data-input="s5-photo-id-type">
+                <option value="">— select —</option>
+                <option>Australian driver’s licence</option>
+                <option>Australian passport</option>
+                <option>Foreign passport with Australian visa</option>
+                <option>Proof of age card (Keypass)</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label>Document number</label><input type="text" data-input="s5-photo-id-number"></div>
+            <div class="field"><label>Expiry date</label><input type="date" data-input="s5-photo-id-expiry"></div>
+            <div class="field"><label>Attached?</label>
+              <select data-input="s5-photo-id-attached">
+                <option value="">—</option>
+                <option>Ready to upload</option>
+                <option>Already uploaded</option>
+                <option>Need to obtain</option>
+              </select>
+            </div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-photo-id">+ Add details</button></div>
+        </div>
+
+        <div class="item" data-info="s5-secondary-id" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s5-secondary-id" id="s5-secondary-id">
+            <div class="body"><label class="title" for="s5-secondary-id">Secondary identification</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Document type</label>
+              <select data-input="s5-secondary-id-type">
+                <option value="">— select —</option>
+                <option>Medicare card</option>
+                <option>Birth certificate</option>
+                <option>Certificate of Australian citizenship</option>
+                <option>Health care card</option>
+                <option>Concession card</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label>Document number</label><input type="text" data-input="s5-secondary-id-number"></div>
+            <div class="field"><label>Attached?</label>
+              <select data-input="s5-secondary-id-attached">
+                <option value="">—</option>
+                <option>Ready to upload</option>
+                <option>Already uploaded</option>
+                <option>Need to obtain</option>
+              </select>
+            </div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-secondary-id">+ Add details</button></div>
+        </div>
+
+        <div class="item" data-info="s5-visa" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s5-visa" id="s5-visa">
+            <div class="body"><label class="title" for="s5-visa">Visa / residency documents (if applicable)</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Visa subclass / type</label><input type="text" data-input="s5-visa-type"></div>
+            <div class="field"><label>Visa expiry</label><input type="date" data-input="s5-visa-expiry"></div>
+            <div class="field"><label>VEVO checked?</label>
+              <select data-input="s5-visa-vevo">
+                <option value="">—</option>
+                <option>Yes</option>
+                <option>No</option>
+                <option>Will check</option>
+              </select>
+            </div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s5-visa">+ Add details</button></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 6. References -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">6</span>
+        References — 2 general references
+        <span class="badge" data-badge="s6"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s6" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s6">
+
+        <div class="item" data-info="s6-ref1" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s6-ref1" id="s6-ref1">
+            <div class="body"><label class="title" for="s6-ref1">Reference 1 — name and contact details</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Name</label><input type="text" data-input="s6-ref1-name"></div>
+            <div class="field"><label>Relationship</label><input type="text" data-input="s6-ref1-relationship" placeholder="e.g. Former landlord"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s6-ref1-phone"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s6-ref1-email"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s6-ref1">+ Add details</button></div>
+        </div>
+
+        <div class="item" data-info="s6-ref2" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s6-ref2" id="s6-ref2">
+            <div class="body"><label class="title" for="s6-ref2">Reference 2 — name and contact details</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Name</label><input type="text" data-input="s6-ref2-name"></div>
+            <div class="field"><label>Relationship</label><input type="text" data-input="s6-ref2-relationship"></div>
+            <div class="field"><label>Phone</label><input type="tel" data-input="s6-ref2-phone"></div>
+            <div class="field"><label>Email</label><input type="email" data-input="s6-ref2-email"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s6-ref2">+ Add details</button></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 7. Property -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">7</span>
+        Property you’re applying for
+        <span class="badge" data-badge="s7"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s7" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s7">
+
+        <div class="item" data-no-cant data-info="s7-property" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s7-property" id="s7-property">
+            <div class="body"><label class="title" for="s7-property">Property details</label></div>
+          </div>
+          <div class="fields">
+            <div class="field full"><label>Address</label><input type="text" data-input="s7-address"></div>
+            <div class="field"><label>Listing ID / reference</label><input type="text" data-input="s7-listing-id"></div>
+            <div class="field"><label>Advertised weekly rent (AUD)</label><input type="number" data-input="s7-rent" step="0.01"></div>
+            <div class="field"><label>Preferred move-in date</label><input type="date" data-input="s7-movein"></div>
+            <div class="field"><label>Agency / agent name</label><input type="text" data-input="s7-agent"></div>
+          </div>
+          <div class="item-tools"><button type="button" class="action small ghost" data-add-details="s7-property">+ Add details</button></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 8. Consent -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">8</span>
+        Consent &amp; signature
+        <span class="badge" data-badge="s8"></span>
+        <button type="button" class="action small ghost" data-toggle-section="s8" style="margin-left:auto;">Collapse</button>
+      </div>
+      <div class="items" data-section="s8">
+
+        <div class="item" data-no-cant data-info="s8-consent" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s8-consent" id="s8-consent">
+            <div class="body"><label class="title" for="s8-consent">Consent to the rental provider checking your information</label></div>
+          </div>
+        </div>
+
+        <div class="item" data-no-cant data-info="s8-signature" data-discrim="no">
+          <div class="item-head">
+            <input type="checkbox" data-key="s8-signature" id="s8-signature">
+            <div class="body"><label class="title" for="s8-signature">Sign and date the form (every applicant)</label></div>
+          </div>
+          <div class="fields">
+            <div class="field"><label>Date signed</label><input type="date" data-input="s8-sign-date"></div>
+            <div class="field full"><label>Notes (who signed, on which copy)</label><input type="text" data-input="s8-sign-notes"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <div class="card">
+      <div class="card-head">
+        <span class="num">Σ</span>
+        Summary
+        <button type="button" class="action small ghost" id="btn-toggle-summary" style="margin-left:auto;">Show</button>
+      </div>
+      <div class="card-body hidden" id="summary-box">
+        <pre id="summary-content" style="background:var(--surface-alt);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem;font-size:0.78rem;font-family:var(--mono);max-height:320px;overflow:auto;white-space:pre-wrap;word-break:break-word;"></pre>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="action" id="btn-print-checklist">Print checklist</button>
+      <button type="button" class="action" id="btn-export-json">Export as JSON</button>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL 2: CENTRELINK INCOME
+       ============================================================ -->
+  <section class="panel" id="panel-income" role="tabpanel">
+
+    <div class="callout info">
+      <strong>Income test</strong>
+      JobSeeker free area is <strong>$150/fortnight</strong>. Between $150 and $256, JobSeeker tapers at 50c/$1 and Rent Assistance also tapers at 50c/$1 — total income is flat. Above $256, JobSeeker tapers at 60c/$1 and Rent Assistance continues at 50c/$1 — total income falls until the second break-even.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span> Your inputs</div>
+      <div class="card-body">
+
+        <div class="field" style="margin-bottom: 1.1rem;">
+          <div class="field-head">
+            <label for="earn-fn">Gross earnings from work — per fortnight</label>
+            <span class="pct-badge" id="earn-pct">—</span>
+          </div>
+          <div class="input-row">
+            <input type="number" id="earn-fn" value="0" min="0" max="1800" step="1">
+            <div class="slider-wrap">
+              <input type="range" id="earn-fn-range" value="0" min="0" max="1800" step="1">
+            </div>
+          </div>
+          <div class="nudge-row">
+            <button type="button" data-nudge="earn-fn" data-pct="-25">−25%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="-10">−10%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="-5">−5%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="5">+5%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="10">+10%</button>
+            <button type="button" data-nudge="earn-fn" data-pct="25">+25%</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="0">$0</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="150">$150 free area</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="256">$256 plateau peak</button>
+            <button type="button" class="primary-nudge" data-nudge="earn-fn" data-set="672">$672 second break-even</button>
+          </div>
+          <div class="suffix mono" id="earn-weekly">— per week</div>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <div class="field-head">
+              <label for="max-js">JobSeeker max — per fortnight</label>
+              <span class="pct-badge" id="js-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="max-js" value="808.70" min="0" max="1200" step="0.01">
+              <div class="slider-wrap"><input type="range" id="max-js-range" value="808.70" min="0" max="1200" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="max-js" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="max-js" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="max-js" data-set="808.70">Single $808.70</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="max-ra">Rent Assistance max — per fortnight</label>
+              <span class="pct-badge" id="ra-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="max-ra" value="219.40" min="0" max="400" step="0.01">
+              <div class="slider-wrap"><input type="range" id="max-ra-range" value="219.40" min="0" max="400" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="max-ra" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="max-ra" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="max-ra" data-set="219.40">Single $219.40</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span> Your result</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat">
+            <div class="lbl">JobSeeker</div>
+            <div class="val" id="r-js">—</div>
+            <div class="sub" id="r-js-sub">—</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Rent Assistance</div>
+            <div class="val" id="r-ra">—</div>
+            <div class="sub" id="r-ra-sub">—</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Wages</div>
+            <div class="val" id="r-wages">—</div>
+            <div class="sub">per fortnight</div>
+          </div>
+          <div class="stat highlight">
+            <div class="lbl">Total income</div>
+            <div class="val" id="r-total">—</div>
+            <div class="sub" id="r-total-week">—</div>
+          </div>
+        </div>
+        <div class="verdict" id="r-verdict"></div>
+
+        <div class="callout warn">
+          <strong>Key thresholds (single, no children)</strong>
+          Free area $150/fn · plateau peak $256/fn · peak total $1,178.10/fn ($589.05/wk) · Rent Assistance cuts out at $588.80/fn · JobSeeker cuts out at $1,515.50/fn ($757.75/wk).
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL 3: RENTASSIST BOND LOAN
+       ============================================================ -->
+  <section class="panel" id="panel-rentassist" role="tabpanel">
+
+    <div class="callout info">
+      <strong>RentAssist bond loan — three tests</strong>
+      <strong style="display:inline">1.</strong> Your gross weekly income must be at or below the limit for your household.
+      <strong style="display:inline">2.</strong> Weekly rent must not exceed 55% of your gross weekly income.
+      <strong style="display:inline">3.</strong> Household assets must be $27,644 or less.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span> Your details</div>
+      <div class="card-body">
+        <div class="grid">
+
+          <div class="field">
+            <div class="field-head">
+              <label for="household">Household type</label>
+            </div>
+            <select id="household">
+              <option value="811">Single person — $811/wk limit</option>
+              <option value="1385">Couple — $1,385/wk limit</option>
+              <option value="1419">Family with 1 dependent child — $1,419/wk</option>
+              <option value="1462">Family with 2 dependent children — $1,462/wk</option>
+              <option value="1505">Family with 3 dependent children — $1,505/wk</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="rent-wk">Weekly rent</label>
+              <span class="pct-badge" id="rent-ra-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="rent-wk" value="350" min="0" max="1500" step="5">
+              <div class="slider-wrap"><input type="range" id="rent-wk-range" value="350" min="0" max="1500" step="5"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="rent-wk" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="5">+5%</button>
+              <button type="button" data-nudge="rent-wk" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="rent-wk" data-set="350">$350</button>
+              <button type="button" class="primary-nudge" data-nudge="rent-wk" data-set="400">$400</button>
+            </div>
+            <div class="suffix">Must not exceed 55% of gross weekly income.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="gross-wk">Total gross weekly income</label>
+              <span class="pct-badge" id="gross-ra-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="gross-wk" value="514.05" min="0" max="2500" step="0.01">
+              <div class="slider-wrap"><input type="range" id="gross-wk-range" value="514.05" min="0" max="2500" step="0.01"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="gross-wk" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="5">+5%</button>
+              <button type="button" data-nudge="gross-wk" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" id="btn-use-cl-total">Use Centrelink total</button>
+            </div>
+            <div class="suffix">Include Centrelink + wages. Convert fortnightly total ÷ 2.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="assets">Assets (household)</label>
+              <span class="pct-badge" id="assets-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="assets" value="0" min="0" max="60000" step="100">
+              <div class="slider-wrap"><input type="range" id="assets-range" value="0" min="0" max="60000" step="100"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="assets" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="assets" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="assets" data-set="0">$0</button>
+              <button type="button" class="primary-nudge" data-nudge="assets" data-set="27644">At limit</button>
+            </div>
+            <div class="suffix">Limit $27,644.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span> Eligibility</div>
+      <div class="card-body">
+        <div class="checks" id="ra-checks"></div>
+        <div class="verdict" id="ra-verdict"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL 4: AFFORDABILITY
+       ============================================================ -->
+  <section class="panel" id="panel-affordability" role="tabpanel">
+
+    <div class="callout info">
+      <strong>Market practice — the 30% benchmark</strong>
+      Most Melbourne agents look for rent to be no more than 30% of your net (after-tax) weekly income. Some accept up to 40% with a strong record or guarantor. This threshold is adjustable below.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span> Rent vs net income</div>
+      <div class="card-body">
+
+        <div class="grid">
+          <div class="field">
+            <div class="field-head">
+              <label for="aff-rent">Weekly rent</label>
+              <span class="pct-badge" id="aff-rent-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="aff-rent" value="350" min="0" max="1500" step="5">
+              <div class="slider-wrap"><input type="range" id="aff-rent-range" value="350" min="0" max="1500" step="5"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="aff-rent" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="5">+5%</button>
+              <button type="button" data-nudge="aff-rent" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-rent" data-set="350">$350</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-rent" data-set="450">$450</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-rent" data-set="550">$550</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="aff-net">Net weekly income (take-home)</label>
+              <span class="pct-badge" id="aff-net-pct">—</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="aff-net" value="1167" min="0" max="3000" step="10">
+              <div class="slider-wrap"><input type="range" id="aff-net-range" value="1167" min="0" max="3000" step="10"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" data-nudge="aff-net" data-pct="-10">−10%</button>
+              <button type="button" data-nudge="aff-net" data-pct="-5">−5%</button>
+              <button type="button" data-nudge="aff-net" data-pct="5">+5%</button>
+              <button type="button" data-nudge="aff-net" data-pct="10">+10%</button>
+              <button type="button" class="primary-nudge" id="btn-use-cl-net">Use Centrelink total</button>
+            </div>
+            <div class="suffix">After tax. Include Centrelink and wages.</div>
+          </div>
+
+          <div class="field">
+            <div class="field-head">
+              <label for="aff-threshold">Affordability threshold</label>
+              <span class="pct-badge info" id="aff-th-pct">30%</span>
+            </div>
+            <div class="input-row">
+              <input type="number" id="aff-threshold" value="30" min="10" max="60" step="1">
+              <div class="slider-wrap"><input type="range" id="aff-threshold-range" value="30" min="10" max="60" step="1"></div>
+            </div>
+            <div class="nudge-row">
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="25">25%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="30">30%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="33">33%</button>
+              <button type="button" class="primary-nudge" data-nudge="aff-threshold" data-set="40">40%</button>
+            </div>
+            <div class="suffix">Most Melbourne agents use 30%.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span> Assessment</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat">
+            <div class="lbl">Rent as % of net income</div>
+            <div class="val" id="aff-pct">—</div>
+            <div class="sub" id="aff-pct-sub">—</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Minimum net income</div>
+            <div class="val" id="aff-min">—</div>
+            <div class="sub" id="aff-min-sub">—</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Maximum rent</div>
+            <div class="val" id="aff-max">—</div>
+            <div class="sub" id="aff-max-sub">—</div>
+          </div>
+        </div>
+        <div class="verdict" id="aff-verdict"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============================================================
+       PANEL 5: CHART
+       ============================================================ -->
+  <section class="panel" id="panel-chart" role="tabpanel">
+
+    <div class="callout info">
+      <strong>Total income vs earnings</strong>
+      The chart shows your combined income (wages + JobSeeker + Rent Assistance) as earnings increase. The plateau at the peak, the fall, and the second break-even are all visible. The marker follows the earnings slider in the Centrelink Income tab.
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">1</span> Break-even curve</div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <canvas id="chart" width="880" height="400"></canvas>
+        </div>
+        <div class="legend">
+          <span><span class="swatch" style="background:var(--accent)"></span> Total income</span>
+          <span><span class="swatch dashed" style="border-color:var(--bad)"></span> Wages alone</span>
+          <span><span class="swatch dashed" style="border-color:var(--ok)"></span> Plateau peak</span>
+          <span><span class="dot" style="background:var(--ok)"></span> $256 plateau peak</span>
+          <span><span class="dot" style="background:var(--warn)"></span> Second break-even</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="num">2</span> Key thresholds</div>
+      <div class="card-body">
+        <div class="results">
+          <div class="stat peak">
+            <div class="lbl">Plateau peak</div>
+            <div class="val" id="th-peak">—</div>
+            <div class="sub">at $256/fn earnings</div>
+          </div>
+          <div class="stat warn">
+            <div class="lbl">Second break-even</div>
+            <div class="val" id="th-second">—</div>
+            <div class="sub">total returns to peak</div>
+          </div>
+          <div class="stat bad">
+            <div class="lbl">JobSeeker cuts out</div>
+            <div class="val" id="th-cutoff">—</div>
+            <div class="sub">payment reaches $0</div>
+          </div>
+          <div class="stat">
+            <div class="lbl">Peak weekly</div>
+            <div class="val" id="th-weekly">—</div>
+            <div class="sub">maximum on Centrelink</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   BOOTSTRAP
+   ============================================================ */
+(function () {
+  "use strict";
+
+  const STORAGE_KEY = "vic-rental-toolkit-v1";
+  const $ = id => document.getElementById(id);
+  const $$ = sel => Array.from(document.querySelectorAll(sel));
+
+  /* ----------------------------------------------------------
+     CONSTANTS
+     ---------------------------------------------------------- */
+  const FREE_AREA = 150;
+  const BAND1_END = 256;
+  const TAPER_1 = 0.50;
+  const TAPER_2 = 0.60;
+  const RA_TAPER = 0.50;
+  const ASSET_LIMIT = 27644;
+
+  const DEFAULTS = {
+    "earn-fn": 0,
+    "max-js": 808.70,
+    "max-ra": 219.40,
+    "rent-wk": 350,
+    "gross-wk": 514.05,
+    "assets": 0,
+    "aff-rent": 350,
+    "aff-net": 1167,
+    "aff-threshold": 30
+  };
+
+  /* ----------------------------------------------------------
+     HELPERS
+     ---------------------------------------------------------- */
+  const fmt = (n, d = 2) => Number(n).toLocaleString("en-AU", {
+    minimumFractionDigits: d, maximumFractionDigits: d
+  });
+  const money = n => "$" + fmt(n, 2);
+  const money0 = n => "$" + fmt(n, 0);
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, isNaN(v) ? min : v));
+
+  function setBadge(id, text, cls) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "pct-badge" + (cls ? " " + cls : "");
+  }
+
+  /* ----------------------------------------------------------
+     CALCULATIONS
+     ---------------------------------------------------------- */
+  function jobSeeker(earnings, maxJS) {
+    if (earnings <= FREE_AREA) return maxJS;
+    if (earnings <= BAND1_END) return Math.max(0, maxJS - (earnings - FREE_AREA) * TAPER_1);
+    const at256 = maxJS - (BAND1_END - FREE_AREA) * TAPER_1;
+    return Math.max(0, at256 - (earnings - BAND1_END) * TAPER_2);
+  }
+  function rentAssistance(earnings, maxRA) {
+    if (earnings <= FREE_AREA) return maxRA;
+    return Math.max(0, maxRA - (earnings - FREE_AREA) * RA_TAPER);
+  }
+  function totalIncome(earnings, maxJS, maxRA) {
+    return jobSeeker(earnings, maxJS) + rentAssistance(earnings, maxRA) + earnings;
+  }
+  function raCutoff(maxRA) { return FREE_AREA + maxRA / RA_TAPER; }
+  function jsCutoff(maxJS) {
+    const at256 = maxJS - (BAND1_END - FREE_AREA) * TAPER_1;
+    return BAND1_END + at256 / TAPER_2;
+  }
+  function findSecondBreak(maxJS, maxRA) {
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) +
+                 (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    for (let e = raCutoff(maxRA); e < 2500; e += 0.5) {
+      if (totalIncome(e, maxJS, maxRA) >= peak) return e;
+    }
+    return null;
+  }
+
+  /* ----------------------------------------------------------
+     TABS
+     ---------------------------------------------------------- */
+  const tabs = $$(".tab");
+  const panels = $$(".panel");
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const id = tab.dataset.tab;
+      tabs.forEach(t => t.classList.toggle("active", t === tab));
+      panels.forEach(p => p.classList.toggle("active", p.id === "panel-" + id));
+      if (id === "chart") drawChart();
+    });
+  });
+
+  /* ----------------------------------------------------------
+     SLIDER + NUMBER SYNC
+     ---------------------------------------------------------- */
+  const sliderPairs = [
+    ["earn-fn", "earn-fn-range"],
+    ["max-js", "max-js-range"],
+    ["max-ra", "max-ra-range"],
+    ["rent-wk", "rent-wk-range"],
+    ["gross-wk", "gross-wk-range"],
+    ["assets", "assets-range"],
+    ["aff-rent", "aff-rent-range"],
+    ["aff-net", "aff-net-range"],
+    ["aff-threshold", "aff-threshold-range"]
+  ];
+
+  function bindPair(key) {
+    const num = $(key);
+    const range = $(key + "-range");
+    if (!num || !range) return;
+    num.addEventListener("input", () => { range.value = num.value; onChange(key); });
+    range.addEventListener("input", () => { num.value = range.value; onChange(key); });
+  }
+
+  function setFieldValue(key, value, opts) {
+    opts = opts || {};
+    const num = $(key);
+    if (!num) return;
+    const min = parseFloat(num.min) || 0;
+    const max = parseFloat(num.max) || Infinity;
+    const v = clamp(value, min, max);
+    num.value = opts.round ? Math.round(v) : parseFloat(v.toFixed(2));
+    const range = $(key + "-range");
+    if (range) range.value = num.value;
+  }
+
+  function onChange(key) {
+    if (key.startsWith("earn") || key.startsWith("max-")) updateIncome();
+    else if (key === "household" || key.startsWith("rent-wk") || key.startsWith("gross-wk") || key.startsWith("assets")) updateRentAssist();
+    else if (key.startsWith("aff-")) updateAffordability();
+    save();
+  }
+
+  /* ----------------------------------------------------------
+     NUDGE BUTTONS
+     ---------------------------------------------------------- */
+  $$("[data-nudge]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.nudge;
+      const pct = btn.dataset.pct;
+      const set = btn.dataset.set;
+      const num = $(key);
+      if (!num) return;
+      if (set !== undefined) {
+        setFieldValue(key, parseFloat(set), { round: key === "assets" });
+      } else if (pct !== undefined) {
+        const cur = parseFloat(num.value) || 0;
+        setFieldValue(key, cur * (1 + parseFloat(pct) / 100), { round: key === "assets" });
+      }
+      onChange(key);
+    });
+  });
+
+  /* ----------------------------------------------------------
+     INCOME PANEL
+     ---------------------------------------------------------- */
+  function updateIncome() {
+    const earn = Math.max(0, parseFloat($("earn-fn").value) || 0);
+    const maxJS = Math.max(0, parseFloat($("max-js").value) || 0);
+    const maxRA = Math.max(0, parseFloat($("max-ra").value) || 0);
+
+    const js = jobSeeker(earn, maxJS);
+    const ra = rentAssistance(earn, maxRA);
+    const total = js + ra + earn;
+
+    $("r-js").textContent = money(js);
+    $("r-js-sub").textContent = js <= 0 ? "Cut out" : (js >= maxJS ? "Full rate" : "Reduced");
+    $("r-ra").textContent = money(ra);
+    $("r-ra-sub").textContent = ra <= 0 ? "Cut out" : (ra >= maxRA ? "Full rate" : "Reduced");
+    $("r-wages").textContent = money(earn);
+    $("r-total").textContent = money(total);
+    $("r-total-week").textContent = money(total / 2) + " per week";
+    $("earn-weekly").textContent = money(earn / 2) + " per week";
+
+    /* Badges */
+    const jsPct = maxJS > 0 ? (js / maxJS * 100) : 0;
+    const raPct = maxRA > 0 ? (ra / maxRA * 100) : 0;
+    setBadge("js-pct", fmt(jsPct, 0) + "% of max", jsPct >= 99.9 ? "ok" : jsPct > 0 ? "warn" : "bad");
+    setBadge("ra-pct", fmt(raPct, 0) + "% of max", raPct >= 99.9 ? "ok" : raPct > 0 ? "warn" : "bad");
+
+    const cutoff = jsCutoff(maxJS);
+    const earnPct = cutoff > 0 ? earn / cutoff * 100 : 0;
+    setBadge("earn-pct", fmt(earnPct, 0) + "% of JS cutoff",
+      earnPct < 15 ? "ok" : earnPct < 40 ? "warn" : "bad");
+
+    /* Verdict */
+    const v = $("r-verdict");
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) +
+                 (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    const raCut = raCutoff(maxRA);
+    const second = findSecondBreak(maxJS, maxRA) || raCut + 100;
+    const jsCut = jsCutoff(maxJS);
+
+    let cls = "info", title = "", body = "";
+    if (earn <= FREE_AREA) {
+      cls = "pass"; title = "No reduction — within the free area";
+      body = "You can earn up to " + money(FREE_AREA) + "/fn with no reduction to JobSeeker or Rent Assistance.";
+    } else if (earn <= BAND1_END) {
+      cls = "info"; title = "On the plateau — total income is unchanged";
+      body = "JobSeeker and Rent Assistance reduce at a combined $1.00 per $1.00 earned, so your total stays at " + money(peak) + "/fn (" + money(peak / 2) + "/week) until earnings reach " + money(BAND1_END) + "/fn.";
+    } else if (earn <= raCut) {
+      cls = "fail"; title = "Above the plateau — total income is falling";
+      body = "You are in the $1.10-per-dollar taper zone. Your total is below the peak of " + money(peak) + "/fn. You are worse off than earning " + money(BAND1_END) + "/fn.";
+    } else if (earn < second) {
+      cls = "fail"; title = "Still below the plateau peak";
+      body = "Your total income has not yet returned to " + money(peak) + "/fn. The second break-even is at about " + money(second) + "/fn.";
+    } else if (earn < jsCut) {
+      cls = "pass"; title = "Above the second break-even — you are gaining";
+      body = "Your total now exceeds the plateau peak of " + money(peak) + "/fn. Every extra dollar adds to your total.";
+    } else {
+      cls = "info"; title = "JobSeeker has cut out";
+      body = "You receive no JobSeeker and no Rent Assistance. Your total income is your wages alone.";
+    }
+    v.className = "verdict " + cls;
+    v.innerHTML = "<strong>" + title + "</strong>" + body;
+
+    /* Chart thresholds panel */
+    if ($("th-peak")) {
+      $("th-peak").textContent = money(peak);
+      $("th-second").textContent = money(second);
+      $("th-cutoff").textContent = money(jsCut);
+      $("th-weekly").textContent = money(peak / 2);
+    }
+
+    drawChart();
+  }
+
+  /* ----------------------------------------------------------
+     RENTASSIST PANEL
+     ---------------------------------------------------------- */
+  function updateRentAssist() {
+    const limit = parseFloat($("household").value) || 811;
+    const rent = Math.max(0, parseFloat($("rent-wk").value) || 0);
+    const gross = Math.max(0, parseFloat($("gross-wk").value) || 0);
+    const assets = Math.max(0, parseFloat($("assets").value) || 0);
+
+    const incomePass = gross <= limit;
+    const fiftyFivePass = gross > 0 && rent <= gross * 0.55;
+    const assetPass = assets <= ASSET_LIMIT;
+    const minIncome = rent / 0.55;
+
+    setBadge("rent-ra-pct",
+      gross > 0 ? fmt(rent / gross * 100, 1) + "% of income" : "—",
+      !gross ? "warn" : rent / gross <= 0.55 ? "ok" : "bad");
+    setBadge("gross-ra-pct",
+      fmt(gross / limit * 100, 0) + "% of limit",
+      incomePass ? "ok" : "bad");
+    setBadge("assets-pct",
+      fmt(assets / ASSET_LIMIT * 100, 0) + "% of limit",
+      assetPass ? "ok" : "bad");
+
+    const checks = [
+      { pass: incomePass, label: "Income limit",
+        detail: incomePass
+          ? "Gross weekly income " + money(gross) + " is within the " + money0(limit) + " limit."
+          : "Gross weekly income " + money(gross) + " exceeds the " + money0(limit) + " limit." },
+      { pass: fiftyFivePass, label: "55% rent-to-income rule",
+        detail: gross <= 0 ? "Enter a gross weekly income to test this rule."
+          : fiftyFivePass
+            ? "Rent " + money(rent) + "/week is " + fmt(rent / gross * 100, 1) + "% of gross income — within the 55% cap."
+            : "Rent " + money(rent) + "/week is " + fmt(rent / gross * 100, 1) + "% of gross income — above the 55% cap. Need at least " + money(minIncome) + "/week gross." },
+      { pass: assetPass, label: "Asset limit",
+        detail: assetPass
+          ? "Assets " + money0(assets) + " are within the " + money0(ASSET_LIMIT) + " limit."
+          : "Assets " + money0(assets) + " exceed the " + money0(ASSET_LIMIT) + " limit." }
+    ];
+
+    $("ra-checks").innerHTML = checks.map(c => {
+      const icon = c.pass ? "✓" : "✕";
+      const cls = c.pass ? "pass" : "fail";
+      return '<div class="check ' + cls + '"><span class="icon">' + icon + '</span>' +
+             '<span class="txt"><strong>' + c.label + '</strong>' +
+             '<span class="detail">' + c.detail + '</span></span></div>';
+    }).join("");
+
+    const allPass = checks.every(c => c.pass);
+    const v = $("ra-verdict");
+    v.className = "verdict " + (allPass ? "pass" : "fail");
+    v.innerHTML = allPass
+      ? "<strong>Eligible on these figures</strong>You meet the income, 55% rent-to-income, and asset tests. You can apply for a RentAssist bond loan. Applications are subject to final assessment by Homes Victoria."
+      : "<strong>Not eligible on these figures</strong>One or more tests are not met. Review the failed check" +
+        (checks.filter(c => !c.pass).length > 1 ? "s" : "") + " above. You can still apply, but the application is unlikely to succeed as it stands.";
+  }
+
+  /* ----------------------------------------------------------
+     AFFORDABILITY PANEL
+     ---------------------------------------------------------- */
+  function updateAffordability() {
+    const rent = Math.max(0, parseFloat($("aff-rent").value) || 0);
+    const net = Math.max(0, parseFloat($("aff-net").value) || 0);
+    const threshold = Math.max(1, parseFloat($("aff-threshold").value) || 30) / 100;
+
+    const pct = net > 0 ? (rent / net) * 100 : 0;
+    const minNet = rent / threshold;
+    const maxRent = net * threshold;
+
+    $("aff-pct").textContent = net > 0 ? fmt(pct, 1) + "%" : "—";
+    $("aff-pct-sub").textContent =
+      pct <= 30 ? "Within the 30% benchmark" :
+      pct <= 40 ? "Above 30% — agents may still accept" :
+      "Well above 40% — likely to be declined";
+    $("aff-min").textContent = net > 0 ? money0(minNet) : "—";
+    $("aff-min-sub").textContent = "for this rent at " + fmt(threshold * 100, 0) + "%";
+    $("aff-max").textContent = net > 0 ? money0(maxRent) : "—";
+    $("aff-max-sub").textContent = "at your income at " + fmt(threshold * 100, 0) + "%";
+
+    setBadge("aff-rent-pct",
+      net > 0 ? fmt(pct, 0) + "% of net" : "—",
+      net <= 0 ? "warn" : pct <= threshold * 100 ? "ok" : pct <= 40 ? "warn" : "bad");
+    setBadge("aff-net-pct",
+      net > 0 ? fmt(net / minNet * 100, 0) + "% of need" : "—",
+      net <= 0 ? "warn" : net >= minNet ? "ok" : "bad");
+    setBadge("aff-th-pct", fmt(threshold * 100, 0) + "%", "info");
+
+    const v = $("aff-verdict");
+    if (net <= 0) {
+      v.className = "verdict info";
+      v.innerHTML = "<strong>Enter your net weekly income</strong>Then the calculator will show whether the rent is within the threshold you set (default 30%).";
+      return;
+    }
+    if (pct <= threshold * 100) {
+      v.className = "verdict pass";
+      v.innerHTML = "<strong>Affordable at " + fmt(threshold * 100, 0) + "% benchmark</strong>Rent is " + fmt(pct, 1) + "% of net income. You meet the standard affordability test.";
+    } else if (pct <= 40) {
+      v.className = "verdict warn";
+      v.innerHTML = "<strong>Above " + fmt(threshold * 100, 0) + "% — but within 40%</strong>Some agents will still accept, especially with strong rental history or a guarantor. Be ready to explain your budget in a cover note.";
+    } else {
+      v.className = "verdict fail";
+      v.innerHTML = "<strong>Above 40% of net income</strong>Most agents will decline. You would need at least " + money0(minNet) + "/week net to meet the " + fmt(threshold * 100, 0) + "% benchmark.";
+    }
+  }
+
+  /* ----------------------------------------------------------
+     CHART
+     ---------------------------------------------------------- */
+  const canvas = $("chart");
+  const ctx = canvas.getContext("2d");
+
+  function drawChart() {
+    if (!canvas || canvas.offsetParent === null) return; // skip if hidden
+
+    const maxJS = Math.max(0, parseFloat($("max-js").value) || 0);
+    const maxRA = Math.max(0, parseFloat($("max-ra").value) || 0);
+    const markerEarn = Math.max(0, parseFloat($("earn-fn").value) || 0);
+
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvas.clientWidth || 880;
+    const cssH = 400;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const W = cssW, H = cssH;
+    const pad = { top: 24, right: 24, bottom: 52, left: 68 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    const xMax = 1600;
+    const yMax = 1800;
+    const x = e => pad.left + (e / xMax) * plotW;
+    const y = v => pad.top + plotH - (v / yMax) * plotH;
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+
+    /* Grid + Y labels */
+    ctx.strokeStyle = "#e2e8f0";
+    ctx.lineWidth = 1;
+    ctx.font = "11px " + getComputedStyle(document.body).fontFamily;
+    ctx.fillStyle = "#64748b";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    for (let v = 0; v <= yMax; v += 300) {
+      const yy = y(v);
+      ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(pad.left + plotW, yy); ctx.stroke();
+      ctx.fillText("$" + v, pad.left - 8, yy);
+    }
+
+    /* X labels */
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    for (let e = 0; e <= xMax; e += 200) {
+      const xx = x(e);
+      ctx.beginPath(); ctx.moveTo(xx, pad.top); ctx.lineTo(xx, pad.top + plotH); ctx.stroke();
+      ctx.fillText("$" + e, xx, pad.top + plotH + 8);
+    }
+
+    /* Axis titles */
+    ctx.fillStyle = "#0f172a";
+    ctx.font = "600 12px " + getComputedStyle(document.body).fontFamily;
+    ctx.textAlign = "center";
+    ctx.fillText("Gross earnings per fortnight", pad.left + plotW / 2, pad.top + plotH + 30);
+    ctx.save();
+    ctx.translate(18, pad.top + plotH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textBaseline = "middle";
+    ctx.fillText("Total income per fortnight", 0, 0);
+    ctx.restore();
+
+    /* Wages line */
+    ctx.strokeStyle = "#dc2626";
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x(0), y(0));
+    ctx.lineTo(x(xMax), y(Math.min(xMax, yMax)));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* Total curve */
+    ctx.strokeStyle = "#2563eb";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    let started = false;
+    for (let e = 0; e <= xMax; e += 4) {
+      const t = Math.min(totalIncome(e, maxJS, maxRA), yMax);
+      const px = x(e), py = y(t);
+      if (!started) { ctx.moveTo(px, py); started = true; } else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    /* Plateau */
+    const peak = (maxJS - (BAND1_END - FREE_AREA) * TAPER_1) +
+                 (maxRA - (BAND1_END - FREE_AREA) * RA_TAPER) + BAND1_END;
+    ctx.strokeStyle = "#16a34a";
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y(peak));
+    ctx.lineTo(pad.left + plotW, y(peak));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    /* Markers */
+    const second = findSecondBreak(maxJS, maxRA);
+    const markers = [
+      { e: BAND1_END, color: "#16a34a", label: "$256" }
+    ];
+    if (second) markers.push({ e: second, color: "#d97706", label: "$" + Math.round(second) });
+
+    markers.forEach(m => {
+      if (m.e > xMax) return;
+      const mx = x(m.e);
+      const my = y(Math.min(totalIncome(m.e, maxJS, maxRA), yMax));
+      ctx.fillStyle = m.color;
+      ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "600 10px " + getComputedStyle(document.body).fontFamily;
+      ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+      ctx.fillText(m.label, mx, my - 8);
+    });
+
+    /* Marker on current earnings */
+    if (markerEarn > 0 && markerEarn <= xMax) {
+      const mx = x(markerEarn);
+      const my = y(Math.min(totalIncome(markerEarn, maxJS, maxRA), yMax));
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mx, pad.top); ctx.lineTo(mx, pad.top + plotH); ctx.stroke();
+      ctx.fillStyle = "#0f172a";
+      ctx.beginPath(); ctx.arc(mx, my, 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath(); ctx.arc(mx, my, 2.5, 0, Math.PI * 2); ctx.fill();
+    }
+
+    /* Border */
+    ctx.strokeStyle = "#e2e8f0";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+  }
+
+  /* ----------------------------------------------------------
+     CHECKLIST — ATTRIBUTES
+     ---------------------------------------------------------- */
+  const ATTRIBUTES = [
+    { label: "Age", title: "Age",
+      body: "It is unlawful to treat you unfavourably because of your age.",
+      examples: ["Requiring a higher bond or a guarantor from a younger applicant.",
+        "Refusing an older applicant because of assumptions about their needs.",
+        "Refusing a younger applicant because of assumptions about partying or noise."] },
+    { label: "Disability", title: "Disability (physical, sensory, intellectual, mental illness)",
+      body: "It is unlawful to refuse accommodation, impose different terms, or refuse reasonable modifications because of a disability.",
+      examples: ["Refusing to rent because you use a wheelchair or have a mental health condition.",
+        "Refusing to allow reasonable alterations or modifications to meet your needs.",
+        "Refusing to allow you to keep an assistance dog.",
+        "Requiring a higher bond or a guarantor because of a disability."] },
+    { label: "Employment activity", title: "Employment activity",
+      body: "It is unlawful to discriminate based on your employment status or activity.",
+      examples: ["Refusing an applicant because they are unemployed but have savings.",
+        "Treating you differently because you are on parental or carer's leave.",
+        "Discriminating against casual, gig, or shift workers."] },
+    { label: "Expunged homosexual conviction", title: "Expunged homosexual conviction",
+      body: "A historical conviction that has been expunged under Victorian law must not be used to discriminate against you.",
+      examples: ["Refusing your application because of an expunged historical conviction.",
+        "Asking about or referencing an expunged conviction during an application."] },
+    { label: "Gender identity", title: "Gender identity",
+      body: "It is unlawful to discriminate against a person because of their gender identity.",
+      examples: ["Refusing your application because you are transgender or non-binary.",
+        "Refusing to use your correct name or pronouns on tenancy documents.",
+        "Treating you unfavourably in shared facilities arrangements."] },
+    { label: "Industrial activity", title: "Industrial activity (incl. union activity)",
+      body: "It is unlawful to discriminate because you are, or are not, a member of a union or because of lawful industrial activity.",
+      examples: ["Refusing your application because you are a union delegate.",
+        "Treating you differently because you have participated in lawful industrial action."] },
+    { label: "Marital status", title: "Marital status",
+      body: "It is unlawful to discriminate against you because of your marital or relationship status.",
+      examples: ["Refusing a single applicant because of assumptions about stability.",
+        "Refusing a recently divorced or separated applicant.",
+        "Refusing an applicant because they are in a de facto relationship."] },
+    { label: "Parental status / carer", title: "Parental status or status as a carer",
+      body: "It is unlawful to refuse accommodation because you have children or care for someone — unless the premises is genuinely unsuitable for children due to its design or location.",
+      examples: ["Refusing your application simply because you have children.",
+        "Requiring a higher bond or guarantor because you are a parent.",
+        "Refusing because you provide unpaid care to a family member.",
+        "Note: refusing because the property is genuinely unsafe for children may not be unlawful."] },
+    { label: "Physical features", title: "Physical features",
+      body: "It is unlawful to discriminate against you based on your physical appearance.",
+      examples: ["Refusing an applicant because of visible tattoos, piercings, or body modifications.",
+        "Treating you unfavourably because of your weight or height.",
+        "Making assumptions based on how you look at an inspection."] },
+    { label: "Political belief or activity", title: "Political belief or activity",
+      body: "It is unlawful to discriminate against you because of your political beliefs or lawful political activity.",
+      examples: ["Refusing your application because of your political affiliations.",
+        "Treating you differently because you have attended a protest or engaged in lawful political activity."] },
+    { label: "Pregnancy or breastfeeding", title: "Pregnancy or breastfeeding",
+      body: "It is unlawful to discriminate against you because you are pregnant or breastfeeding.",
+      examples: ["Refusing your application because you are pregnant.",
+        "Refusing to rent to a pregnant applicant for fear of future children.",
+        "Treating you unfavourably because you are breastfeeding."] },
+    { label: "Race", title: "Race",
+      body: "It is unlawful to discriminate against you because of your race, colour, descent, nationality, or ethnic origin.",
+      examples: ["Refusing your application because of your name, accent, or ethnicity.",
+        "Processing your application differently and not passing it to the rental provider because of race.",
+        "Treating you differently during inspections or communications."] },
+    { label: "Religious belief or activity", title: "Religious belief or activity",
+      body: "It is unlawful to discriminate against you because of your religious beliefs or lawful religious activity.",
+      examples: ["Refusing your application because you wear religious dress.",
+        "Refusing reasonable requests tied to religious observance.",
+        "Treating you differently because of your religion or religious holidays."] },
+    { label: "Lawful sexual activity / sexual orientation", title: "Lawful sexual activity or sexual orientation",
+      body: "It is unlawful to discriminate against you because of your sexual orientation or lawful sexual activity.",
+      examples: ["Refusing your application because you are in a same-sex relationship.",
+        "Treating a same-sex couple differently from a different-sex couple.",
+        "Refusing accommodation because of assumptions about your sexual activity."] },
+    { label: "Sex or intersex status", title: "Sex or intersex status",
+      body: "It is unlawful to discriminate against you because of your sex or because you are intersex.",
+      examples: ["Refusing an applicant because of their sex.",
+        "Treating an intersex applicant unfavourably or imposing unreasonable requirements on them.",
+        "Refusing a woman applicant because of assumptions about safety or income."] },
+    { label: "Association", title: "Association with someone who has these attributes",
+      body: "It is unlawful to discriminate against you because you associate with, care for, or are related to someone who has a protected attribute.",
+      examples: ["Refusing you because you have a child with a disability.",
+        "Refusing you because your partner is of a particular race or religion.",
+        "Refusing you because you care for an elderly relative."] }
+  ];
+
+  function buildAttributes() {
+    const wrap = $("attributes-list");
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    ATTRIBUTES.forEach((attr, idx) => {
+      const chip = document.createElement("span");
+      chip.className = "attr";
+      chip.innerHTML = "<span>" + attr.label + "</span>";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "info-btn";
+      btn.setAttribute("aria-label", "More info about " + attr.label);
+      btn.textContent = "!";
+      chip.appendChild(btn);
+      wrap.appendChild(chip);
+
+      const explain = document.createElement("div");
+      explain.className = "attr-explain hidden";
+      explain.innerHTML = "<strong>" + attr.title + "</strong>" +
+        "<div>" + attr.body + "</div>" +
+        "<ul>" + attr.examples.map(e => "<li>" + e + "</li>").join("") + "</ul>";
+      wrap.parentElement.appendChild(explain);
+
+      btn.addEventListener("click", e => {
+        e.preventDefault();
+        const isHidden = explain.classList.contains("hidden");
+        document.querySelectorAll(".attr-explain").forEach(p => p.classList.add("hidden"));
+        document.querySelectorAll(".attr.open").forEach(a => a.classList.remove("open"));
+        if (isHidden) {
+          explain.classList.remove("hidden");
+          chip.classList.add("open");
+          explain.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      });
+    });
+  }
+
+  /* ----------------------------------------------------------
+     INFO PANELS (! throughout)
+     ---------------------------------------------------------- */
+  const INFO = {
+    "s1-received": {
+      title: "Form 3 — Statement of Information for Rental Applicants",
+      body: "The rental provider or agent must give you this statement before or at the time you apply. It's required under s 29C of the Residential Tenancies Act 1997 (Regulation 14).",
+      bullets: ["If you haven't received it, ask the agent for a copy.",
+        "You can also download it from Consumer Affairs Victoria.",
+        "The statement sets out your discrimination protections — read it before you apply."]
+    },
+    "s1-what-is-discrimination": {
+      title: "What counts as discrimination",
+      body: "Two forms: treating someone unfavourably because of a personal attribute, and imposing an unreasonable requirement that disadvantages persons with a personal attribute.",
+      bullets: ["Direct discrimination — rejecting you because of your race.",
+        "Indirect discrimination — a rule that disadvantages people with a disability without good reason.",
+        "Both are unlawful in Victorian rental."]
+    },
+    "s1-unlawful": {
+      title: "Discrimination in renting is unlawful",
+      body: "Rental providers and agents cannot refuse you accommodation or discriminate against you during your tenancy because of a protected personal attribute.",
+      bullets: ["Applies when applying, occupying, or leaving.",
+        "Applies to the rental provider and their agent.",
+        "Contraventions can be heard at VCAT and VEOHRC."]
+    },
+    "s1-attributes": {
+      title: "Your protected attributes",
+      body: "16 attributes are protected under Victorian and Commonwealth law. Click any ! next to an attribute to see what that protection covers and examples of unlawful discrimination.",
+      bullets: ["Protections apply at application, during the tenancy, and when leaving.",
+        "Protections also apply if you associate with someone who has a protected attribute."]
+    },
+    "s1-laws": {
+      title: "Laws that protect you",
+      body: "Victorian and Commonwealth laws both apply to rentals.",
+      bullets: ["Residential Tenancies Act 1997 (Vic) — VCAT compensation under s 210AA.",
+        "Equal Opportunity Act 2010 (Vic) — VEOHRC complaints.",
+        "Commonwealth: Age, Disability, Racial, and Sex Discrimination Acts."]
+    },
+    "s1-exceptions": {
+      title: "Limited exceptions",
+      body: "In a few narrow circumstances, discrimination may not be unlawful.",
+      bullets: ["Accommodation provided specifically for children.",
+        "Shared family accommodation (lodging in the owner's own home).",
+        "Student accommodation.",
+        "Positive discrimination — e.g. funded youth housing."]
+    },
+    "s1-examples-applying": {
+      title: "Unlawful discrimination when applying",
+      body: "Examples drawn directly from Form 3.",
+      bullets: ["Refusing your application because you have children (unless premises genuinely unsuitable).",
+        "Processing your application differently because of disability or race.",
+        "Offering different terms — more bond, a guarantor — because of your age.",
+        "Refusing accommodation because you have an assistance dog."]
+    },
+    "s1-examples-occupying": {
+      title: "Unlawful discrimination when occupying or leaving",
+      body: "Examples drawn directly from Form 3.",
+      bullets: ["Refusing to agree to assign your lease because of the new person's attributes.",
+        "Refusing reasonable alterations or modifications if you have a disability.",
+        "Extending or renewing on less favourable terms based on your protected attributes.",
+        "Issuing you with a notice to vacate based on your protected attributes."]
+    },
+    "s1-help": {
+      title: "Where to get help",
+      body: "Three main avenues depending on what you need.",
+      bullets: ["VCAT — compensation under s 210AA. vcat.vic.gov.au · 1300 018 228",
+        "Victoria Legal Aid — free advice. 1300 792 387",
+        "VEOHRC — complaints. humanrightscommission.vic.gov.au · 1300 292 153"]
+    },
+    "s2-form3a": {
+      title: "Why Form 3A matters",
+      body: "From 31 March 2026, the prescribed Form 3A is the only lawful rental application form in Victoria. It is an offence to use any other form.",
+      bullets: ["Agents can only ask for information that appears in Form 3A.",
+        "If you're asked for anything outside Form 3A, you are not required to provide it.",
+        "You can politely decline and point the agent to the prescribed form."]
+    },
+    "s2-part-a": {
+      title: "Part A — Important information",
+      body: "The first part of Form 3A. It contains information for both the rental provider and the applicant.",
+      bullets: ["Explains what the form is for and how it will be used.",
+        "Covers rules about rental auctions, fees, and condition reports.",
+        "Read it before you start filling in your details."]
+    },
+    "s2-part-b": {
+      title: "Part B — Statement of information for rental applicants",
+      body: "This is the Form 3 content reproduced inside Form 3A. It sets out your discrimination protections.",
+      bullets: ["Same content as Form 3 (Statement of Information).",
+        "Confirms that discrimination in renting is unlawful.",
+        "Lists the protected attributes and gives examples."]
+    },
+    "s2-part-c": {
+      title: "Part C — Mandatory disclosures checklist",
+      body: "Part C must be completed by the rental provider or agent before the form is given to you.",
+      bullets: ["Discloses important information about the property.",
+        "If Part C is missing or incomplete, ask the agent to complete it.",
+        "You're entitled to see it before you sign or submit."]
+    },
+    "s3-applicant1": {
+      title: "What Form 3A collects about you",
+      body: "Only these fields: full name, date of birth, current address, phone, email. Nothing more.",
+      bullets: ["Every applicant must provide these details.",
+        "You do not need to provide emergency contacts, pet details, or the age of any occupants."]
+    },
+    "s3-applicant2": {
+      title: "Additional applicants",
+      body: "If more than one person is applying, each applicant must provide the same details.",
+      bullets: ["Full name, date of birth, current address, phone, email.",
+        "All applicants must sign the form.",
+        "The application is assessed against all applicants together."]
+    },
+    "s4-employed": {
+      title: "What employment info Form 3A collects",
+      body: "Only: employer name, employer address, net weekly income, and start date. That's it.",
+      bullets: ["Net weekly income is the only financial figure collected.",
+        "You do not need to provide payslips or bank statements.",
+        "If you're asked for them, you can decline — they're not part of Form 3A."]
+    },
+    "s4-not-employed": {
+      title: "If you are not currently employed",
+      body: "Form 3A collects your most recent employer and the date that employment ended.",
+      bullets: ["You do not need to explain why employment ended.",
+        "You do not need to provide Centrelink statements or other income evidence."]
+    },
+    "s5-photo-id": {
+      title: "Photo ID under Form 3A",
+      body: "Form 3A requires identity information. A photo ID is the standard primary document.",
+      bullets: ["Driver's licence, Australian passport, foreign passport with Australian visa, or proof of age card.",
+        "Provide front and back where applicable.",
+        "The 100-point check framework is separate."]
+    },
+    "s5-secondary-id": {
+      title: "Secondary ID",
+      body: "Used alongside photo ID to confirm identity.",
+      bullets: ["Medicare card, birth certificate, citizenship certificate, health care card, concession card.",
+        "Not always required if you have strong primary ID.",
+        "Redact anything not needed."]
+    },
+    "s5-visa": {
+      title: "Visa / residency documents",
+      body: "If you are not an Australian citizen or permanent resident, you may be asked for visa information.",
+      bullets: ["Visa grant notice or VEVO check.",
+        "Foreign passport + Australian visa is acceptable primary ID.",
+        "Never share more than is asked."]
+    },
+    "s6-ref1": {
+      title: "Reference 1 — what Form 3A requires",
+      body: "Form 3A requires two general references. Name and contact details only.",
+      bullets: ["References are not verified or contacted automatically under Form 3A.",
+        "The agent may still follow up — let your referee know.",
+        "A referee can be a former landlord, employer, colleague, or someone who can vouch for you."]
+    },
+    "s6-ref2": {
+      title: "Reference 2 — what Form 3A requires",
+      body: "Same as Reference 1 — name and contact details only.",
+      bullets: ["Two references are required.",
+        "There's no requirement for one to be a rental reference."]
+    },
+    "s7-property": {
+      title: "Property details — for your own reference",
+      body: "This section isn't part of Form 3A. It's here so you can keep track of which property you're applying for.",
+      bullets: ["Keep the listing ID, advertised rent, and agent name in one place.",
+        "Advertised rent must be a fixed amount — price ranges and rent bidding are unlawful.",
+        "Use the notes field for anything else."]
+    },
+    "s8-consent": {
+      title: "Consent section on Form 3A",
+      body: "Form 3A includes a consent section that lets the rental provider verify the information you have given.",
+      bullets: ["Consent is limited to what's needed to assess your application.",
+        "You can ask what will be checked and how.",
+        "You can request access to information held about you."]
+    },
+    "s8-signature": {
+      title: "Signing the form",
+      body: "Every applicant must sign and date the form.",
+      bullets: ["If submitting electronically, an electronic signature is acceptable.",
+        "Make sure the date matches the day you submit.",
+        "Keep a copy of the signed form for your records."]
+    }
+  };
+
+  const DISCRIM = {
+    "s1-received": { type: "no", text: "Not providing Form 3 to you is a breach of s 29C — but it is not discrimination." },
+    "s1-what-is-discrimination": { type: "no", text: "Not understanding this is not discrimination. Reading it is for your benefit." },
+    "s1-unlawful": { type: "no", text: "Not knowing the law is not discrimination. It exists to protect you." },
+    "s1-attributes": { type: "no", text: "Not knowing your attributes is not discrimination. The ! buttons explain each one." },
+    "s1-laws": { type: "no", text: "Not knowing the laws is not discrimination. They apply regardless." },
+    "s1-exceptions": { type: "no", text: "Not knowing the exceptions is not discrimination." },
+    "s1-examples-applying": { type: "no", text: "Not reading the examples is not discrimination." },
+    "s1-examples-occupying": { type: "no", text: "Not reading the examples is not discrimination." },
+    "s1-help": { type: "no", text: "Not seeking help is not discrimination." },
+    "s2-form3a": { type: "no", text: "Not checking which form is used is not discrimination. But using a non-Form 3A form is unlawful." },
+    "s2-part-a": { type: "no", text: "Not reading Part A is not discrimination." },
+    "s2-part-b": { type: "no", text: "Not reading Part B is not discrimination." },
+    "s2-part-c": { type: "no", text: "Not checking Part C is not discrimination. Part C is the agent's responsibility." },
+    "s3-applicant1": { type: "no", text: "Refusing to provide your own details is not discrimination. But without them your application cannot be processed." },
+    "s3-applicant2": { type: "no", text: "Refusing to provide a second applicant's details is not discrimination." },
+    "s4-employed": { type: "no", text: "Refusing to provide employment details is not discrimination. Form 3A only collects net weekly income." },
+    "s4-not-employed": { type: "no", text: "Refusing to provide most recent employment details is not discrimination." },
+    "s5-photo-id": { type: "no", text: "Refusing to provide photo ID is not discrimination. But Form 3A requires identity verification." },
+    "s5-secondary-id": { type: "no", text: "Refusing to provide secondary ID is not discrimination." },
+    "s5-visa": { type: "no", text: "Refusing to provide visa details is not discrimination." },
+    "s6-ref1": { type: "no", text: "Refusing to provide a reference is not discrimination." },
+    "s6-ref2": { type: "no", text: "Refusing to provide a second reference is not discrimination." },
+    "s7-property": { type: "no", text: "This section is for your own reference. Not filling it in is not discrimination." },
+    "s8-consent": { type: "no", text: "Refusing to consent is not discrimination. But it may stop your application being processed." },
+    "s8-signature": { type: "no", text: "Refusing to sign is not discrimination. But an unsigned form cannot be processed." }
+  };
+
+  function injectInfo() {
+    $$(".item[data-info]").forEach(item => {
+      const key = item.dataset.info;
+      const info = INFO[key];
+      const discrim = DISCRIM[key];
+      if (!info) return;
+
+      const title = item.querySelector(".title");
+      if (title && !title.querySelector(".info-inline")) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "info-inline";
+        btn.setAttribute("aria-label", "More info: " + info.title);
+        btn.textContent = "!";
+        title.appendChild(btn);
+
+        if (discrim) {
+          const badge = document.createElement("span");
+          badge.className = "discrim-badge " + discrim.type;
+          badge.textContent = discrim.type === "no"
+            ? "Not discriminatory if refused"
+            : "Discriminatory if asked without written reason";
+          title.appendChild(badge);
+        }
+
+        const body = item.querySelector(".body");
+        const panel = document.createElement("div");
+        panel.className = "info-panel hidden";
+        panel.innerHTML = "<strong>" + info.title + "</strong>" +
+          (info.body ? "<div>" + info.body + "</div>" : "") +
+          (info.bullets ? "<ul>" + info.bullets.map(b => "<li>" + b + "</li>").join("") + "</ul>" : "");
+        if (body) body.appendChild(panel);
+
+        if (discrim) {
+          const dNote = document.createElement("div");
+          dNote.className = "discrim-note " + discrim.type;
+          dNote.innerHTML = "<strong>" + (discrim.type === "no" ? "Not discrimination" : "Discrimination risk") + "</strong>" + discrim.text;
+          body.appendChild(dNote);
+        }
+
+        btn.addEventListener("click", e => {
+          e.preventDefault();
+          const isHidden = panel.classList.contains("hidden");
+          item.querySelectorAll(".info-panel").forEach(p => p.classList.add("hidden"));
+          document.querySelectorAll(".info-inline").forEach(b => b.classList.remove("open"));
+          if (isHidden) {
+            panel.classList.remove("hidden");
+            btn.classList.add("open");
+          }
+        });
+      }
+    });
+  }
+
+  /* ----------------------------------------------------------
+     CHECKLIST — CANT-PROVIDE + ADD DETAILS
+     ---------------------------------------------------------- */
+  function injectCant() {
+    $$(".item").forEach(item => {
+      if (item.hasAttribute("data-no-cant")) return;
+      const body = item.querySelector(".body");
+      if (!body) return;
+      if (item.querySelector(".cant")) return;
+      const label = document.createElement("label");
+      label.className = "cant";
+      label.innerHTML = '<input type="checkbox" class="cant-toggle"> Can\'t provide';
+      body.appendChild(label);
+    });
+  }
+
+  function bindCant() {
+    $$(".cant-toggle").forEach(t => {
+      t.addEventListener("change", () => {
+        t.closest(".item").classList.toggle("cant-mark", t.checked);
+        if (t.checked) {
+          const cb = t.closest(".item").querySelector('input[type="checkbox"][data-key]');
+          if (cb) cb.checked = false;
+        }
+        save(); updateProgress();
+      });
+    });
+  }
+
+  function bindAddDetails() {
+    $$("[data-add-details]").forEach(btn => {
+      const key = btn.dataset.addDetails;
+      const item = btn.closest(".item");
+      const blockId = "details-" + key;
+      let block = $(blockId);
+      if (!block) {
+        block = document.createElement("div");
+        block.className = "details-block hidden";
+        block.id = blockId;
+        block.innerHTML = '<label for="' + blockId + '-ta">Additional details (optional)</label>' +
+          '<textarea id="' + blockId + '-ta" data-input="' + blockId + '" placeholder="Notes, extra context, or specifics…"></textarea>';
+        item.appendChild(block);
+      }
+      btn.addEventListener("click", () => {
+        block.classList.toggle("hidden");
+        if (!block.classList.contains("hidden")) {
+          block.querySelector("textarea").focus();
+          btn.textContent = "− Hide details";
+        } else {
+          btn.textContent = "+ Add details";
+        }
+      });
+    });
+  }
+
+  /* ----------------------------------------------------------
+     CHECKLIST — SECTION TOGGLE
+     ---------------------------------------------------------- */
+  $$("[data-toggle-section]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const items = document.querySelector('.items[data-section="' + btn.dataset.toggleSection + '"]');
+      if (!items) return;
+      const hidden = items.classList.toggle("hidden");
+      btn.textContent = hidden ? "Expand" : "Collapse";
+    });
+  });
+
+  /* ----------------------------------------------------------
+     PROGRESS
+     ---------------------------------------------------------- */
+  function updateProgress() {
+    const boxes = $$('input[type="checkbox"][data-key]');
+    const done = boxes.filter(b => b.checked).length;
+    $("count").textContent = done + " / " + boxes.length;
+    $("bar-fill").style.width = boxes.length ? (done / boxes.length * 100) + "%" : "0%";
+
+    $$(".items[data-section]").forEach(section => {
+      const id = section.dataset.section;
+      const sectionBoxes = section.querySelectorAll('input[type="checkbox"][data-key]');
+      const checked = Array.from(sectionBoxes).filter(b => b.checked).length;
+      const badge = document.querySelector('[data-badge="' + id + '"]');
+      if (!badge) return;
+      if (checked === 0) { badge.textContent = ""; badge.className = "badge"; }
+      else if (checked === sectionBoxes.length) { badge.textContent = "Done"; badge.className = "badge done"; }
+      else { badge.textContent = checked + "/" + sectionBoxes.length; badge.className = "badge partial"; }
+    });
+  }
+
+  /* ----------------------------------------------------------
+     SUMMARY
+     ---------------------------------------------------------- */
+  function renderSummary() {
+    const lines = [];
+    const get = k => {
+      const el = document.querySelector('[data-input="' + k + '"]');
+      return el && el.value ? el.value : "";
+    };
+    const line = (label, val) => { if (val) lines.push(label + ": " + val); };
+
+    lines.push("=== Applicant 1 ===");
+    line("Name", get("s3-a1-name"));
+    line("DOB", get("s3-a1-dob"));
+    line("Address", get("s3-a1-address"));
+    line("Phone", get("s3-a1-phone"));
+    line("Email", get("s3-a1-email"));
+
+    const a2 = ["s3-a2-name","s3-a2-dob","s3-a2-address","s3-a2-phone","s3-a2-email"].some(k => get(k));
+    if (a2) {
+      lines.push("", "=== Applicant 2 ===");
+      line("Name", get("s3-a2-name"));
+      line("DOB", get("s3-a2-dob"));
+      line("Address", get("s3-a2-address"));
+      line("Phone", get("s3-a2-phone"));
+      line("Email", get("s3-a2-email"));
+    }
+
+    lines.push("", "=== Employment ===");
+    line("Employer", get("s4-employer-name"));
+    line("Employer address", get("s4-employer-address"));
+    line("Net weekly income", get("s4-net-income"));
+    line("Start date", get("s4-start-date"));
+    line("Job title", get("s4-job-title"));
+    line("Previous employer", get("s4-prev-employer"));
+    line("Employment ended", get("s4-end-date"));
+
+    lines.push("", "=== Identity ===");
+    line("Photo ID type", get("s5-photo-id-type"));
+    line("Photo ID number", get("s5-photo-id-number"));
+    line("Secondary ID type", get("s5-secondary-id-type"));
+    line("Secondary ID number", get("s5-secondary-id-number"));
+    line("Visa type", get("s5-visa-type"));
+
+    lines.push("", "=== References ===");
+    line("Ref 1 name", get("s6-ref1-name"));
+    line("Ref 1 phone", get("s6-ref1-phone"));
+    line("Ref 2 name", get("s6-ref2-name"));
+    line("Ref 2 phone", get("s6-ref2-phone"));
+
+    lines.push("", "=== Property ===");
+    line("Address", get("s7-address"));
+    line("Listing ID", get("s7-listing-id"));
+    line("Advertised rent", get("s7-rent"));
+    line("Agency / agent", get("s7-agent"));
+
+    lines.push("", "=== Signature ===");
+    line("Date signed", get("s8-sign-date"));
+
+    const detailLines = [];
+    document.querySelectorAll(".details-block textarea").forEach(ta => {
+      if (ta.value && ta.value.trim()) {
+        detailLines.push("[" + ta.id.replace(/^details-/, "").replace(/-ta$/, "") + "] " + ta.value.trim());
+      }
+    });
+    if (detailLines.length) {
+      lines.push("", "=== Additional details ===");
+      detailLines.forEach(l => lines.push(l));
+    }
+
+    lines.push("", "=== Discrimination reminder ===");
+    lines.push("Refusing to provide your own personal information is not discrimination.");
+    lines.push("If an agent asks about a protected attribute without a written reason, that request may be unlawful.");
+    lines.push("Complaints: VEOHRC 1300 292 153 | VCAT compensation under s 210AA.");
+
+    $("summary-content").textContent = lines.join("\n");
+  }
+
+  /* ----------------------------------------------------------
+     SAVE / LOAD
+     ---------------------------------------------------------- */
+  function save() {
+    const data = { checkboxes: {}, inputs: {}, cants: {}, values: {} };
+    $$('input[type="checkbox"][data-key]').forEach(cb => { data.checkboxes[cb.dataset.key] = cb.checked; });
+    $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => {
+      data.inputs[inp.dataset.input] = inp.value;
+    });
+    $$(".cant-toggle").forEach((t, i) => { data.cants["cant-" + i] = t.checked; });
+    Object.keys(DEFAULTS).forEach(k => {
+      const el = $(k);
+      if (el) data.values[k] = el.value;
+    });
+    data.household = $("household").value;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+  }
+
+  function load() {
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) {}
+    if (data.checkboxes) {
+      $$('input[type="checkbox"][data-key]').forEach(cb => {
+        if (data.checkboxes[cb.dataset.key] !== undefined) cb.checked = data.checkboxes[cb.dataset.key];
+      });
+    }
+    if (data.inputs) {
+      $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => {
+        if (data.inputs[inp.dataset.input] !== undefined) inp.value = data.inputs[inp.dataset.input];
+      });
+    }
+    if (data.values) {
+      Object.keys(data.values).forEach(k => {
+        const el = $(k);
+        if (el) el.value = data.values[k];
+      });
+    }
+    if (data.household) $("household").value = data.household;
+    if (data.cants) {
+      $$(".cant-toggle").forEach((t, i) => {
+        if (data.cants["cant-" + i]) {
+          t.checked = true;
+          t.closest(".item").classList.add("cant-mark");
+        }
+      });
+    }
+    /* Update slider positions from number inputs */
+    sliderPairs.forEach(([k]) => {
+      const num = $(k), range = $(k + "-range");
+      if (num && range) range.value = num.value;
+    });
+    /* Open detail blocks with content */
+    document.querySelectorAll(".details-block textarea").forEach(ta => {
+      if (ta.value && ta.value.trim()) {
+        ta.closest(".details-block").classList.remove("hidden");
+        const key = ta.id.replace(/^details-/, "").replace(/-ta$/, "");
+        const btn = document.querySelector('[data-add-details="' + key + '"]');
+        if (btn) btn.textContent = "− Hide details";
+      }
+    });
+  }
+
+  /* ----------------------------------------------------------
+     BINDINGS
+     ---------------------------------------------------------- */
+  /* Checklist checkboxes */
+  $$('input[type="checkbox"][data-key]').forEach(cb => {
+    cb.addEventListener("change", () => { save(); updateProgress(); });
+  });
+  /* Checklist text inputs */
+  $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => {
+    inp.addEventListener("input", () => { save(); });
+    inp.addEventListener("change", () => { save(); });
+  });
+  /* Household */
+  $("household").addEventListener("change", () => { updateRentAssist(); save(); });
+
+  /* Use Centrelink total buttons */
+  $("btn-use-cl-total").addEventListener("click", () => {
+    const total = parseFloat($("r-total").textContent.replace(/[$,]/g, "")) || 0;
+    setFieldValue("gross-wk", total / 2);
+    updateRentAssist();
+    save();
+  });
+  $("btn-use-cl-net").addEventListener("click", () => {
+    const total = parseFloat($("r-total").textContent.replace(/[$,]/g, "")) || 0;
+    setFieldValue("aff-net", total / 2);
+    updateAffordability();
+    save();
+  });
+
+  /* Expand / collapse all */
+  $("btn-expand").addEventListener("click", () => {
+    $$(".items[data-section]").forEach(s => s.classList.remove("hidden"));
+    $$("[data-toggle-section]").forEach(b => b.textContent = "Collapse");
+  });
+  $("btn-collapse").addEventListener("click", () => {
+    $$(".items[data-section]").forEach(s => s.classList.add("hidden"));
+    $$("[data-toggle-section]").forEach(b => b.textContent = "Expand");
+  });
+
+  /* Reset checklist */
+  $("btn-reset-checklist").addEventListener("click", () => {
+    if (!confirm("Clear the application checklist?")) return;
+    $$('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
+    $$("input[data-input], select[data-input], textarea[data-input]").forEach(inp => inp.value = "");
+    $$(".cant-toggle").forEach(t => { t.checked = false; t.closest(".item").classList.remove("cant-mark"); });
+    $$(".details-block").forEach(b => b.classList.add("hidden"));
+    $$("[data-add-details]").forEach(b => b.textContent = "+ Add details");
+    $$(".info-panel").forEach(p => p.classList.add("hidden"));
+    $$(".info-inline").forEach(b => b.classList.remove("open"));
+    $$(".attr-explain").forEach(p => p.classList.add("hidden"));
+    $$(".attr.open").forEach(a => a.classList.remove("open"));
+    $("summary-box").classList.add("hidden");
+    save(); updateProgress();
+  });
+
+  /* Summary toggle */
+  $("btn-toggle-summary").addEventListener("click", () => {
+    const box = $("summary-box");
+    box.classList.toggle("hidden");
+    if (!box.classList.contains("hidden")) {
+      renderSummary();
+      $("btn-toggle-summary").textContent = "Hide";
+    } else {
+      $("btn-toggle-summary").textContent = "Show";
+    }
+  });
+
+  /* Print */
+  $("btn-print-checklist").addEventListener("click", () => window.print());
+
+  /* Export JSON */
+  $("btn-export-json").addEventListener("click", () => {
+    save();
+    const data = localStorage.getItem(STORAGE_KEY) || "{}";
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "rental-application-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  /* Resize chart */
+  window.addEventListener("resize", () => drawChart());
+
+  /* ----------------------------------------------------------
+     INIT
+     ---------------------------------------------------------- */
+  function init() {
+    buildAttributes();
+    injectInfo();
+    injectCant();
+    bindAddDetails();
+    bindCant();
+    sliderPairs.forEach(([k]) => bindPair(k));
+    load();
+    updateProgress();
+    updateIncome();
+    updateRentAssist();
+    updateAffordability();
+    /* Draw chart when chart tab is first opened */
+    document.querySelector('[data-tab="chart"]').addEventListener("click", () => {
+      setTimeout(drawChart, 30);
+    });
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
