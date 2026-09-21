@@ -1,0 +1,21 @@
+rentready-vic/
+├── index.html          Landing page
+├── app.html            Application
+├── signin.html         Sign in
+├── signup.html         Sign up
+├── admin.html          Admin sign in
+├── contact.html        Contact
+├── 404.html            Not found
+├── privacy.html        Privacy Policy
+├── terms.html          Terms of Service
+├── accessibility.html  Accessibility Statement
+├── disclaimer.html     Disclaimer
+├── shared.css          Shared stylesheet
+├── sw.js               Service worker (offline support)
+├── manifest.json       PWA manifest
+├── robots.txt          Robots
+├── sitemap.xml         Sitemap
+├── _redirects          Netlify redirects
+├── netlify.toml        Netlify config
+├── vercel.json         Vercel config
+└── README.md           This file
