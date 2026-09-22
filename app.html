@@ -1026,27 +1026,66 @@
     <div class="credit-modal-backdrop" data-close-credit-modal></div>
     <div class="credit-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="credit-modal-title">
       <button type="button" class="credit-modal-close" data-close-credit-modal aria-label="Close">×</button>
-      <span class="credit-modal-kicker">Working Credit estimator</span>
+      <span class="credit-modal-kicker">Working Credit · guide only</span>
       <h2 id="credit-modal-title">How might your Working Credit balance have built up?</h2>
-      <p class="credit-modal-intro">Services Australia calculates your actual balance when you report income. This estimator uses the dates and income pattern you provide to give a rough planning estimate only.</p>
+
+      <div class="credit-exact-balance">
+        <div>
+          <span>Best source: your actual Centrelink record</span>
+          <strong>Check your exact Working Credit balance in myGov first</strong>
+          <p>RentReady cannot see your Centrelink reporting history. Services Australia calculates your real Working Credit automatically when you report income, so its balance is the figure to rely on.</p>
+          <ol>
+            <li>Sign in to <b>myGov</b> and open <b>Centrelink</b>.</li>
+            <li>Open your payment details / <b>My payments</b> or the money-management area.</li>
+            <li>Look for your <b>Working Credit balance and history</b>.</li>
+            <li>If you find the exact balance, enter that number directly in RentReady instead of using this estimate.</li>
+          </ol>
+        </div>
+        <div class="credit-exact-links">
+          <a class="btn primary" href="https://my.gov.au/" target="_blank" rel="noopener">Open myGov ↗</a>
+          <a class="btn" href="https://www.servicesaustralia.gov.au/centrelink-online-account" target="_blank" rel="noopener">Centrelink online account help ↗</a>
+        </div>
+      </div>
+
+      <div class="credit-simple-explainer">
+        <span>In simple language</span>
+        <h3>Working Credit is like a buffer that can build while your income is low.</h3>
+        <p>If your total ordinary income is less than <b>$48 in a fortnight</b>, unused amounts can build into Working Credits. If you had no ordinary income for that fortnight, up to <b>48 credits</b> may build. If you had $20 of ordinary income, the simplified build would be about <b>28 credits</b>.</p>
+        <p>Later, when you work, each Working Credit can offset <b>$1 of employment income</b> before Centrelink applies the normal personal income test. That can delay or reduce the effect that new earnings have on your payment.</p>
+        <p>Balances are capped. The usual cap is <b>1,000 credits</b> for JobSeeker, Parenting Payment, Disability Support Pension and Carer Payment, and <b>3,500 credits</b> for Youth Allowance job seekers.</p>
+      </div>
+
+      <div class="credit-estimate-warning">
+        <b>This calculator is only a guide.</b>
+        <p>It cannot reproduce your Centrelink account. It does not know every fortnight of income you reported, investment or other ordinary income, corrections to past reports, gaps in payment, or other Centrelink adjustments. Use the estimate for planning only and use the balance shown by Services Australia for your actual position.</p>
+      </div>
 
       <div class="credit-official-rule">
         <b>Official rule in brief</b>
-        <p id="credit-official-copy">Working Credits can build when total income is below $48 per fortnight. Up to 48 credits can build each fortnight, subject to the payment-specific balance cap. Each credit can offset $1 of employment income before the payment income test is applied.</p>
-        <a href="https://www.servicesaustralia.gov.au/working-credit" target="_blank" rel="noopener">Services Australia Working Credit ↗</a>
+        <p id="credit-official-copy">Working Credit can build when total ordinary income is below $48 per fortnight. The unused amount can add to your balance, up to 48 credits for that fortnight and subject to the payment-specific cap. When you later have employment income, each credit can offset $1 of that employment income before the personal income test is applied.</p>
+        <a href="https://www.servicesaustralia.gov.au/working-credit" target="_blank" rel="noopener">Services Australia — Working Credit ↗</a>
+      </div>
+
+      <div class="credit-estimator-heading">
+        <span>Optional RentReady estimate</span>
+        <strong>If you do not know your balance, estimate what may have accumulated</strong>
+        <p>The payment start date matters because the estimator only allows credits to build from the date you say this payment started.</p>
       </div>
 
       <div class="credit-estimator-fields">
-        <label>When did this payment start?
+        <label>When did this current payment start?
           <input type="date" id="credit-payment-start">
+          <small>RentReady counts the full 14-day periods from this date to estimate the maximum number of fortnights in which credits could have built.</small>
         </label>
 
-        <label>Have you reported employment income since the payment started?
+        <label>Have you reported employment income since this payment started?
           <select id="credit-ever-income">
+            <option value="">Choose an answer</option>
             <option value="no">No — I have not reported employment income</option>
             <option value="yes">Yes — I have reported employment income</option>
             <option value="unsure">I am not sure</option>
           </select>
+          <small>If you are unsure, RentReady can only show an upper estimate.</small>
         </label>
 
         <div id="credit-income-history-fields" class="credit-income-history-fields" hidden>
@@ -1055,35 +1094,41 @@
           </label>
           <label>Typical gross employment income since then <span>per fortnight</span>
             <div class="money-input"><span>$</span><input type="number" id="credit-typical-income" min="0" step="10" value="0"></div>
+            <small>This is a simplifying assumption. Real Working Credit use follows the income reported in each individual fortnight.</small>
           </label>
         </div>
 
-        <button type="button" class="btn primary" id="estimate-working-credit">Estimate my Working Credit</button>
+        <button type="button" class="btn primary" id="estimate-working-credit">Estimate as a guide</button>
       </div>
 
       <div class="credit-estimate-results" id="credit-estimate-results" hidden>
         <div class="credit-estimate-hero">
-          <span>Estimated Working Credit balance</span>
+          <span>RentReady guide estimate — not your official balance</span>
           <strong id="credit-estimated-balance">—</strong>
           <p id="credit-estimated-confidence">—</p>
         </div>
         <div class="credit-estimate-grid">
           <div><span>Payment-specific cap</span><strong id="credit-estimate-cap">—</strong></div>
-          <div><span>Estimated credits accumulated</span><strong id="credit-estimate-built">—</strong></div>
+          <div><span>Full fortnights since payment start</span><strong id="credit-estimate-periods">—</strong></div>
+          <div><span>Estimated credits built / remaining</span><strong id="credit-estimate-built">—</strong></div>
           <div><span>Current work income</span><strong id="credit-estimate-work">—</strong></div>
-          <div><span>Income counted this fortnight</span><strong id="credit-estimate-assessable">—</strong></div>
+          <div><span>Income counted after estimated credits</span><strong id="credit-estimate-assessable">—</strong></div>
         </div>
 
         <div class="credit-until-box">
-          <span>How long could the credits affect your payment?</span>
+          <span>At your current work income, how long might this estimated buffer matter?</span>
           <strong id="credit-estimate-until">—</strong>
           <p id="credit-estimate-until-copy">—</p>
         </div>
 
-        <button type="button" class="btn" id="use-credit-estimate">Use this estimate in RentReady</button>
+        <div class="credit-result-reminder">
+          <b>Before using this number:</b> compare it with the Working Credit balance shown in your Centrelink online account. If you can see an exact balance there, use the Centrelink number.
+        </div>
+
+        <button type="button" class="btn" id="use-credit-estimate">Use this guide estimate in RentReady</button>
       </div>
 
-      <p class="credit-modal-disclaimer">Your real balance can differ because Working Credit accrual uses total ordinary income, including some non-employment income, and because actual reported income can vary from fortnight to fortnight. Check your Centrelink online account linked to myGov for the official balance and history.</p>
+      <p class="credit-modal-disclaimer">RentReady’s Working Credit calculator is an estimate only. It is not a Centrelink calculation, entitlement decision or account record. Your actual balance can differ because Working Credit uses the income and circumstances recorded by Services Australia for each reporting period.</p>
     </div>
   </div>
 
