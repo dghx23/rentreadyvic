@@ -187,8 +187,10 @@
   function setStep(name) {
     document.querySelectorAll(".step-panel").forEach(p => p.classList.toggle("active", p.id === "step-" + name));
     document.querySelectorAll(".step-tab").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
+    document.querySelectorAll(".process-step").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (name === "affordability") renderAffordability();
+    if (name === "application") renderApplicationReview();
     if (name === "optimise") initialiseOptimiser();
   }
 
@@ -315,6 +317,7 @@
     renderBondChecks(sc, prop);
     renderPropertySummary(sc, prop);
     renderAffordability(sc, prop);
+    renderApplicationReview(sc, prop);
   }
 
   function renderIncome(sc) {
@@ -499,6 +502,150 @@
     $("shortfall-explainer").innerHTML = "<ul>" + items.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>";
   }
 
+  function renderApplicationReview(sc = null, prop = null) {
+    if (!$("app-review-payment")) return;
+
+    prop = prop || activeProperty();
+    sc = sc || scenario(workIncomeFN, prop ? Number(prop.rent || 0) : 0);
+
+    const payment = selectedPayment();
+    const rate = selectedRate();
+    const rent = prop ? Number(prop.rent || 0) : 0;
+    const rentShare = sc.householdWeek > 0 && rent > 0 ? rent / sc.householdWeek : null;
+    const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
+    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const generalGap = prop ? rent - generalLimit : null;
+    const bondGap = prop ? rent - bondLimit : null;
+    const cap = prop ? bondCapForBeds(prop.beds) : 0;
+    const bondAmountGap = prop ? Math.max(0, Number(prop.bond || 0) - cap) : 0;
+
+    $("app-review-payment").textContent = payment ? (payment.shortName || payment.name) : "Manual payment";
+    $("app-review-circumstance").textContent = rate ? rate.label : "Manual amount";
+    $("app-review-income").textContent = money(sc.householdWeek) + "/wk";
+    $("app-review-property").textContent = prop ? prop.address : "No property selected";
+    $("app-review-rent").textContent = prop ? money(rent) + "/wk" : "—";
+    $("app-review-rent-share").textContent = rentShare == null ? "—" : pct(rentShare);
+
+    const evidence = [];
+    if (payment) {
+      evidence.push({
+        state:"ok",
+        text:"A current Centrelink payment statement or letter can be used as one financial-evidence document."
+      });
+    }
+    if (workIncomeFN > 0) {
+      evidence.push({
+        state:"ok",
+        text:"A current or recent payslip can be useful as the second financial-evidence document because work income has been entered."
+      });
+    } else {
+      evidence.push({
+        state:"ok",
+        text:"If a second financial document is useful, consider a permitted bank statement with daily transaction details removed, rather than oversharing transaction history."
+      });
+    }
+    evidence.push({
+      state:"ok",
+      text:"Choose no more than two identity documents from the prescribed list; more is not automatically a stronger application."
+    });
+    $("app-evidence-pack").innerHTML = reviewList(evidence);
+
+    const shortfalls = [];
+    if (!prop) {
+      shortfalls.push({state:"warn",text:"No property is selected yet, so RentReady cannot assess property-specific affordability or bond-loan shortfalls."});
+    } else {
+      if (generalGap > 0) {
+        shortfalls.push({state:"warn",text:"The selected rent is about " + money(generalGap) + "/wk above the general " + Math.round(cfg.generalAffordabilityPct*100) + "% planning benchmark."});
+      } else {
+        shortfalls.push({state:"ok",text:"The selected rent is within the general planning benchmark at the projected income."});
+      }
+
+      if (bondGap >= 0) {
+        shortfalls.push({state:"warn",text:"The selected rent is about " + money(bondGap) + "/wk above the current RentAssist rent-share threshold used by this tool."});
+      } else {
+        shortfalls.push({state:"ok",text:"The selected rent is within the RentAssist rent-share threshold used by this tool."});
+      }
+
+      if (bondAmountGap > 0) {
+        shortfalls.push({state:"warn",text:"The entered bond is " + money(bondAmountGap) + " above the published bedroom-based loan cap used by this prototype."});
+      }
+    }
+
+    const incomeLimit = householdIncomeLimit();
+    if (sc.bondIncomeWeek > incomeLimit) {
+      shortfalls.push({state:"warn",text:"Estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the configured RentAssist income limit for the selected household type."});
+    }
+    if (Number($("assets").value || 0) > cfg.bondAssetLimit) {
+      shortfalls.push({state:"warn",text:"Entered assets are above the configured RentAssist asset limit."});
+    }
+    if (!$("permanent-resident").checked) {
+      shortfalls.push({state:"warn",text:"The citizenship/permanent-residency requirement is not marked as met."});
+    }
+    if ($("owns-property").checked) {
+      shortfalls.push({state:"warn",text:"Residential property ownership is marked, which conflicts with the configured RentAssist eligibility test."});
+    }
+    $("app-shortfalls").innerHTML = reviewList(shortfalls.length ? shortfalls : [{state:"ok",text:"No immediate application shortfall is identified from the information entered so far."}]);
+
+    const strategies = [];
+    if (!prop) {
+      strategies.push({state:"warn",text:"Add the property first so the review can calculate rent share, bond amount and the relevant target range."});
+    } else {
+      const target = Math.min(generalLimit || Infinity, bondLimit || Infinity);
+      if ((generalGap > 0 || bondGap >= 0) && Number.isFinite(target)) {
+        strategies.push({state:"ok",text:"A target rent around " + money(Math.max(0,target),0) + "/wk or below improves the position against the tighter current rent threshold."});
+      }
+      if (generalGap > 0 || bondGap >= 0) {
+        strategies.push({state:"ok",text:"Use the optimisation sliders to test whether additional work income improves the rent position after any payment reduction is taken into account."});
+      }
+      if (bondAmountGap > 0) {
+        strategies.push({state:"ok",text:"Compare properties with a lower bond or check the final eligible loan amount before relying on the bond loan to cover the full bond."});
+      }
+    }
+    if (payment) {
+      strategies.push({state:"ok",text:"Use the Centrelink statement or letter as permitted evidence of income rather than volunteering unrelated personal information."});
+    }
+    strategies.push({state:"ok",text:"Keep the application focused on the prescribed form: strong evidence and complete permitted fields are more useful than supplying extra private information."});
+    $("app-strategies").innerHTML = reviewList(strategies);
+
+    renderApplicationIssues();
+  }
+
+  function reviewList(items) {
+    return '<div class="review-list">' + items.map(item =>
+      '<div><span class="review-dot ' + esc(item.state || "ok") + '">' +
+      (item.state === "warn" ? "!" : item.state === "bad" ? "×" : "✓") +
+      '</span><p>' + esc(item.text) + '</p></div>'
+    ).join("") + '</div>';
+  }
+
+  function renderApplicationIssues() {
+    if (!$("app-issue-results")) return;
+    const checked = [...document.querySelectorAll("[data-app-issue]:checked")].map(x => x.dataset.appIssue);
+    const messages = {
+      extra_questions: "Extra application questions may conflict with the prescribed-form requirement. Ask the agent what part of the prescribed form authorises the question.",
+      bond_history: "Questions about previous bond history or bond claims are not part of the permitted application information described in the Victorian guidance.",
+      prior_dispute: "Questions about previous disputes or legal action with a rental provider are not permitted application questions.",
+      bank_transactions: "Detailed daily bank transactions are not required financial evidence. If a bank statement is used, private transaction details can be removed.",
+      too_many_financial: "The prescribed application limits requested financial evidence to no more than two documents.",
+      too_many_id: "The prescribed application limits requested identity evidence to no more than two documents.",
+      protected_no_reason: "A protected-characteristic question without a written reason is a red flag. Ask for the reason in writing and keep a copy.",
+      different_treatment: "Different or worse treatment connected with a protected characteristic may raise a discrimination concern. Keep evidence and consider VEOHRC guidance; this tool does not decide whether unlawful discrimination occurred.",
+      database_undisclosed: "If a tenancy database is used, the applicant should be told which database is being checked."
+    };
+
+    if (!checked.length) {
+      $("app-issue-results").innerHTML = '<div class="notice info"><b>No red flags selected.</b> Tick only things that actually happened in the application process. RentReady will explain why each item matters.</div>';
+      return;
+    }
+
+    $("app-issue-results").innerHTML =
+      '<div class="review-list">' +
+      checked.map(key =>
+        '<div><span class="review-dot warn">!</span><p>' + esc(messages[key] || "Review this request against the prescribed application rules.") + '</p></div>'
+      ).join("") +
+      '</div><div class="notice info"><b>Strategy:</b> keep screenshots, emails and the listing; ask the agent to explain the request in writing; and use the official complaint pathway if the issue is not resolved.</div>';
+  }
+
   function setScore(kind, pass, ratio, copy, gap) {
     const prefix = kind === "general" ? "general-afford" : "bond-rent";
     $(prefix + "-status").textContent = pass == null ? "Waiting for a property" : pass ? "Within range" : "Shortfall";
@@ -649,6 +796,10 @@
         persistProperties(); renderShortlist(); recalcAll();
       }
     });
+
+    document.querySelectorAll("[data-app-issue]").forEach(input =>
+      input.addEventListener("change", renderApplicationIssues)
+    );
 
     $("optimise-work").addEventListener("input", renderOptimiser);
     $("optimise-rent").addEventListener("input", renderOptimiser);
