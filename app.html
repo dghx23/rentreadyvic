@@ -239,6 +239,15 @@
         <div class="target-rent-summary" id="target-rent-summary">
           Enter a target weekly rent to see the headroom or shortfall under both tests.
         </div>
+
+        <div class="target-property-alternative">
+          <div>
+            <span>Already looking at a real property?</span>
+            <strong>Skip the target rent and import the listing instead.</strong>
+            <p>RentReady will try to extract the address, weekly rent, bond, bedrooms and availability, then bring you back to Step 2 to confirm the details.</p>
+          </div>
+          <a class="btn primary" href="property-import.html">Import a property URL →</a>
+        </div>
       </section>
     </div>
 
@@ -378,7 +387,7 @@
 
     <div class="grid two property-grid">
       <div class="card">
-        <div class="card-head"><h3>Paste the rental listing</h3></div>
+        <div class="card-head"><h3>Paste the rental listing</h3><a class="source-link" href="property-import.html">Import from URL ↗</a></div>
         <div class="card-body fields">
           <textarea id="listing-text" rows="9" placeholder="Paste the full rental advertisement here…"></textarea>
           <button class="btn primary" id="parse-listing">Extract property details</button>
