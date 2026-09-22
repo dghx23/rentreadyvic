@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How work affects your payment — RentReady VIC</title>
+<style>
+:root{--brand:#4f46e5;--brand2:#7c3aed;--bg:#f4f6fa;--surface:#fff;--ink:#0f172a;--ink2:#334155;--muted:#64748b;--line:#e2e8f0;--soft:#eef2ff;--ok:#15803d;--warn:#b45309;--warnsoft:#fef3c7;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55}.shell{width:min(900px,calc(100% - 28px));margin:auto}
+header{background:#111827;color:#fff;padding:15px 0}.head{display:flex;align-items:center;gap:10px}.mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-weight:900}.head div:last-child{display:grid;line-height:1.08}.head small{color:#cbd5e1;font-size:10px;margin-top:3px}
+main{padding:28px 0 44px}.eyebrow{display:inline-flex;padding:5px 9px;border-radius:999px;background:var(--soft);border:1px solid #c7d2fe;color:var(--brand);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
+h1{font-size:30px;line-height:1.08;letter-spacing:-.035em;margin:10px 0 8px}p{color:var(--ink2)}
+.snapshot{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.metric span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;font-weight:850}.metric strong{display:block;font-size:16px;margin-top:3px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;margin-top:12px;overflow:hidden}.card-head{padding:12px 14px;border-bottom:1px solid var(--line)}.card-head h2{font-size:16px;margin:0}.body{padding:14px}
+.rule-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.rule{padding:10px;border:1px solid var(--line);border-radius:9px;background:#f8fafc}.rule span{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase}.rule strong{font-size:14px;display:block;margin-top:3px}
+.chart-card{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}svg{width:100%;height:auto;display:block}.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10px;color:var(--muted);margin-top:6px}.legend span{display:flex;align-items:center;gap:5px}.line{width:18px;height:2px;display:inline-block}.pay{background:var(--brand)}.total{background:var(--ok)}.dot{width:7px;height:7px;border-radius:50%;background:var(--warn);display:inline-block}
+.notice{margin-top:12px;padding:11px 13px;border-radius:9px;background:var(--warnsoft);color:#78350f;border-left:4px solid var(--warn);font-size:11px}
+.steps{display:grid;gap:9px}.step{display:grid;grid-template-columns:28px 1fr;gap:9px}.step span{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:850;font-size:10px}.step b{font-size:12px}.step p{font-size:11px;margin:2px 0 0;color:var(--muted)}
+footer{border-top:1px solid var(--line);background:#fff;padding:20px 0;color:var(--muted);font-size:10px}a{color:var(--brand);font-weight:750;text-decoration:none}
+@media(max-width:700px){.snapshot,.rule-grid{grid-template-columns:1fr 1fr}}@media(max-width:480px){.snapshot,.rule-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="shell head"><span class="mark">R</span><div><b>RentReady VIC</b><small>How work affects your payment</small></div></div></header>
+<main class="shell">
+<span class="eyebrow">Detailed income-test explainer</span>
+<h1 id="title">How employment income can change your payment</h1>
+<p id="lead">This page explains the work-income rule currently being used by RentReady. It is a planning model, not a Services Australia determination.</p>
+
+<div class="snapshot">
+  <div class="metric"><span>Payment</span><strong id="payment">—</strong></div>
+  <div class="metric"><span>Circumstance</span><strong id="circumstance">—</strong></div>
+  <div class="metric"><span>Current work income</span><strong id="work">$0</strong></div>
+  <div class="metric"><span>Starting payment</span><strong id="maximum">$0</strong></div>
+</div>
+
+<section class="card">
+  <div class="card-head"><h2>The rule being modelled</h2></div>
+  <div class="body">
+    <div class="rule-grid">
+      <div class="rule"><span>Income-free area</span><strong id="free">—</strong></div>
+      <div class="rule"><span>First taper</span><strong id="taper1">—</strong></div>
+      <div class="rule"><span>Second threshold / taper</span><strong id="taper2">—</strong></div>
+    </div>
+    <div id="rule-copy" class="notice"></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>Break-even / payment-cutoff view</h2></div>
+  <div class="body">
+    <div class="chart-card">
+      <svg id="chart" viewBox="0 0 760 300" role="img" aria-label="Chart of employment income, remaining payment and combined income"></svg>
+      <div class="legend"><span><i class="line pay"></i>Remaining payment</span><span><i class="line total"></i>Work + payment</span><span><i class="dot"></i>Your current work income</span></div>
+    </div>
+    <p style="font-size:11px;color:var(--muted)">“Payment cutoff” here means the point where the modelled payment reaches $0 from the personal employment-income test. Other tests can stop or reduce a payment earlier or later.</p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head"><h2>What this chart does — and does not — include</h2></div>
+  <div class="body steps">
+    <div class="step"><span>1</span><div><b>Starts with the selected rate</b><p>The calculation begins from the payment amount passed from RentReady for your selected circumstance.</p></div></div>
+    <div class="step"><span>2</span><div><b>Applies the personal employment-income rule</b><p>Where a free area and taper are configured, RentReady applies those rules to assessable work income.</p></div></div>
+    <div class="step"><span>3</span><div><b>Allows for the work-income concession supplied by the main tool</b><p>Working Credit, Income Bank or Work Bonus can change how much of your employment income is assessed.</p></div></div>
+    <div class="step"><span>4</span><div><b>Does not replace other means tests</b><p>Partner income, parental income, assets, deeming, care rules, study rules, farm-business tests and residence requirements can change the actual entitlement.</p></div></div>
+  </div>
+</section>
+
+<div class="notice"><b>Use the actual-payment override when needed.</b> If Services Australia has already assessed a partner-income test, parental means test, assets test, deeming, or another circumstance that this chart does not capture, enter the amount you actually receive in the main RentReady calculator.</div>
+</main>
+<footer><div class="shell">RentReady VIC · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div></footer>
+
+<script>
+const q=new URLSearchParams(location.search);
+const n=k=>Number(q.get(k)||0);
+const money=(v,d=2)=>new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(v||0));
+const periods={week:.5,fortnight:1,month:26/12,year:26};
+const period=q.get("period")||"fortnight", factor=periods[period]||1;
+const max=n("max"), work=n("work"), credit=n("credit"), free=n("freeArea"), second=q.has("secondThreshold")?n("secondThreshold"):null;
+const t1=q.has("taper1")?n("taper1"):null,t2=q.has("taper2")?n("taper2"):null,single=q.has("singleTaper")?n("singleTaper"):null;
+document.getElementById("payment").textContent=q.get("payment")||"Payment";
+document.getElementById("circumstance").textContent=q.get("circumstance")||"—";
+document.getElementById("work").textContent=money(work*factor)+" / "+period;
+document.getElementById("maximum").textContent=money(max*factor)+" / "+period;
+document.getElementById("free").textContent=q.has("freeArea")?money(free*factor)+" / "+period:"Not modelled";
+document.getElementById("taper1").textContent=single!=null?Math.round(single*100)+"¢ per $1":t1!=null?Math.round(t1*100)+"¢ per $1":"Not modelled";
+document.getElementById("taper2").textContent=second!=null&&t2!=null?money(second*factor)+" then "+Math.round(t2*100)+"¢ per $1":"Not applicable / not modelled";
+
+function paymentAt(x){
+  const assess=Math.max(0,x-credit);
+  let red=0;
+  if(single!=null) red=Math.max(0,assess-free)*single;
+  else if(t1!=null&&t2!=null&&second!=null){
+    red=Math.max(0,Math.min(assess,second)-free)*t1+Math.max(0,assess-second)*t2;
+  }
+  return Math.max(0,max-red);
+}
+let cutoff=null;
+if((single!=null)||(t1!=null&&t2!=null&&second!=null)){
+ for(let x=0;x<=12000;x+=5){if(paymentAt(x)<=.01){cutoff=x;break}}
+}
+document.getElementById("rule-copy").textContent=(single!=null)
+ ? "After the income-free area, the model reduces the payment by "+Math.round(single*100)+" cents for each additional $1 of assessable employment income."
+ : (t1!=null&&t2!=null&&second!=null)
+   ? "After the income-free area, the model uses a "+Math.round(t1*100)+" cent taper until "+money(second)+" per fortnight, then a "+Math.round(t2*100)+" cent taper above that point."
+   : "A simple personal employment-income taper was not supplied for this circumstance. The main RentReady tool should use the actual-payment override rather than inventing a rule.";
+
+function draw(){
+ const svg=document.getElementById("chart"),W=760,H=300,L=60,R=18,T=18,B=42,pw=W-L-R,ph=H-T-B;
+ const maxX=Math.max(900,work*1.35,cutoff?cutoff*1.12:3200);
+ const pts=[];for(let i=0;i<=28;i++){const x=maxX*i/28,p=paymentAt(x);pts.push({x,p,total:x+p})}
+ const maxY=Math.max(max,...pts.map(d=>d.total),1)*1.08;
+ const sx=x=>L+(x/maxX)*pw,sy=y=>T+ph-(y/maxY)*ph;
+ const path=k=>pts.map((d,i)=>(i?"L":"M")+sx(d.x).toFixed(1)+" "+sy(d[k]).toFixed(1)).join(" ");
+ let m='<rect x="0" y="0" width="'+W+'" height="'+H+'" rx="10" fill="white"/>';
+ [0,.25,.5,.75,1].forEach(t=>{const y=sy(maxY*t);m+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="#e2e8f0"/><text x="'+(L-8)+'" y="'+(y+3)+'" text-anchor="end" font-size="10" fill="#64748b">'+money(maxY*t*factor,0)+'</text>'});
+ [0,.25,.5,.75,1].forEach(t=>{const x=L+pw*t;m+='<text x="'+x+'" y="'+(H-14)+'" text-anchor="middle" font-size="10" fill="#64748b">'+money(maxX*t*factor,0)+'</text>'});
+ m+='<path d="'+path("p")+'" fill="none" stroke="#4f46e5" stroke-width="3"/><path d="'+path("total")+'" fill="none" stroke="#15803d" stroke-width="3"/>';
+ const cx=sx(Math.min(work,maxX));m+='<line x1="'+cx+'" y1="'+T+'" x2="'+cx+'" y2="'+(T+ph)+'" stroke="#b45309" stroke-dasharray="4 4"/><circle cx="'+cx+'" cy="'+sy(paymentAt(work))+'" r="4" fill="#b45309"/>';
+ if(cutoff!=null&&cutoff<=maxX){const x=sx(cutoff);m+='<line x1="'+x+'" y1="'+T+'" x2="'+x+'" y2="'+(T+ph)+'" stroke="#94a3b8" stroke-dasharray="2 4"/><text x="'+Math.min(x+6,W-135)+'" y="'+(T+12)+'" font-size="10" fill="#64748b">modelled payment cutoff</text>'}
+ m+='<text x="'+(L+pw/2)+'" y="'+(H-2)+'" text-anchor="middle" font-size="10" fill="#64748b">gross work income per '+period+'</text>';
+ svg.innerHTML=m;
+}
+draw();
+</script>
+</body>
+</html>
