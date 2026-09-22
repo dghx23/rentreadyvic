@@ -9,8 +9,12 @@ module.exports = async function handler(req, res) {
       if (!r.ok) throw new Error("Upstream returned " + r.status);
       const payload = await r.json();
       const rr = payload.rentready || null;
+      if (!rr || !Array.isArray(rr.primary_payments)) {
+        throw new Error("Social Security AU dataset is missing the RentReady rule pack");
+      }
       return res.status(200).json({
         ok: true,
+        source: "social-security-au",
         jurisdiction: "AU",
         programmeCount: Array.isArray(payload.programmes) ? payload.programmes.length : 0,
         paymentCount: rr && Array.isArray(rr.primary_payments) ? rr.primary_payments.length : 0,
@@ -25,6 +29,9 @@ module.exports = async function handler(req, res) {
     const payload = await r.json();
 
     const rr = payload.rentready || null;
+    if (!rr || !Array.isArray(rr.primary_payments)) {
+      throw new Error("Social Security AU dataset is missing the RentReady rule pack");
+    }
 
     const normaliseRates = rates => (rates || []).map(r => ({
       label: r.label,
@@ -46,7 +53,6 @@ module.exports = async function handler(req, res) {
     let otherTests = {};
     let rentAssistance = null;
 
-    if (rr && Array.isArray(rr.primary_payments)) {
       payments = rr.primary_payments.map(p => ({
         slug: p.slug,
         name: p.name,
@@ -75,7 +81,7 @@ module.exports = async function handler(req, res) {
         effectiveFrom: ra.effective_from || null,
         effectiveTo: ra.effective_to || null,
         edition: rr.version || null,
-        taper: Number(ra.taper || 0.75),
+        taper: ra.taper == null ? null : Number(ra.taper),
         bands: (ra.bands || []).map(b => ({
           code: b.code,
           label: b.label,
@@ -85,55 +91,11 @@ module.exports = async function handler(req, res) {
           maximum: Number(b.maximum || 0)
         }))
       };
-    } else {
-      // Backward-compatible fallback for an older backend deployment.
-      const allowed = new Set([
-        "jobseeker",
-        "disability-support-pension",
-        "parenting-payment",
-        "carer-payment",
-        "youth-allowance",
-        "austudy",
-        "abstudy",
-        "age-pension",
-        "special-benefit",
-        "farm-household-allowance"
-      ]);
-      payments = (payload.programmes || [])
-        .filter(p => allowed.has(p.slug))
-        .map(p => ({
-          slug: p.slug,
-          name: p.name,
-          shortName: p.short_name || p.name,
-          category: "income_support",
-          administrator: p.administrator || "Services Australia",
-          rentAssistanceEligible: true,
-          workConcession: null,
-          scenarioPrompts: [],
-          incomeTest: null,
-          rates: normaliseRates(p.rates)
-        }));
 
-      const rentMethod = (payload.methodology || []).find(m => m.code === "rent_assistance");
-      const rentParams = rentMethod && rentMethod.params ? rentMethod.params : {};
-      rentAssistance = {
-        effectiveFrom: rentParams.effective_from || null,
-        effectiveTo: rentParams.effective_to || null,
-        edition: rentParams.edition || null,
-        taper: Number(rentParams.taper || 0.75),
-        bands: (rentParams.bands || []).map(b => ({
-          code: b.code,
-          label: b.label,
-          table: b.table,
-          threshold: Number(b.threshold || 0),
-          ceiling: Number(b.ceiling || 0),
-          maximum: Number(b.maximum || 0)
-        }))
-      };
-    }
 
     return res.status(200).json({
       ok: true,
+      source: "social-security-au",
       jurisdiction: "AU",
       generatedAt: new Date().toISOString(),
       payments,
