@@ -67,6 +67,10 @@ footer{border-top:1px solid var(--line);background:#fff;padding:20px 0;color:var
   </div>
 </section>
 
+<section class="card">
+  <div class="card-head"><h2>Other circumstances to check</h2></div>
+  <div class="body"><div id="other-checks" class="steps"></div></div>
+</section>
 <div class="notice"><b>Use the actual-payment override when needed.</b> If Services Australia has already assessed a partner-income test, parental means test, assets test, deeming, or another circumstance that this chart does not capture, enter the amount you actually receive in the main RentReady calculator.</div>
 </main>
 <footer><div class="shell">RentReady VIC · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div></footer>
@@ -79,6 +83,8 @@ const periods={week:.5,fortnight:1,month:26/12,year:26};
 const period=q.get("period")||"fortnight", factor=periods[period]||1;
 const max=n("max"), work=n("work"), credit=n("credit"), free=n("freeArea"), second=q.has("secondThreshold")?n("secondThreshold"):null;
 const t1=q.has("taper1")?n("taper1"):null,t2=q.has("taper2")?n("taper2"):null,single=q.has("singleTaper")?n("singleTaper"):null;
+const concession=q.get("concession")||"";
+const checks=(q.get("checks")||"").split(" | ").filter(Boolean);
 document.getElementById("payment").textContent=q.get("payment")||"Payment";
 document.getElementById("circumstance").textContent=q.get("circumstance")||"—";
 document.getElementById("work").textContent=money(work*factor)+" / "+period;
@@ -87,8 +93,18 @@ document.getElementById("free").textContent=q.has("freeArea")?money(free*factor)
 document.getElementById("taper1").textContent=single!=null?Math.round(single*100)+"¢ per $1":t1!=null?Math.round(t1*100)+"¢ per $1":"Not modelled";
 document.getElementById("taper2").textContent=second!=null&&t2!=null?money(second*factor)+" then "+Math.round(t2*100)+"¢ per $1":"Not applicable / not modelled";
 
+function assessableIncome(x){
+  let assess=Math.max(0,x);
+  if(concession==="work_bonus"){
+    assess=Math.max(0,assess-300);
+    assess=Math.max(0,assess-Math.min(credit,assess));
+  }else if(concession==="working_credit"||concession==="income_bank"||concession==="working_credit_or_work_bonus_if_age_eligible"){
+    assess=Math.max(0,assess-Math.min(credit,assess));
+  }
+  return assess;
+}
 function paymentAt(x){
-  const assess=Math.max(0,x-credit);
+  const assess=assessableIncome(x);
   let red=0;
   if(single!=null) red=Math.max(0,assess-free)*single;
   else if(t1!=null&&t2!=null&&second!=null){
@@ -100,11 +116,16 @@ let cutoff=null;
 if((single!=null)||(t1!=null&&t2!=null&&second!=null)){
  for(let x=0;x<=12000;x+=5){if(paymentAt(x)<=.01){cutoff=x;break}}
 }
-document.getElementById("rule-copy").textContent=(single!=null)
+let concessionText="";
+if(concession==="working_credit") concessionText=" Working Credit is applied first using the balance entered in RentReady.";
+if(concession==="income_bank") concessionText=" Income Bank is applied first using the balance entered in RentReady.";
+if(concession==="work_bonus") concessionText=" The Work Bonus first disregards $300 of work income per fortnight, then uses the entered income-bank balance.";
+if(concession==="working_credit_or_work_bonus_if_age_eligible") concessionText=" A work concession may apply depending on age and circumstances; RentReady uses the entered balance as a planning assumption.";
+document.getElementById("rule-copy").textContent=((single!=null)
  ? "After the income-free area, the model reduces the payment by "+Math.round(single*100)+" cents for each additional $1 of assessable employment income."
  : (t1!=null&&t2!=null&&second!=null)
    ? "After the income-free area, the model uses a "+Math.round(t1*100)+" cent taper until "+money(second)+" per fortnight, then a "+Math.round(t2*100)+" cent taper above that point."
-   : "A simple personal employment-income taper was not supplied for this circumstance. The main RentReady tool should use the actual-payment override rather than inventing a rule.";
+   : "A simple personal employment-income taper was not supplied for this circumstance. The main RentReady tool should use the actual-payment override rather than inventing a rule.")+concessionText;
 
 function draw(){
  const svg=document.getElementById("chart"),W=760,H=300,L=60,R=18,T=18,B=42,pw=W-L-R,ph=H-T-B;
@@ -122,6 +143,10 @@ function draw(){
  m+='<text x="'+(L+pw/2)+'" y="'+(H-2)+'" text-anchor="middle" font-size="10" fill="#64748b">gross work income per '+period+'</text>';
  svg.innerHTML=m;
 }
+const checksEl=document.getElementById("other-checks");
+checksEl.innerHTML=checks.length
+  ? checks.map((x,i)=>'<div class="step"><span>'+(i+1)+'</span><div><b>'+x+'</b><p>This may change the actual entitlement or rate and is not assumed away by the earnings chart.</p></div></div>').join("")
+  : '<div class="step"><span>✓</span><div><b>No extra scenario prompts supplied</b><p>The main RentReady tool may still identify other eligibility tests separately.</p></div></div>';
 draw();
 </script>
 </body>
