@@ -432,6 +432,7 @@
   }
 
   function recalcAll() {
+    updateOtherHouseholdIncomeVisibility();
     const prop = propertyForAssessment();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const sc = scenario(workIncomeFN, rent);
@@ -536,6 +537,25 @@
   }
 
 
+  function selectedCircumstanceIsSingle() {
+    const rate = selectedRate();
+    return !!(rate && /\bsingle\b/i.test(String(rate.label || "")));
+  }
+
+  function updateOtherHouseholdIncomeVisibility() {
+    const field = $("other-household-income-field");
+    const input = $("other-income-week");
+    if (!field || !input) return;
+
+    const single = selectedCircumstanceIsSingle();
+    field.hidden = single;
+
+    if (single) {
+      otherIncomeWeek = 0;
+      input.value = "0";
+    }
+  }
+
   function renderIncome(sc) {
     const raMax = sc.ra.maximumFN || 0;
     $("ra-max-display").textContent = money(displayFromFN(raMax));
@@ -547,7 +567,9 @@
 
     const p = selectedPayment();
     const label = p ? p.shortName || p.name : "your payment";
-    let copy = "Projected income combines work, the selected support payment and other household income.";
+    let copy = selectedCircumstanceIsSingle()
+      ? "Projected income combines work and the selected support payment. Other household income is not included because the selected circumstance is Single."
+      : "Projected income combines work, the selected support payment and other household income.";
     if (sc.pay.rule) {
       copy += " For " + escText(label) + ", the configured personal work-income test reduces the payment by " + money(sc.pay.reduction) +
         " per fortnight at this work income. Assessable employment income after the selected work-income concession is " + money(sc.pay.assessableIncome) + ".";
