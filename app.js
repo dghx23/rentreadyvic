@@ -152,6 +152,61 @@
     return null;
   }
 
+  function selectedWorkConcession() {
+    const p = selectedPayment();
+    if (!p || !p.workConcession) return null;
+    const configured = data.workConcessions && data.workConcessions[p.workConcession];
+    return configured ? { code: p.workConcession, ...configured } : {
+      code: p.workConcession,
+      name: "Work concession",
+      description: "A payment-specific work-income concession may apply depending on your circumstances."
+    };
+  }
+
+  function renderPaymentScenarioGuidance() {
+    if (!$("scenario-prompts")) return;
+    const p = selectedPayment();
+    if (!p) return;
+
+    const concession = selectedWorkConcession();
+    const input = $("working-credit");
+    if (concession && concession.code === "income_bank") {
+      $("work-concession-label").textContent = "Income Bank balance";
+      input.max = String(concession.student_balance_max || 13500);
+      $("work-concession-help").textContent = "Income Bank credits can offset employment income before the student payment income test is applied.";
+    } else if (concession && concession.code === "work_bonus") {
+      $("work-concession-label").textContent = "Work Bonus income bank balance";
+      input.max = String(concession.balance_max || 11800);
+      $("work-concession-help").textContent = "For eligible pensioners, the Work Bonus can disregard $300 of work income per fortnight plus available income-bank credits.";
+    } else if (concession && concession.code === "working_credit") {
+      $("work-concession-label").textContent = "Working Credit balance";
+      input.max = String(p.slug === "youth-allowance-jobseeker"
+        ? (concession.youth_jobseeker_balance_max || 3500)
+        : (concession.balance_max || 1000));
+      $("work-concession-help").textContent = "Working Credits offset employment income before the allowance income test is applied.";
+    } else if (concession) {
+      $("work-concession-label").textContent = "Work concession balance, if applicable";
+      input.max = "11800";
+      $("work-concession-help").textContent = concession.description || "Enter a balance only if this concession applies to you.";
+    } else {
+      $("work-concession-label").textContent = "Work-income concession balance";
+      input.max = "0";
+      $("work-concession-help").textContent = "No automatic work-credit concession is configured for this payment.";
+      if (Number(input.value || 0) > 0) input.value = "0";
+    }
+
+    const prompts = [...(p.scenarioPrompts || [])];
+    const tests = p.incomeTest && Array.isArray(p.incomeTest.other_tests) ? p.incomeTest.other_tests : [];
+    tests.forEach(code => {
+      const desc = data.otherTests && data.otherTests[code];
+      if (desc && !prompts.includes(desc)) prompts.push(desc);
+    });
+    $("scenario-count").textContent = prompts.length ? prompts.length + " checks" : "No extra checks";
+    $("scenario-prompts").innerHTML = prompts.length
+      ? prompts.map(x => "<span>" + esc(x) + "</span>").join("")
+      : "<span>No additional scenario prompts are configured for this payment.</span>";
+  }
+
   function paymentAtWork(workFN, creditBalance, maxFN = paymentMaxFN) {
     const p = selectedPayment();
     const r = selectedRate();
@@ -264,7 +319,7 @@
       $("payment-max").value = "0";
       $("ra-situation").innerHTML = '<option value="">Rent Assistance data unavailable</option>';
       $("payment-effective").textContent = "Not supplied";
-      data = { payments: [], rentAssistance: { taper: .75, bands: [] } };
+      data = { payments: [], additionalSupport: [], workConcessions: {}, otherTests: {}, rentAssistance: { taper: .75, bands: [] } };
       recalcAll();
     }
   }
@@ -334,6 +389,7 @@
     const r = selectedRate();
     const rateFN = selectedRateFN();
     renderSelectedCentrelinkRate();
+    renderPaymentScenarioGuidance();
 
     // A new circumstance starts from the current published rate.
     $("manual-payment-toggle").checked = false;
@@ -500,12 +556,14 @@
     } else {
       ruleText = "After the configured income-free area, the first taper is " + Math.round(rule.taper1 * 100) + " cents per $1, then " + Math.round(rule.taper2 * 100) + " cents per $1 above the second threshold.";
     }
-    $("income-impact-copy").textContent = ruleText + " Working Credit can delay when earnings become assessable.";
+    const concession = selectedWorkConcession();
+    const concessionText = concession ? " " + (concession.description || (concession.name + " can affect when earnings become assessable.")) : "";
+    $("income-impact-copy").textContent = ruleText + concessionText;
 
     $("income-impact-note").className = "income-impact-note " + (sc.pay.reduction > 0 ? "warn" : "ok");
     $("income-impact-note").textContent = sc.pay.reduction > 0
       ? "At your current earnings, assessable employment income is " + money(displayFromFN(assessable)) + " per " + PERIODS[currentPeriod].label + " and the estimated payment reduction is " + money(displayFromFN(sc.pay.reduction)) + "."
-      : "At your current earnings and Working Credit balance, this model does not reduce the selected payment yet.";
+      : "At your current earnings and any applicable work-income concession, this model does not reduce the selected payment yet.";
 
     renderIncomeImpactChart(cutoff, credit);
   }
