@@ -3,44 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="RentReady VIC helps people on income support assess whether they can access a rental property, understand how work affects their payment, identify relevant support and know their rental rights.">
+<meta name="description" content="RentReady VIC helps people on income support understand whether a rental may be within reach, how work income affects their payment, what support may help and what rights apply when they apply.">
 <title>RentReady VIC — Work · Rent · Support</title>
 <link rel="stylesheet" href="app.css">
 <style>
-.simple-home{width:min(960px,calc(100% - 28px));margin:auto;padding:64px 0}
-.simple-hero{text-align:center;max-width:780px;margin:auto}
-.simple-hero h1{font-size:clamp(32px,4.2vw,50px);line-height:1.05;letter-spacing:-.045em;margin:10px 0 16px}
-.simple-hero h1 span{color:#4f46e5}
-.simple-hero p{max-width:650px;margin:0 auto;color:#667085;font-size:15px;line-height:1.7}
-.simple-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:24px}
-.objective{margin-top:46px;padding:28px;border:1px solid #d8d4ff;border-radius:12px;background:#f8f7ff}
-.objective-head{max-width:760px}
-.objective-head span{display:block;color:#4f46e5;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
-.objective-head h2{margin:6px 0 10px;font-size:24px;line-height:1.15;letter-spacing:-.035em}
-.objective-head p{margin:0;color:#667085;font-size:12px;line-height:1.7}
-.objective-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}
-.objective-item{padding:14px;border:1px solid #e2e4ff;border-radius:9px;background:#fff}
-.objective-item b{display:block;font-size:11px;margin-bottom:5px}
-.objective-item p{margin:0;color:#667085;font-size:9px;line-height:1.55}
-.simple-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:54px}
-.simple-step{background:#fff;border:1px solid #dfe5ed;border-radius:10px;padding:20px}
-.simple-step span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#eef2ff;color:#4f46e5;font-size:11px;font-weight:900}
-.simple-step h2{font-size:15px;margin:12px 0 6px}
-.simple-step p{margin:0;color:#667085;font-size:10px;line-height:1.55}
-.simple-note{margin-top:28px;padding:16px 18px;border-radius:9px;background:#f8fafc;color:#667085;font-size:10px;line-height:1.6;text-align:center}
-.simple-footer{margin-top:42px;padding-top:18px;border-top:1px solid #dfe5ed;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#8490a2;font-size:9px}
-.simple-footer a{color:#4f46e5;font-weight:800}
-@media(max-width:900px){.objective-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.simple-home{padding-top:38px}.objective{padding:20px;margin-top:34px}.objective-grid{grid-template-columns:1fr}.simple-steps{grid-template-columns:1fr;margin-top:38px}.simple-footer{flex-direction:column}.top-resource-nav{display:none}}
+.home{width:min(1040px,calc(100% - 28px));margin:auto;padding:48px 0 64px}
+.home-hero{max-width:790px;padding:18px 0 38px}
+.home-hero h1{font-size:clamp(32px,4.2vw,50px);line-height:1.05;letter-spacing:-.045em;margin:10px 0 15px}
+.home-hero h1 span{color:var(--brand)}
+.home-hero>p{max-width:720px;margin:0;color:var(--ink2);font-size:16px;line-height:1.7}
+.home-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.home-section{margin-top:22px}
+.home-section-head{max-width:760px;margin-bottom:13px}
+.home-section-head span{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--brand)}
+.home-section-head h2{margin:5px 0 6px;font-size:24px;letter-spacing:-.035em}
+.home-section-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}
+.objective-panel{padding:24px;border:1px solid var(--brand-line);background:var(--brand-soft);border-radius:14px}
+.objective-panel h2{max-width:780px;margin:5px 0 9px;font-size:24px;line-height:1.17;letter-spacing:-.035em}
+.objective-panel>p{max-width:820px;margin:0;color:var(--ink2);font-size:12px;line-height:1.7}
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}
+.pillar,.step-card,.need-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:16px}
+.pillar b,.step-card b,.need-card b{display:block;font-size:12px}
+.pillar p,.step-card p,.need-card p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.step-card span{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font-size:10px;font-weight:900;margin-bottom:10px}
+.step-card:last-child span{background:var(--brand)}
+.needs{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.result-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:22px;border-radius:14px;background:#111827;color:#fff}
+.result-panel h2{margin:4px 0 8px;font-size:22px;letter-spacing:-.03em}
+.result-panel p{margin:0;color:#cbd5e1;font-size:11px;line-height:1.6}
+.result-list{display:grid;gap:8px}
+.result-list div{padding:10px 12px;border:1px solid #334155;border-radius:9px;background:#182236}
+.result-list b{display:block;font-size:11px}.result-list small{display:block;margin-top:3px;color:#9aa7ba;font-size:9px}
+.home-note{margin-top:22px;padding:14px 16px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:10px;line-height:1.6}
+.home-footer{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;color:var(--muted);font-size:9px}
+.home-footer a{font-weight:800}
+@media(max-width:900px){.pillars,.steps{grid-template-columns:1fr 1fr}.result-panel{grid-template-columns:1fr}}
+@media(max-width:650px){.home{padding-top:28px}.pillars,.steps,.needs{grid-template-columns:1fr}.top-resource-nav{display:none}}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="shell topbar-inner">
-    <a class="brand" href="index.html" aria-label="RentReady VIC home">
-      <span class="brand-mark">R</span>
-      <span><b>RentReady VIC</b><small>Work · Rent · Support</small></span>
-    </a>
+    <a class="brand" href="index.html" aria-label="RentReady VIC home"><span class="brand-mark">R</span><span><b>RentReady VIC</b><small>Work · Rent · Support</small></span></a>
     <nav class="top-resource-nav" aria-label="RentReady navigation">
       <a class="top-resource-link" href="about.html">About</a>
       <details class="resource-menu">
@@ -53,47 +58,62 @@
         </div>
       </details>
     </nav>
-    <a class="btn primary" href="app.html">Start →</a>
+    <a class="btn primary" href="app.html">Start assessment →</a>
   </div>
 </header>
 
-<main class="simple-home">
-  <section class="simple-hero">
+<main class="home">
+  <section class="home-hero">
     <span class="eyebrow">For Victorians on income support</span>
     <h1>Can this rental <span>work for me?</span></h1>
-    <p>RentReady helps you work out whether a rental may be within reach based on your income-support payment, work income, Rent Assistance and the property you are considering.</p>
-    <div class="simple-actions">
-      <a class="btn primary" href="app.html">Start my assessment →</a>
-      <a class="btn" href="about.html">How it works</a>
+    <p>RentReady helps you connect your income-support payment, work income and a real rental property so you can understand whether the rent may be within reach and what you can do next.</p>
+    <div class="home-actions"><a class="btn primary" href="app.html">Start my assessment →</a><a class="btn" href="about.html">About RentReady</a></div>
+  </section>
+
+  <section class="objective-panel">
+    <span class="eyebrow">The objective</span>
+    <h2>Help people on income support understand rental access, improve their financial position and know their rights.</h2>
+    <p>The tool brings together the numbers that matter for a rental decision. It compares your projected income with the property you want, models how employment income can change your income-support payment, identifies relevant assistance, and keeps Victorian rental-application rights visible throughout the process.</p>
+    <div class="pillars">
+      <article class="pillar"><b>Assess rental access</b><p>See how a specific weekly rent and bond compare with your projected household income.</p></article>
+      <article class="pillar"><b>Understand your payment</b><p>See how work income can change your selected payment using the connected Australian social-security data.</p></article>
+      <article class="pillar"><b>Improve the numbers</b><p>Test different work-income and rent scenarios to identify a more workable range.</p></article>
+      <article class="pillar"><b>Know your rights</b><p>Understand application evidence limits, prohibited questions and possible discrimination red flags.</p></article>
     </div>
   </section>
 
-  <section class="objective" aria-labelledby="objective-title">
-    <div class="objective-head">
-      <span>The objective</span>
-      <h2 id="objective-title">Help people on income support understand whether they can realistically access a rental property.</h2>
-      <p>RentReady connects your payment, employment income and a real rental property so you can see the gap between where you are now and what the property requires. It also helps you understand how lawful changes in work income and available support may affect that position, while keeping your Victorian rental-application rights visible.</p>
-    </div>
-    <div class="objective-grid">
-      <article class="objective-item"><b>Assess rental access</b><p>Compare your projected household income with the weekly rent and bond of the property you want.</p></article>
-      <article class="objective-item"><b>Understand your payment</b><p>See how work income may affect your selected income-support payment, including relevant credits, banks or bonuses where supported.</p></article>
-      <article class="objective-item"><b>Improve the position</b><p>Test different rent and work-income scenarios to see what could bring the property closer to a workable range.</p></article>
-      <article class="objective-item"><b>Know your rights</b><p>Understand what rental providers and agents can ask for, evidence limits and potential discrimination red flags.</p></article>
+  <section class="home-section">
+    <div class="home-section-head"><span>How it works</span><h2>Four clear stages</h2><p>You enter information once. RentReady reuses it across the assessment instead of making you start again for each calculation.</p></div>
+    <div class="steps">
+      <article class="step-card"><span>1</span><b>Income</b><p>Select your payment and add work or other household income.</p></article>
+      <article class="step-card"><span>2</span><b>Property</b><p>Add the rental you are considering: rent, bond, bedrooms and address.</p></article>
+      <article class="step-card"><span>3</span><b>Your result</b><p>See the rent share, affordability gap, Rent Assistance estimate and optional RentAssist checks.</p></article>
+      <article class="step-card"><span>4</span><b>Improve & prepare</b><p>Test better rent or income scenarios, then review the application and your rights.</p></article>
     </div>
   </section>
 
-  <section class="simple-steps" aria-label="How RentReady works">
-    <article class="simple-step"><span>1</span><h2>Add your income</h2><p>Choose your income-support payment and add work or household income.</p></article>
-    <article class="simple-step"><span>2</span><h2>Add a property</h2><p>Enter the weekly rent and bond, or import a rental listing you are considering.</p></article>
-    <article class="simple-step"><span>3</span><h2>See what could help</h2><p>Review rental fit, payment impacts, support options, income targets and application rights.</p></article>
+  <section class="home-section">
+    <div class="home-section-head"><span>What you need</span><h2>Start with what you already know</h2></div>
+    <div class="needs">
+      <article class="need-card"><b>Your income-support payment</b><p>Choose the payment and circumstance that best match you. You can use your actual payment amount if it differs from the published rate.</p></article>
+      <article class="need-card"><b>Your work or household income</b><p>Add current earnings and other household income that should be included in the rental picture.</p></article>
+      <article class="need-card"><b>A rental property</b><p>Use a listing you are considering or enter the weekly rent and bond manually.</p></article>
+    </div>
   </section>
 
-  <div class="simple-note">RentReady is a planning tool, not a government eligibility decision, legal finding or financial recommendation. Check important figures against the linked official sources.</div>
+  <section class="home-section result-panel">
+    <div><span class="eyebrow">What you get</span><h2>A clearer answer and practical next steps</h2><p>RentReady does not just return a pass or fail. It shows what is driving the result and which parts may be changeable.</p><div class="home-actions"><a class="btn primary" href="app.html">Open RentReady →</a></div></div>
+    <div class="result-list">
+      <div><b>Rental fit</b><small>How much of your projected weekly income the rent would use.</small></div>
+      <div><b>Payment impact</b><small>How work income can affect your selected income-support payment.</small></div>
+      <div><b>Options</b><small>What rent or work-income range may improve the position.</small></div>
+      <div><b>Application rights</b><small>What can be requested and what to question during the application process.</small></div>
+    </div>
+  </section>
 
-  <footer class="simple-footer">
-    <span><b>RentReady VIC</b> · Independent guidance prototype for Victorian renters.</span>
-    <span><a href="about.html">About</a> · <a href="app.html">Open workspace</a> · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></span>
-  </footer>
+  <div class="home-note"><b>Important:</b> RentReady is a planning and information tool. It does not make a Centrelink, Housing Victoria or legal decision. Social-security calculations are only modelled when the connected Australian social-security dataset supplies the relevant rule.</div>
+
+  <footer class="home-footer"><span><b>RentReady VIC</b> · Independent rental-planning guidance for Victorians on income support.</span><span><a href="about.html">About</a> · <a href="app.html">Open workspace</a> · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></span></footer>
 </main>
 </body>
 </html>
