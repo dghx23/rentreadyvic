@@ -395,7 +395,7 @@
     if (ever === "no") {
       grossBuilt = totalFNs * creditMaxBuild;
       balance = Math.min(cap,grossBuilt);
-      confidence = "Upper estimate based on no reported employment income and assuming other ordinary income also stayed below $48/fortnight.";
+      confidence = "Upper estimate based on no reported employment income and assuming other ordinary income stayed below the Social Security AU accrual threshold of " + money(creditThreshold,0) + "/fortnight.";
     } else if (ever === "yes") {
       const incomeStart = parseLocalDate($("credit-income-start").value);
       const typical = Math.max(0,Number($("credit-typical-income").value || 0));
