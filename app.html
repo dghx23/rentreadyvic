@@ -32,16 +32,25 @@
       <p>RentReady links your Centrelink payment, work income, future Rent Assistance, the property you are considering, RentAssist Bond Loan eligibility, affordability and the Victorian rental application into one connected process.</p>
     </div>
     <div class="process-strip" aria-label="RentReady process">
-      <button type="button" class="process-step active" data-step-target="income">
-        <span class="process-number">1</span><span><b>Income</b><small>Centrelink · work income · Rent Assistance</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="property">
-        <span class="process-number">2</span><span><b>Property</b><small>Listing · weekly rent · bond · bedrooms</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="bond">
-        <span class="process-number">3</span><span><b>RentAssist Bond Loan</b><small>Housing Victoria eligibility · bond cap</small></span>
-      </button>
-      <button type="button" class="process-step" d<section class="step-panel active" id="step-income">
+      <button type="button" class="process-step active" data-step-target="income"><span class="process-number">1</span><span><b>Income</b><small>Centrelink · work income · Rent Assistance</small></span></button>
+      <button type="button" class="process-step" data-step-target="property"><span class="process-number">2</span><span><b>Property</b><small>Listing · weekly rent · bond · bedrooms</small></span></button>
+      <button type="button" class="process-step" data-step-target="bond"><span class="process-number">3</span><span><b>RentAssist Bond Loan</b><small>Housing Victoria eligibility · bond cap</small></span></button>
+      <button type="button" class="process-step" data-step-target="affordability"><span class="process-number">4</span><span><b>Affordability</b><small>Rent share · shortfalls · target range</small></span></button>
+      <button type="button" class="process-step" data-step-target="application"><span class="process-number">5</span><span><b>Application Review</b><small>Prescribed form · evidence · discrimination</small></span></button>
+      <button type="button" class="process-step" data-step-target="optimise"><span class="process-number">6</span><span><b>Optimise</b><small>Work-income · target-rent sliders</small></span></button>
+    </div>
+  </section>
+
+  <nav class="stepnav" aria-label="RentReady steps">
+    <button class="step-tab active" data-step-target="income"><span>1</span>Income</button>
+    <button class="step-tab" data-step-target="property"><span>2</span>Property</button>
+    <button class="step-tab" data-step-target="bond"><span>3</span>RentAssist</button>
+    <button class="step-tab" data-step-target="affordability"><span>4</span>Affordability</button>
+    <button class="step-tab" data-step-target="application"><span>5</span>Application</button>
+    <button class="step-tab" data-step-target="optimise"><span>6</span>Optimise</button>
+  </nav>
+
+  <section class="step-panel active" id="step-income">
     <div class="section-head">
       <span class="section-number">01</span>
       <div>
@@ -68,14 +77,6 @@
               <strong id="centrelink-rate-display">$0.00</strong>
               <span class="period-label">per fortnight</span>
             </div>
-
-            <div class="rate-period-slider" aria-label="Centrelink rate display period">
-              <button type="button" data-rate-period="week">Weekly</button>
-              <button type="button" data-rate-period="fortnight" class="active">Fortnightly</button>
-              <button type="button" data-rate-period="month">Monthly</button>
-              <button type="button" data-rate-period="year" class="quiet">Yearly</button>
-            </div>
-
             <div class="centrelink-rate-meta">
               <span>For <b id="centrelink-rate-circumstance">—</b></span>
               <span>Effective <b id="payment-effective">—</b></span>
@@ -292,7 +293,6 @@
         </div>
         <button type="button" class="btn" data-step-target="optimise">Open optimisation sliders</button>
       </div>
-
       <div class="review-snapshot">
         <div><span>Payment</span><strong id="app-review-payment">—</strong></div>
         <div><span>Circumstance</span><strong id="app-review-circumstance">—</strong></div>
@@ -301,18 +301,10 @@
         <div><span>Weekly rent</span><strong id="app-review-rent">—</strong></div>
         <div><span>Rent share</span><strong id="app-review-rent-share">—</strong></div>
       </div>
-
       <div class="grid two application-review-grid">
-        <div class="card">
-          <div class="card-head"><h3>Suggested evidence pack</h3><span class="review-badge">financial evidence: max 2</span></div>
-          <div class="card-body" id="app-evidence-pack"></div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3>Application shortfalls</h3></div>
-          <div class="card-body" id="app-shortfalls"></div>
-        </div>
+        <div class="card"><div class="card-head"><h3>Suggested evidence pack</h3><span class="review-badge">financial evidence: max 2</span></div><div class="card-body" id="app-evidence-pack"></div></div>
+        <div class="card"><div class="card-head"><h3>Application shortfalls</h3></div><div class="card-body" id="app-shortfalls"></div></div>
       </div>
-
       <div class="card application-checker-card">
         <div class="card-head"><h3>Potential red flags in the application process</h3><span class="review-badge neutral">check only what happened</span></div>
         <div class="card-body application-checker">
@@ -328,25 +320,16 @@
         </div>
         <div class="card-body app-issue-results" id="app-issue-results"></div>
       </div>
-
       <div class="grid two application-review-grid">
-        <div class="card">
-          <div class="card-head"><h3>Strategies to strengthen the application</h3></div>
-          <div class="card-body" id="app-strategies"></div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3>What not to overshare</h3></div>
-          <div class="card-body review-list">
-            <div><span class="review-dot ok">✓</span><p>Use only the financial and identity documents required by the prescribed application.</p></div>
-            <div><span class="review-dot ok">✓</span><p>If you use a bank statement, remove transaction details you want to keep private.</p></div>
-            <div><span class="review-dot ok">✓</span><p>Do not volunteer protected personal information merely to make the application look stronger.</p></div>
-          </div>
-        </div>
+        <div class="card"><div class="card-head"><h3>Strategies to strengthen the application</h3></div><div class="card-body" id="app-strategies"></div></div>
+        <div class="card"><div class="card-head"><h3>What not to overshare</h3></div><div class="card-body review-list">
+          <div><span class="review-dot ok">✓</span><p>Use only the financial and identity documents required by the prescribed application.</p></div>
+          <div><span class="review-dot ok">✓</span><p>If you use a bank statement, remove transaction details you want to keep private.</p></div>
+          <div><span class="review-dot ok">✓</span><p>Do not volunteer protected personal information merely to make the application look stronger.</p></div>
+        </div></div>
       </div>
     </div>
-
     <div class="application-rules-divider"><span>Victorian rental application rules</span></div>
-
     <div class="notice important">
       <b>From 31 March 2026, the application itself is prescribed.</b>
       Rental providers and agents must use the prescribed rental application form and can only ask for information set out in that form. Personal information collected for the application can only be used to assess whether you are a suitable renter or to comply with another requirement of the Residential Tenancies Act 1997.
@@ -605,27 +588,6 @@
     <div class="step-actions"><button class="btn" data-back="application">← Application review</button><button class="btn primary" data-step-target="income">Review income</button></div>
   </section>
 
-mise-stat"><span>General benchmark gap</span><strong id="optimise-general-gap">$0</strong></div>
-      <div class="optimise-stat"><span>Bond-loan gap</span><strong id="optimise-bond-gap">$0</strong></div>
-    </div>
-
-    <div class="card">
-      <div class="card-head"><h3>Useful targets</h3></div>
-      <div class="card-body target-grid">
-        <div><span>Rent that meets the general benchmark</span><strong id="target-general-rent">$0/wk</strong></div>
-        <div><span>Rent that meets the bond-loan rent test</span><strong id="target-bond-rent">$0/wk</strong></div>
-        <div><span>Work income needed for this rent — general benchmark</span><strong id="target-general-income">—</strong></div>
-        <div><span>Work income needed for this rent — bond-loan test</span><strong id="target-bond-income">—</strong></div>
-      </div>
-    </div>
-
-    <div class="notice info">
-      <b>Use this as a planning tool, not a guarantee.</b>
-      Payment rates can depend on circumstances not captured here, and a bond-loan application is decided by Housing Victoria.
-    </div>
-
-    <div class="step-actions"><button class="btn" data-back="affordability">← Affordability</button><button class="btn primary" data-step-target="income">Review income</button></div>
-  </section>
 </main>
 
 <footer class="footer">
