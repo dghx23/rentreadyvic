@@ -1492,3 +1492,96 @@ body{background:#f5f7fb}
   .work-income-slider-scale span:nth-child(2){text-align:left}
   .work-income-slider-scale span:last-child{grid-column:1/-1;text-align:left}
 }
+
+
+/* Full-width income sequence */
+.income-stack{display:grid;gap:14px;margin-bottom:14px}
+.income-wide-card{width:100%;overflow:hidden}
+.income-wide-head{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  gap:16px!important;padding:12px 14px!important
+}
+.income-wide-head>div:first-child{display:grid;gap:2px}
+.income-section-kicker{
+  font-size:8px;text-transform:uppercase;letter-spacing:.085em;color:var(--brand);
+  font-weight:850
+}
+.income-wide-head h3{font-size:14px!important;margin:0!important}
+.income-head-note{font-size:8px;color:#8692a4;max-width:320px;text-align:right}
+.payment-wide-body{
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);
+  gap:16px;align-items:stretch
+}
+.payment-wide-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.payment-wide-controls .payment-override-toggle,
+.payment-wide-controls .manual-payment-wrap{grid-column:1/-1}
+.payment-wide-rate{
+  margin:0!important;min-height:100%;display:flex;flex-direction:column;justify-content:center
+}
+.card-head-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+
+.work-wide-grid{
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);
+  gap:16px;align-items:start
+}
+.work-income-primary{
+  display:block;padding:13px;border:1px solid #dfe4ed;border-radius:7px;background:#fbfcfe
+}
+.money-input-large input{font-size:20px!important;font-weight:800}
+.money-input-large span{font-size:15px!important}
+.work-secondary-fields{display:grid;gap:12px}
+.work-rule-context{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.work-rule-context .scenario-box,.work-rule-context .payment-scenario-panel{margin:0!important;height:100%}
+
+.target-rent-prominent{
+  width:100%;padding:18px;border:1px solid #cfcafc!important;border-radius:9px!important;
+  background:
+    radial-gradient(circle at 92% 12%,rgba(99,91,255,.09),transparent 30%),
+    linear-gradient(180deg,#fbfaff 0%,#f6f5ff 100%)!important
+}
+.target-rent-prominent .target-rent-head{
+  align-items:flex-start;margin-bottom:14px
+}
+.target-rent-prominent .target-rent-head>div:first-child{max-width:650px}
+.target-rent-prominent .target-rent-head span{
+  color:var(--brand);font-size:9px;letter-spacing:.09em
+}
+.target-rent-prominent .target-rent-head strong{
+  display:block;margin-top:4px;font-size:22px;line-height:1.12;letter-spacing:-.025em
+}
+.target-rent-prominent .target-rent-head p{
+  margin:6px 0 0;font-size:10px;line-height:1.5;color:#707a91
+}
+.target-rent-callout{
+  max-width:220px;padding:9px 10px;border:1px solid #d8d4ff;border-radius:6px;
+  background:#fff;color:#69658f;font-size:9px;line-height:1.4
+}
+.target-rent-entry{
+  display:grid;grid-template-columns:220px minmax(0,1fr);gap:18px;align-items:end;
+  padding:14px;border:1px solid #dedafc;border-radius:7px;background:#fff
+}
+.target-rent-entry label{font-size:10px;font-weight:800}
+.target-rent-money input{font-size:22px!important;font-weight:850}
+.target-rent-slider-wrap{padding-bottom:3px}
+.target-rent-slider-wrap input[type=range]{width:100%;accent-color:var(--brand)}
+.target-rent-prominent .target-rent-results{gap:10px;margin-top:12px}
+.target-result-card{
+  padding:13px!important;border-radius:7px!important;background:#fff!important
+}
+.target-result-card.market{border-left:4px solid #0f9f6e!important}
+.target-result-card.rentassist{border-left:4px solid var(--brand)!important}
+.target-result-card strong{font-size:14px!important}
+.target-rent-prominent .target-rent-summary{
+  margin-top:10px;padding:11px 12px;font-size:10px
+}
+
+@media(max-width:800px){
+  .payment-wide-body,.work-wide-grid,.work-rule-context{grid-template-columns:1fr}
+  .payment-wide-controls{grid-template-columns:1fr}
+  .payment-wide-controls .payment-override-toggle,
+  .payment-wide-controls .manual-payment-wrap{grid-column:auto}
+  .income-wide-head{align-items:flex-start!important;flex-direction:column}
+  .income-head-note{text-align:left}
+  .target-rent-entry{grid-template-columns:1fr}
+  .target-rent-callout{max-width:none}
+}
