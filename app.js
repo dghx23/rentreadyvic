@@ -1015,6 +1015,16 @@
     }
   }
 
+  function activateRentAssistanceFromTargetRent(rent) {
+    rent = Math.max(0, Number(rent || 0));
+    if (!rent || !rentalArrangement() || !$("future-ra")) return false;
+
+    $("future-ra").checked = true;
+    syncRentAssistanceToArrangement();
+    updateRentAssistVisibility();
+    return true;
+  }
+
   function updateRentalArrangementUI() {
     if (!$("target-rent-entry")) return;
     const arrangement = rentalArrangement();
@@ -2100,8 +2110,11 @@
 
     if (!rent) {
       $("ideal-work-target").textContent = "Add a property first";
+      $("ideal-work-target").setAttribute("href","#property");
+      $("ideal-work-target").setAttribute("data-step-target","property");
+      $("ideal-work-target").setAttribute("aria-disabled","false");
       $("target-extra-work").textContent = "—";
-      $("ideal-work-target-copy").textContent = "The income target depends on the weekly rent of the property you are considering.";
+      $("ideal-work-target-copy").textContent = "The income target depends on the weekly rent of the property you are considering. Click “Add a property first” to paste a listing, import a URL or enter the property details manually.";
       return;
     }
 
@@ -2270,11 +2283,20 @@
     $("target-rent").addEventListener("input", () => {
       const rent = Math.max(0, Number($("target-rent").value || 0));
       if (rent >= 100 && rent <= 1200) $("target-rent-slider").value = String(rent);
-      renderTargetRentPlanner();
+      if (activateRentAssistanceFromTargetRent(rent)) {
+        recalcAll();
+      } else {
+        renderTargetRentPlanner();
+      }
     });
     $("target-rent-slider").addEventListener("input", () => {
-      $("target-rent").value = $("target-rent-slider").value;
-      renderTargetRentPlanner();
+      const rent = Math.max(0, Number($("target-rent-slider").value || 0));
+      $("target-rent").value = String(rent);
+      if (activateRentAssistanceFromTargetRent(rent)) {
+        recalcAll();
+      } else {
+        renderTargetRentPlanner();
+      }
     });
     $("future-ra").addEventListener("change", () => {
       if (!$("future-ra").checked) rentAssistExplored = false;
