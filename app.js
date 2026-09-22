@@ -1296,8 +1296,14 @@
 
     const rent = Math.max(0, Number($("target-rent").value || 0));
     const active = rentAssistActive();
+    const raIncluded = rentAssistAvailable();
+    if ($("target-ra-card")) $("target-ra-card").hidden = !raIncluded;
 
     if (!rent) {
+      if ($("target-ra-amount")) $("target-ra-amount").textContent = "$0/wk";
+      if ($("target-ra-detail")) $("target-ra-detail").textContent = raIncluded
+        ? "Enter a target weekly rent to estimate Rent Assistance from your selected household situation."
+        : "Turn on Rent Assistance above to include it in this estimate.";
       $("target-market-status").textContent = "Enter a target rent";
       $("target-market-detail").textContent = "Based on the general affordability benchmark.";
       if ($("target-rentassist-status")) $("target-rentassist-status").textContent = "Enter a target rent";
@@ -1309,6 +1315,15 @@
     }
 
     const sc = scenario(workIncomeFN, rent);
+
+    if (raIncluded && $("target-ra-amount")) {
+      const raWeek = Number(sc.actualRAFN || 0) / 2;
+      $("target-ra-amount").textContent = money(raWeek,0) + "/wk";
+      $("target-ra-detail").textContent =
+        money(sc.actualRAFN,0) + "/fortnight estimated from a target rent of " + money(rent,0) +
+        "/wk and the Rent Assistance household situation selected above.";
+    }
+
     const marketLimit = sc.householdWeek * cfg.generalAffordabilityPct;
     const marketGap = rent - marketLimit;
     const marketPass = marketGap <= 0;
