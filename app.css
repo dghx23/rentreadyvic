@@ -1919,3 +1919,27 @@ body{background:#f5f7fb}
   .rentassist-explore-offer .btn{width:100%}
   .rentassist-rule-summary{grid-template-columns:1fr}
 }
+
+
+/* Target-rent Rent Assistance estimate */
+.target-rent-results{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important
+}
+.target-result-card.rent-assistance{
+  border:1px solid #fecaca!important;
+  border-left:4px solid #dc2626!important;
+  background:#fff5f5!important
+}
+.target-result-card.rent-assistance span{
+  color:#b42318!important
+}
+.target-result-card.rent-assistance strong{
+  color:#991b1b!important;
+  font-size:18px!important
+}
+.target-result-card.rent-assistance small{
+  color:#9f3a38!important
+}
+@media(max-width:820px){
+  .target-rent-results{grid-template-columns:1fr!important}
+}
