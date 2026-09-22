@@ -41,7 +41,6 @@
   let impactTestWorkFN = null;
   let otherIncomeWeek = 0;
   let workingCreditEstimateFN = null;
-  let rentAssistExplored = false;
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
   let accountEmail = localStorage.getItem(STORAGE.account) || "";
@@ -653,9 +652,10 @@
     const pay = paymentAtWork(workFN, creditBalance);
     const ra = rentAssistanceForRent(rentWeek);
     const actualRAFN = rentWeek > 0 ? ra.amountFN : ra.maximumFN;
-    const householdWeek = (workFN + pay.paymentFN + actualRAFN) / 2 + otherIncomeWeek;
-    const bondIncomeWeek = (workFN + pay.paymentFN + ra.maximumFN) / 2 + otherIncomeWeek;
-    return { pay, ra, householdWeek, bondIncomeWeek, workFN, rentWeek, actualRAFN };
+    const baseIncomeWeek = (workFN + pay.paymentFN) / 2 + otherIncomeWeek;
+    const householdWeek = baseIncomeWeek + actualRAFN / 2;
+    const bondIncomeWeek = baseIncomeWeek + ra.maximumFN / 2;
+    return { pay, ra, baseIncomeWeek, householdWeek, bondIncomeWeek, workFN, rentWeek, actualRAFN };
   }
 
   function householdIncomeLimit() {
@@ -826,16 +826,17 @@
   }
 
   function rentAssistActive() {
-    return rentAssistAvailable() && rentAssistExplored;
+    return !!(rentAssistAvailable() && $("rentassist-enable") && $("rentassist-enable").checked);
   }
 
   function updateRentAssistVisibility() {
     const available = rentAssistAvailable();
-    if (!available) rentAssistExplored = false;
-    const active = available && rentAssistExplored;
+    if (!available && $("rentassist-enable")) $("rentassist-enable").checked = false;
+    const active = rentAssistActive();
 
     if ($("rent-assistance-details")) $("rent-assistance-details").hidden = !available;
-    if ($("rentassist-explore-offer")) $("rentassist-explore-offer").hidden = !available || active;
+    if ($("rentassist-enable-row")) $("rentassist-enable-row").hidden = !available;
+    if ($("rentassist-explore-offer")) $("rentassist-explore-offer").hidden = !available;
     if ($("rentassist-explore-confirmed")) $("rentassist-explore-confirmed").hidden = !active;
     if ($("rentassist-result-section")) $("rentassist-result-section").hidden = !active;
     if ($("target-rentassist-card")) $("target-rentassist-card").hidden = !active;
@@ -851,6 +852,40 @@
           ? "<b>Rent Assistance is included.</b> RentAssist Bond Loan is still optional. Choose “Explore RentAssist Bond Loan” in Step 1 if you want the Housing Victoria eligibility rules added."
           : "<b>General affordability first.</b> RentAssist remains hidden unless you choose Rent Assistance and then explicitly explore the bond-loan scheme.";
     }
+  }
+
+  function saveRentAssistContext() {
+    const prop = propertyForAssessment();
+    const targetRent = Number($("target-rent") && $("target-rent").value || 0);
+    const rent = prop && Number(prop.rent || 0) > 0 ? Number(prop.rent) : targetRent;
+    const sc = scenario(workIncomeFN, rent);
+    const payment = selectedPayment();
+    const rate = selectedRate();
+    const band = selectedRABand();
+
+    const context = {
+      paymentSlug: payment ? payment.slug : "",
+      paymentName: payment ? (payment.shortName || payment.name) : "",
+      circumstance: rate ? rate.label : "",
+      arrangement: rentalArrangement(),
+      raBandCode: band ? band.code : "",
+      raBandLabel: band ? band.label : "",
+      grossIncomeWeek: Number(sc.baseIncomeWeek || 0),
+      projectedIncomeWeek: Number(sc.householdWeek || 0),
+      maximumRentAssistanceWeek: Number(sc.ra && sc.ra.maximumFN || 0) / 2,
+      estimatedRentAssistanceWeek: Number(sc.actualRAFN || 0) / 2,
+      rentWeek: Number(rent || 0),
+      bond: prop ? Number(prop.bond || 0) : 0,
+      beds: prop ? Number(prop.beds || 0) : 0,
+      assets: Number($("assets") && $("assets").value || 0),
+      permanentResident: !!($("permanent-resident") && $("permanent-resident").checked),
+      ownsProperty: !!($("owns-property") && $("owns-property").checked),
+      householdType: $("household-type") ? $("household-type").value : "single",
+      enabled: rentAssistActive()
+    };
+    sessionStorage.setItem("rentready-rentassist-context-v1", JSON.stringify(context));
+    sessionStorage.setItem("rentready-rentassist-enabled-v1", context.enabled ? "1" : "0");
+    return context;
   }
 
   function recalcAll() {
@@ -1545,7 +1580,7 @@
     const assets = Number($("assets").value || 0);
     const resident = $("permanent-resident").checked;
     const owns = $("owns-property").checked;
-    const incomePass = sc.bondIncomeWeek <= limit;
+    const incomePass = sc.baseIncomeWeek <= limit;
     const assetPass = assets <= cfg.bondAssetLimit;
     const rent = prop ? Number(prop.rent || 0) : 0;
     const rentCeiling = sc.bondIncomeWeek * cfg.bondRentPct;
@@ -1570,7 +1605,7 @@
 
     const rows = [
       checkRow(incomePass, "Household income limit",
-        "Your estimated income for the scheme is " + money(sc.bondIncomeWeek,0) + "/wk. " +
+        "Your gross weekly income before Rent Assistance is " + money(sc.baseIncomeWeek,0) + "/wk. " +
         (incomePass
           ? "That is within the " + money(limit,0) + "/wk limit for the selected household type."
           : "That is " + money(sc.bondIncomeWeek-limit,0) + "/wk above the " + money(limit,0) + "/wk limit."),
@@ -2023,8 +2058,8 @@
 
     if (rentAssistActive()) {
       const incomeLimit = householdIncomeLimit();
-      if (sc.bondIncomeWeek > incomeLimit) {
-        shortfalls.push({state:"warn",text:"RentAssist: estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the current income limit for the selected household type."});
+      if (sc.baseIncomeWeek > incomeLimit) {
+        shortfalls.push({state:"warn",text:"RentAssist: gross weekly income before Rent Assistance is " + money(sc.baseIncomeWeek - incomeLimit) + " above the current income limit for the selected household type."});
       }
       if (Number($("assets").value || 0) > cfg.bondAssetLimit) {
         shortfalls.push({state:"warn",text:"RentAssist: entered assets are above the current asset limit."});
@@ -2496,15 +2531,20 @@
       }
     });
     $("future-ra").addEventListener("change", () => {
-      if (!$("future-ra").checked) rentAssistExplored = false;
+      if (!$("future-ra").checked && $("rentassist-enable")) {
+        $("rentassist-enable").checked = false;
+        sessionStorage.setItem("rentready-rentassist-enabled-v1","0");
+      }
+      updateRentAssistVisibility();
+      recalcAll();
+    });
+    $("rentassist-enable").addEventListener("change", () => {
+      sessionStorage.setItem("rentready-rentassist-enabled-v1", $("rentassist-enable").checked ? "1" : "0");
       updateRentAssistVisibility();
       recalcAll();
     });
     $("rentassist-explore-button").addEventListener("click", () => {
-      if (!$("future-ra").checked) return;
-      rentAssistExplored = true;
-      updateRentAssistVisibility();
-      recalcAll();
+      saveRentAssistContext();
     });
     $("ra-situation").addEventListener("change", recalcAll);
     $("household-type").addEventListener("change", recalcAll);
@@ -2603,6 +2643,9 @@
   }
 
   bind();
+  if ($("rentassist-enable")) {
+    $("rentassist-enable").checked = sessionStorage.getItem("rentready-rentassist-enabled-v1") === "1";
+  }
   renderShortlist();
   const importedPropertyApplied = applyImportedProperty();
   if (!importedPropertyApplied && new URLSearchParams(location.search).get("step") === "property") {
