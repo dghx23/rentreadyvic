@@ -285,6 +285,26 @@
     return Number.isFinite(cap) && cap > 0 ? cap : 0;
   }
 
+  function workingCreditAccrualRule() {
+    const concession = selectedWorkConcession();
+    if (!concession || !workingCreditApplicable()) return null;
+    const threshold = Number(
+      concession.accrual_income_threshold ??
+      concession.ordinary_income_threshold ??
+      concession.build_threshold ??
+      concession.income_threshold
+    );
+    const maxBuild = Number(
+      concession.max_accrual_per_fortnight ??
+      concession.max_build_per_fortnight ??
+      concession.fortnightly_accrual_max ??
+      concession.build_max ??
+      concession.build_amount
+    );
+    if (!Number.isFinite(threshold) || threshold < 0 || !Number.isFinite(maxBuild) || maxBuild <= 0) return null;
+    return { threshold, maxBuild };
+  }
+
   function wholeFortnightsBetween(start, end) {
     if (!(start instanceof Date) || isNaN(start) || !(end instanceof Date) || isNaN(end) || end < start) return 0;
     return Math.max(0, Math.floor((end.getTime() - start.getTime()) / (14 * 86400000)));
@@ -303,6 +323,7 @@
 
   function estimateWorkingCreditBalance() {
     const cap = workingCreditCap();
+    const accrual = workingCreditAccrualRule();
     const start = parseLocalDate($("credit-payment-start").value);
     const ever = $("credit-ever-income").value;
     const today = new Date();
@@ -310,21 +331,30 @@
 
     if (!cap) {
       $("credit-estimate-results").hidden = false;
-      $("credit-estimated-balance").textContent = "Not a Working Credit payment";
-      $("credit-estimated-confidence").textContent = "The selected payment currently uses a different work-income concession.";
+      $("credit-estimated-balance").textContent = "Working Credit data unavailable";
+      $("credit-estimated-confidence").textContent = "The Social Security AU dataset does not provide a Working Credit cap for this selected payment.";
+      $("use-credit-estimate").disabled = true;
+      return;
+    }
+    if (!accrual) {
+      $("credit-estimate-results").hidden = false;
+      $("credit-estimated-balance").textContent = "Accrual rule unavailable";
+      $("credit-estimated-confidence").textContent = "RentReady will not estimate a Working Credit balance unless the accrual threshold and build amount are supplied by the Social Security AU dataset.";
       $("use-credit-estimate").disabled = true;
       return;
     }
 
+    const creditThreshold = accrual.threshold;
+    const creditMaxBuild = accrual.maxBuild;
     $("credit-estimate-cap").textContent = money(cap,0);
     $("credit-estimate-work").textContent = money(workIncomeFN,0) + "/fn";
 
     if (!start) {
-      const fortnightsToCap = Math.ceil(cap / 48);
+      const fortnightsToCap = Math.ceil(cap / creditMaxBuild);
       $("credit-estimate-results").hidden = false;
       $("credit-estimated-balance").textContent = "Up to " + money(cap,0);
       $("credit-estimated-confidence").textContent =
-        "No payment start date was entered. If your total ordinary income stayed below $48/fortnight, the maximum could build after about " +
+        "No payment start date was entered. Under the current Social Security AU accrual rule, the maximum could build after about " +
         fortnightsToCap + " fortnights. Check myGov for the actual balance.";
       $("credit-estimate-built").textContent = "Possible range: $0–" + cap.toLocaleString("en-AU");
       $("credit-estimate-assessable").textContent = "Cannot estimate without a balance";
@@ -363,7 +393,7 @@
     }
 
     if (ever === "no") {
-      grossBuilt = totalFNs * 48;
+      grossBuilt = totalFNs * creditMaxBuild;
       balance = Math.min(cap,grossBuilt);
       confidence = "Upper estimate based on no reported employment income and assuming other ordinary income also stayed below $48/fortnight.";
     } else if (ever === "yes") {
@@ -378,13 +408,13 @@
       }
 
       const beforeIncomeFNs = wholeFortnightsBetween(start,incomeStart);
-      balance = Math.min(cap,beforeIncomeFNs * 48);
-      grossBuilt = beforeIncomeFNs * 48;
+      balance = Math.min(cap,beforeIncomeFNs * creditMaxBuild);
+      grossBuilt = beforeIncomeFNs * creditMaxBuild;
       const afterIncomeFNs = wholeFortnightsBetween(incomeStart,today);
 
       for (let i=0;i<afterIncomeFNs;i++) {
-        if (typical < 48) {
-          const earned = 48 - typical;
+        if (typical < creditThreshold) {
+          const earned = Math.min(creditMaxBuild, creditThreshold - typical);
           grossBuilt += earned;
           balance = Math.min(cap,balance + earned);
         } else {
@@ -393,7 +423,7 @@
       }
       confidence = "Rough estimate assuming the typical employment income you entered was the same every fortnight and there was no other ordinary income changing accrual.";
     } else {
-      grossBuilt = totalFNs * 48;
+      grossBuilt = totalFNs * creditMaxBuild;
       balance = Math.min(cap,grossBuilt);
       confidence = "Upper estimate because you are unsure about reported income history. The actual balance may be lower.";
     }
@@ -411,7 +441,7 @@
     if (!workIncomeFN) {
       $("credit-estimate-until").textContent = "Credits are not being used by work income";
       $("credit-estimate-until-copy").textContent =
-        "With $0 employment income entered, Working Credits would not be needed to offset work income. If total ordinary income remains below $48/fortnight, the balance may continue to build up to the cap.";
+        "With $0 employment income entered, Working Credits would not be needed to offset work income. The estimator uses the current Social Security AU accrual rule for any further build-up.";
       return;
     }
 
@@ -433,8 +463,11 @@
     for (let fn=0;fn<=260;fn++) {
       const result = paymentAtWork(workIncomeFN,remaining);
       if (result.reduction > 0.01) { firstReduction = fn; break; }
-      if (workIncomeFN < 48) remaining = Math.min(cap,remaining + (48-workIncomeFN));
-      else remaining = Math.max(0,remaining - Math.min(remaining,workIncomeFN));
+      if (workIncomeFN < creditThreshold) {
+        remaining = Math.min(cap, remaining + Math.min(creditMaxBuild, creditThreshold - workIncomeFN));
+      } else {
+        remaining = Math.max(0,remaining - Math.min(remaining,workIncomeFN));
+      }
     }
 
     if (firstReduction === 0) {
@@ -699,13 +732,13 @@
       if (!json.ok || json.source !== "social-security-au" || !Array.isArray(json.payments)) throw new Error("Invalid Social Security AU feed");
       data = json;
       status.className = "status-pill ok";
-      status.textContent = "Current data connected";
+      status.textContent = "Social Security AU connected";
       populatePayments();
       populateRABands();
       recalcAll();
     } catch (err) {
       status.className = "status-pill bad";
-      status.textContent = "Live data unavailable";
+      status.textContent = "Social Security AU unavailable";
       $("payment-select").innerHTML = '<option value="manual">Enter payment manually</option>';
       $("payment-rate-select").innerHTML = '<option value="0">Manual amount</option>';
       $("centrelink-rate-display").textContent = "Unavailable";
