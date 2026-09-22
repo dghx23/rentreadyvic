@@ -139,12 +139,51 @@
       <div class="card">
         <div class="card-head"><h3>Work and other household income</h3></div>
         <div class="card-body fields">
-          <label>Gross work income <span class="period-label">per fortnight</span>
+          <label class="work-income-field">Gross work income <span class="period-label">per fortnight</span>
             <div class="money-input"><span>$</span><input id="work-income" type="number" step="10" min="0" value="0"></div>
+            <div class="work-income-slider-inline">
+              <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Gross work income slider">
+              <div class="work-income-slider-scale">
+                <span>$0</span>
+                <span id="impact-slider-free">Payment reduction starts: —</span>
+                <span id="impact-slider-cutoff">Payment $0: —</span>
+              </div>
+            </div>
           </label>
           <label>Other household gross income <span class="period-label">per week</span>
             <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
           </label>
+
+          <div class="target-rent-planner">
+            <div class="target-rent-head">
+              <div>
+                <span>Target rental value</span>
+                <strong>What weekly rent are you aiming for?</strong>
+              </div>
+              <small>Use this before you have found a property, or to test a different rent.</small>
+            </div>
+            <label>Target weekly rent
+              <div class="money-input"><span>$</span><input id="target-rent" type="number" step="5" min="0" value="0" placeholder="450"></div>
+            </label>
+            <input id="target-rent-slider" type="range" min="100" max="1200" step="5" value="450" aria-label="Target weekly rent slider">
+            <div class="target-rent-scale"><span>$100/wk</span><span>$1,200/wk</span></div>
+
+            <div class="target-rent-results">
+              <div>
+                <span>Market planning aim</span>
+                <strong id="target-market-status">Enter a target rent</strong>
+                <small id="target-market-detail">Based on the general affordability benchmark.</small>
+              </div>
+              <div>
+                <span>RentAssist rent-share test</span>
+                <strong id="target-rentassist-status">Enter a target rent</strong>
+                <small id="target-rentassist-detail">Based on the current RentAssist income basis.</small>
+              </div>
+            </div>
+            <div class="target-rent-summary" id="target-rent-summary">
+              Enter a target weekly rent to see the headroom or shortfall under both tests.
+            </div>
+          </div>
           <label><span id="work-concession-label">Working Credit balance</span>
             <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
             <small id="work-concession-help">Used only where the selected payment's configured work-income rule supports it.</small>
@@ -181,31 +220,19 @@
 
       <p id="income-impact-copy">RentReady will show how the configured income-free area and taper reduce the selected payment as earnings increase.</p>
 
-      <div class="income-impact-slider" id="income-impact-slider-wrap">
-        <div class="income-impact-slider-head">
-          <div>
-            <span>Test a different earnings amount</span>
-            <strong id="impact-test-income">$0 per fortnight</strong>
-          </div>
-          <button type="button" class="btn" id="apply-impact-income">Use this as my work income</button>
+      <div class="centrelink-impact-notice" id="centrelink-impact-notice">
+        <div class="centrelink-impact-now">
+          <span>What this means for you now</span>
+          <strong id="centrelink-impact-now">Enter your work income to see what happens to your payment.</strong>
         </div>
-
-        <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Test gross work income">
-
-        <div class="income-impact-slider-scale">
-          <span>$0</span>
-          <span id="impact-slider-free">Free area: —</span>
-          <span id="impact-slider-cutoff">Payment $0: —</span>
+        <div class="centrelink-impact-rule">
+          <span>If you earn more</span>
+          <p id="centrelink-impact-more">RentReady will explain when your payment starts reducing and how much is lost for each extra dollar earned.</p>
         </div>
-
-        <div class="income-impact-preview">
-          <div><span>Gross work income</span><strong id="impact-preview-work">$0</strong></div>
-          <div><span>Estimated payment</span><strong id="impact-preview-payment">$0</strong></div>
-          <div><span>Payment reduction</span><strong id="impact-preview-reduction">$0</strong></div>
-          <div class="primary"><span>Work + payment</span><strong id="impact-preview-total">$0</strong></div>
+        <div class="centrelink-impact-example">
+          <span>Simple example</span>
+          <p id="centrelink-impact-example">The example will update using the income-test rule for your selected payment.</p>
         </div>
-
-        <div class="impact-preview-status" id="impact-preview-status">Move the slider to test how earnings change the payment.</div>
       </div>
 
       <div class="income-impact-stats">
