@@ -1228,3 +1228,8 @@ body{background:#f5f7fb}
   #step-income>.grid.two,#step-property>.grid.two,.grid.two,.grid.three,
   .result-strip,.optimise-dashboard{grid-template-columns:1fr!important}
 }
+
+
+.wizard-step.completed .wizard-number{background:#dcfce7!important;color:#15803d!important}
+.wizard-step.completed b{color:#475467!important}
+.wizard-step.completed:after{content:"✓";font-size:9px;color:#15803d;font-weight:900;margin-left:auto}
