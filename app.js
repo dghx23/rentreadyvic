@@ -1239,6 +1239,31 @@
     return activeProperty();
   }
 
+  function applyImportedProperty() {
+    let imported = null;
+    try {
+      imported = JSON.parse(sessionStorage.getItem("rentready-imported-property-v1") || "null");
+    } catch {}
+    if (!imported) return false;
+
+    sessionStorage.removeItem("rentready-imported-property-v1");
+    $("property-address").value = imported.address || "";
+    $("property-rent").value = imported.rent || "";
+    $("property-bond").value = imported.bond || "";
+    $("property-beds").value = imported.beds || "";
+    $("property-available").value = imported.available || "";
+    $("listing-text").value = imported.url ? "Imported from property URL: " + imported.url : "";
+    if (imported.rent) {
+      $("target-rent").value = imported.rent;
+      if (Number(imported.rent) >= 100 && Number(imported.rent) <= 1200) {
+        $("target-rent-slider").value = imported.rent;
+      }
+    }
+    setStep("property");
+    recalcAll();
+    return true;
+  }
+
   function loadPropertyIntoForm(prop) {
     if (!prop) return;
     $("property-address").value = prop.address || "";
@@ -1938,6 +1963,10 @@
 
   bind();
   renderShortlist();
+  const importedPropertyApplied = applyImportedProperty();
+  if (!importedPropertyApplied && new URLSearchParams(location.search).get("step") === "property") {
+    setStep("property");
+  }
   loadPaymentData();
   recalcAll();
 })();
