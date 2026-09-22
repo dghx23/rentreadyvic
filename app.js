@@ -284,21 +284,11 @@
 
   function setStep(name) {
     document.querySelectorAll(".step-panel").forEach(p => p.classList.toggle("active", p.id === "step-" + name));
-    document.querySelectorAll(".step-tab").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
-    document.querySelectorAll(".process-step").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
-    if ($("rail-current-copy")) {
-      const labels = {
-        income: "Step 1 of 5",
-        property: "Step 2 of 5",
-        bond: "Step 3 of 5",
-        affordability: "Step 4 of 5",
-        optimise: "Step 5 of 5",
-        application: "Application & Rights"
-      };
-      $("rail-current-copy").textContent = labels[name] || "";
-    }
+    document.querySelectorAll(".wizard-step, .wizard-rights").forEach(b =>
+      b.classList.toggle("active", b.dataset.stepTarget === name)
+    );
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (name === "affordability") renderAffordability();
+    if (name === "result") recalcAll();
     if (name === "application") renderApplicationReview();
     if (name === "optimise") initialiseOptimiser();
   }
@@ -434,7 +424,7 @@
   }
 
   function recalcAll() {
-    const prop = activeProperty();
+    const prop = propertyForAssessment();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const sc = scenario(workIncomeFN, rent);
     renderIncome(sc);
@@ -443,7 +433,7 @@
     renderPropertyAssessment();
     renderAffordability(sc, prop);
     renderApplicationReview(sc, prop);
-    renderPositionDock(sc, prop);
+    renderResultOverview(sc, prop);
   }
 
   function renderPaymentCoverage() {
@@ -493,43 +483,49 @@
     }).join("") : '<div class="empty-state">Additional support catalogue is unavailable from the current data feed.</div>';
   }
 
-  function renderPositionDock(sc, prop) {
-    if (!$("dock-status")) return;
+  function renderResultOverview(sc, prop) {
+    if (!$("result-overall-status")) return;
 
-    const payment = selectedPayment();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const ratio = sc.householdWeek > 0 && rent > 0 ? rent / sc.householdWeek : null;
     const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
     const rentAssistPass = prop && rent > 0 ? rent < rentAssistLimit : null;
+    const generalPass = prop && rent > 0 && sc.householdWeek > 0 ? rent <= generalLimit : null;
+    const cap = prop ? bondCapForBeds(prop.beds) : 0;
+    const bondGap = prop ? Math.max(0, Number(prop.bond || 0) - cap) : 0;
 
-    $("dock-payment").textContent = payment ? (payment.shortName || payment.name) : "—";
-    $("dock-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "—";
-    $("dock-property").textContent = prop ? prop.address : "Not selected";
-    $("dock-rent").textContent = prop && rent ? money(rent) + "/wk" : "—";
-    $("dock-ratio").textContent = ratio == null ? "—" : pct(ratio);
-    $("dock-rentassist").textContent = rentAssistPass == null ? "Not tested" : rentAssistPass ? "Within rent-share test" : "Above rent-share test";
+    $("result-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "—";
+    $("result-rent").textContent = prop && rent ? money(rent) + "/wk" : "—";
+    $("result-ratio").textContent = ratio == null ? "—" : pct(ratio);
+    $("result-ra").textContent = money(sc.actualRAFN / 2) + "/wk";
 
-    const status = $("dock-status");
-    let state = "", copy = "Add your income to begin";
-    if (sc.householdWeek > 0 && !prop) {
-      state = "warn";
-      copy = "Income profile ready — add a property next";
-    } else if (prop && sc.householdWeek > 0) {
-      const generalPass = rent <= sc.householdWeek * cfg.generalAffordabilityPct;
-      if (generalPass && rentAssistPass) {
-        state = "good";
-        copy = "This property is inside both current planning ranges";
-      } else if (rentAssistPass) {
-        state = "warn";
-        copy = "RentAssist range passes, but general affordability is tight";
-      } else {
-        state = "bad";
-        copy = "This property is above the current RentAssist rent-share range";
+    let status = "Add a property to see the result";
+    let copy = "RentReady will compare the property with your projected income, Rent Assistance and RentAssist settings.";
+
+    if (prop && rent > 0 && sc.householdWeek <= 0) {
+      status = "Property added — income is still missing";
+      copy = "Go back to step 1 and complete the income profile to calculate the rental position.";
+    } else if (prop && rent > 0 && sc.householdWeek > 0) {
+      if (generalPass && rentAssistPass && bondGap <= 0) {
+        status = "This property is inside the current planning ranges";
+        copy = "The rent is inside both the general planning benchmark and the RentAssist rent-share test, and the entered bond is within the bedroom-based cap used here.";
+      } else if (rentAssistPass && !generalPass) {
+        status = "RentAssist may fit, but the rent is financially tight";
+        copy = "The RentAssist rent-share test is inside range, but the rent is above the general planning benchmark by " + money(Math.max(0, rent - generalLimit)) + " per week.";
+      } else if (!rentAssistPass) {
+        status = "The rent is above the current RentAssist range";
+        copy = "The rent is " + money(Math.max(0, rent - rentAssistLimit)) + " per week above the RentAssist rent-share ceiling used by this tool.";
+      } else if (bondGap > 0) {
+        status = "The rent looks workable, but the bond needs attention";
+        copy = "The entered bond is " + money(bondGap) + " above the bedroom-based RentAssist cap used here.";
       }
     }
-    status.className = "dock-status" + (state ? " " + state : "");
-    $("dock-status-copy").textContent = copy;
+
+    $("result-overall-status").textContent = status;
+    $("result-overall-copy").textContent = copy;
   }
+
 
   function renderIncome(sc) {
     const raMax = sc.ra.maximumFN || 0;
@@ -553,7 +549,9 @@
       copy += " The selected payment does not yet have a work-income taper model in this prototype, so the chosen payment amount is held constant as work income changes.";
     }
     if ($("future-ra").checked) {
-      copy += activeProperty() ? " Rent Assistance is estimated from the selected property's rent." : " Until you choose a property, the income projection uses the potential maximum Rent Assistance for the selected household situation.";
+      copy += propertyForAssessment() && Number(propertyForAssessment().rent || 0) > 0
+        ? " Rent Assistance is estimated from the property you entered."
+        : " Until you add a property, the income projection uses the potential maximum Rent Assistance for the selected household situation.";
     }
     $("income-explanation").textContent = copy;
     renderIncomeImpact(sc);
