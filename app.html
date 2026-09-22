@@ -171,6 +171,40 @@
               </div>
             </label>
 
+            <div class="no-work-panel">
+              <label class="check-row no-work-toggle">
+                <input type="checkbox" id="no-work-toggle">
+                <span><b>I do not currently work</b><small>Select this if your current gross work income is $0. RentReady will ask why so it can show the relevant Centrelink context.</small></span>
+              </label>
+
+              <div id="no-work-reason-wrap" class="no-work-reason-wrap" hidden>
+                <label>Why are you not currently working?
+                  <select id="no-work-reason">
+                    <option value="">Select the situation that best matches you</option>
+                    <option value="looking">I am looking for work</option>
+                    <option value="illness">I cannot work temporarily because of illness or injury</option>
+                    <option value="reduced_capacity">I have an ongoing condition or reduced capacity to work</option>
+                    <option value="principal_carer">I am a principal carer / have parenting responsibilities</option>
+                    <option value="short_caring">I have short-term caring duties</option>
+                    <option value="crisis">I am dealing with a major personal crisis or family/domestic violence</option>
+                    <option value="cultural">I have approved cultural or Sorry Business commitments</option>
+                    <option value="disaster">I am affected by a fire, flood or other disaster at home</option>
+                    <option value="study">I am studying or training as part of my requirements</option>
+                    <option value="other">Another reason</option>
+                  </select>
+                </label>
+
+                <div id="no-work-reason-card" class="no-work-reason-card" hidden>
+                  <div>
+                    <span id="no-work-reason-kicker">Centrelink context</span>
+                    <strong id="no-work-reason-title">—</strong>
+                    <p id="no-work-reason-copy">—</p>
+                  </div>
+                  <button type="button" class="reason-info-button" id="no-work-info-button" aria-label="More information about this Centrelink situation">?</button>
+                </div>
+              </div>
+            </div>
+
             <div class="work-secondary-fields">
               <label>Other household gross income <span class="period-label">per week</span>
                 <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
@@ -901,5 +935,16 @@
 </footer>
 
 <script src="app.js" defer></script>
+  <div class="reason-modal" id="reason-modal" hidden>
+    <div class="reason-modal-backdrop" data-close-reason-modal></div>
+    <div class="reason-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="reason-modal-title">
+      <button type="button" class="reason-modal-close" data-close-reason-modal aria-label="Close">×</button>
+      <span class="reason-modal-kicker">Services Australia information</span>
+      <h2 id="reason-modal-title">Centrelink information</h2>
+      <div id="reason-modal-body"></div>
+      <a id="reason-modal-link" class="btn primary" href="https://www.servicesaustralia.gov.au/mutual-obligation-requirements" target="_blank" rel="noopener">Read official information ↗</a>
+    </div>
+  </div>
+
 </body>
 </html>
