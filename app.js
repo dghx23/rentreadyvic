@@ -41,6 +41,7 @@
   let impactTestWorkFN = null;
   let otherIncomeWeek = 0;
   let workingCreditEstimateFN = null;
+  let rentAssistExplored = false;
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
   let accountEmail = localStorage.getItem(STORAGE.account) || "";
@@ -805,7 +806,37 @@
     recalcAll();
   }
 
+  function rentAssistAvailable() {
+    return !!($("future-ra") && $("future-ra").checked);
+  }
+
+  function rentAssistActive() {
+    return rentAssistAvailable() && rentAssistExplored;
+  }
+
+  function updateRentAssistVisibility() {
+    const available = rentAssistAvailable();
+    if (!available) rentAssistExplored = false;
+    const active = available && rentAssistExplored;
+
+    if ($("rent-assistance-details")) $("rent-assistance-details").hidden = !available;
+    if ($("rentassist-explore-offer")) $("rentassist-explore-offer").hidden = !available || active;
+    if ($("rentassist-explore-confirmed")) $("rentassist-explore-confirmed").hidden = !active;
+    if ($("rentassist-result-section")) $("rentassist-result-section").hidden = !active;
+    if ($("target-rentassist-card")) $("target-rentassist-card").hidden = !active;
+    if ($("property-rentassist-cap-metric")) $("property-rentassist-cap-metric").hidden = !active;
+
+    if ($("property-assessment-note")) {
+      $("property-assessment-note").innerHTML = active
+        ? "<b>Two different views are active.</b> RentReady shows its general affordability benchmark separately from the official RentAssist Bond Loan rent-share test."
+        : available
+          ? "<b>Rent Assistance is included.</b> RentAssist Bond Loan is still optional. Choose “Explore RentAssist Bond Loan” in Step 1 if you want the Housing Victoria eligibility rules added."
+          : "<b>General affordability first.</b> RentAssist remains hidden unless you choose Rent Assistance and then explicitly explore the bond-loan scheme.";
+    }
+  }
+
   function recalcAll() {
+    updateRentAssistVisibility();
     updateWorkStatusUI();
     updateRentalArrangementUI();
     updateOtherHouseholdIncomeVisibility();
@@ -841,40 +872,50 @@
 
   function renderResultOverview(sc, prop) {
     if (!$("result-overall-status")) return;
-
+    const active = rentAssistActive();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const ratio = sc.householdWeek > 0 && rent > 0 ? rent / sc.householdWeek : null;
-    const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
     const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
-    const rentAssistPass = prop && rent > 0 ? rent < rentAssistLimit : null;
     const generalPass = prop && rent > 0 && sc.householdWeek > 0 ? rent <= generalLimit : null;
-    const cap = prop ? bondCapForBeds(prop.beds) : 0;
-    const bondGap = prop ? Math.max(0, Number(prop.bond || 0) - cap) : 0;
 
     $("result-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "—";
     $("result-rent").textContent = prop && rent ? money(rent) + "/wk" : "—";
     $("result-ratio").textContent = ratio == null ? "—" : pct(ratio);
-    $("result-ra").textContent = money(sc.actualRAFN / 2) + "/wk";
+    $("result-ra").textContent = rentAssistAvailable() ? money(sc.actualRAFN / 2) + "/wk" : "Not included";
 
     let status = "Add a property to see the result";
-    let copy = "RentReady will compare the property with your projected income, Rent Assistance and RentAssist settings.";
+    let copy = "RentReady will compare the property with your projected income.";
 
     if (prop && rent > 0 && sc.householdWeek <= 0) {
       status = "Property added — income is still missing";
-      copy = "Go back to step 1 and complete the income profile to calculate the rental position.";
-    } else if (prop && rent > 0 && sc.householdWeek > 0) {
-      if (generalPass && rentAssistPass && bondGap <= 0) {
-        status = "This property is inside the current planning ranges";
-        copy = "The rent is inside both the general planning benchmark and the RentAssist rent-share test, and the entered bond is within the bedroom-based cap used here.";
+      copy = "Go back to Step 1 and complete the income profile to calculate the rental position.";
+    } else if (prop && rent > 0 && sc.householdWeek > 0 && !active) {
+      if (generalPass) {
+        status = "This property is inside the current planning benchmark";
+        copy = "The selected rent is within RentReady's general affordability aim. RentAssist is not part of this result unless you explicitly choose to explore the bond-loan scheme.";
+      } else {
+        status = "This property is above the current planning benchmark";
+        copy = "The selected rent is about " + money(Math.max(0,rent-generalLimit),0) + "/wk above RentReady's general affordability aim.";
+      }
+    } else if (prop && rent > 0 && sc.householdWeek > 0 && active) {
+      const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+      const rentAssistPass = rent < rentAssistLimit;
+      const cap = bondCapForBeds(prop.beds);
+      const bondAmountGap = Math.max(0,Number(prop.bond || 0)-cap);
+
+      if (generalPass && rentAssistPass && bondAmountGap <= 0) {
+        status = "This property is inside the current planning and RentAssist ranges";
+        copy = "The rent is inside the general planning benchmark and under the RentAssist rent-share ceiling; the entered bond is also within the published bedroom-based cap.";
       } else if (rentAssistPass && !generalPass) {
         status = "RentAssist may fit, but the rent is financially tight";
-        copy = "The RentAssist rent-share test is inside range, but the rent is above the general planning benchmark by " + money(Math.max(0, rent - generalLimit)) + " per week.";
+        copy = "The RentAssist rent-share rule is inside range, but the rent is above the general planning benchmark by " + money(Math.max(0,rent-generalLimit),0) + "/wk.";
       } else if (!rentAssistPass) {
-        status = "The rent is above the current RentAssist range";
-        copy = "The rent is " + money(Math.max(0, rent - rentAssistLimit)) + " per week above the RentAssist rent-share ceiling used by this tool.";
-      } else if (bondGap > 0) {
+        status = "The rent is above the RentAssist rent-share rule";
+        copy = "Your rent share is " + pct(sc.bondIncomeWeek > 0 ? rent/sc.bondIncomeWeek : 0) +
+          " of the Housing Victoria income basis. The scheme requires it to be under " + Math.round(cfg.bondRentPct*100) + "%.";
+      } else if (bondAmountGap > 0) {
         status = "The rent looks workable, but the bond needs attention";
-        copy = "The entered bond is " + money(bondGap) + " above the bedroom-based RentAssist cap used here.";
+        copy = "The entered bond is " + money(bondAmountGap,0) + " above the published bedroom-based RentAssist maximum.";
       }
     }
 
@@ -1248,48 +1289,63 @@
 
   function renderTargetRentPlanner() {
     if (!$("target-rent")) return;
+    updateRentAssistVisibility();
+
     const rent = Math.max(0, Number($("target-rent").value || 0));
+    const active = rentAssistActive();
+
     if (!rent) {
       $("target-market-status").textContent = "Enter a target rent";
       $("target-market-detail").textContent = "Based on the general affordability benchmark.";
-      $("target-rentassist-status").textContent = "Enter a target rent";
-      $("target-rentassist-detail").textContent = "Based on the current RentAssist income basis.";
-      $("target-rent-summary").textContent = "Enter a target weekly rent to see the headroom or shortfall under both tests.";
+      if ($("target-rentassist-status")) $("target-rentassist-status").textContent = "Enter a target rent";
+      if ($("target-rentassist-detail")) $("target-rentassist-detail").textContent = "Based on the current RentAssist income basis.";
+      $("target-rent-summary").textContent = active
+        ? "Enter a target weekly rent to see the headroom or shortfall under both the planning benchmark and RentAssist."
+        : "Enter a target weekly rent to see the general affordability position.";
       return;
     }
 
     const sc = scenario(workIncomeFN, rent);
     const marketLimit = sc.householdWeek * cfg.generalAffordabilityPct;
-    const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
     const marketGap = rent - marketLimit;
-    const rentAssistGap = rent - rentAssistLimit;
     const marketPass = marketGap <= 0;
-    const rentAssistPass = rentAssistGap < 0;
 
     $("target-market-status").textContent = marketPass
       ? "Within the planning aim"
       : money(marketGap,0) + "/wk above the planning aim";
     $("target-market-detail").textContent =
       "At this target rent, the general " + Math.round(cfg.generalAffordabilityPct*100) +
-      "% planning amount is about " + money(marketLimit,0) + "/wk. This is a planning benchmark, not a legal or lender rule.";
+      "% planning amount is about " + money(marketLimit,0) + "/wk. This is a planning benchmark, not a government eligibility rule.";
+
+    if (!active) {
+      $("target-rent-summary").textContent = marketPass
+        ? money(rent,0) + "/wk is within the current general planning aim."
+        : money(rent,0) + "/wk is about " + money(marketGap,0) + "/wk above the current general planning aim.";
+      return;
+    }
+
+    const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const rentAssistGap = rent - rentAssistLimit;
+    const rentAssistPass = rentAssistGap < 0;
+    const rentAssistRatio = sc.bondIncomeWeek > 0 ? rent / sc.bondIncomeWeek : 0;
 
     $("target-rentassist-status").textContent = rentAssistPass
-      ? "Within the RentAssist rent-share test"
+      ? "Within the RentAssist rent-share rule"
       : money(Math.max(0,rentAssistGap),0) + "/wk above the RentAssist ceiling";
     $("target-rentassist-detail").textContent =
-      "The current RentAssist rent-share ceiling is about " + money(rentAssistLimit,0) +
-      "/wk using the configured under-" + Math.round(cfg.bondRentPct*100) + "% test and the Rent Assistance income basis.";
+      "Your target rent is " + pct(rentAssistRatio) + " of the Housing Victoria income basis. The rule requires your rent share to be under " +
+      Math.round(cfg.bondRentPct*100) + "%. The current modelled ceiling is about " + money(rentAssistLimit,0) + "/wk.";
 
     if (marketPass && rentAssistPass) {
       $("target-rent-summary").textContent =
-        money(rent,0) + "/wk is inside both the general planning aim and the current RentAssist rent-share range for the income entered.";
+        money(rent,0) + "/wk is inside both the general planning aim and the current RentAssist rent-share rule.";
     } else if (!marketPass && rentAssistPass) {
       $("target-rent-summary").textContent =
-        money(rent,0) + "/wk fits the RentAssist rent-share test but is above the general planning aim by about " +
+        money(rent,0) + "/wk fits the RentAssist rent-share rule but is above the general planning aim by about " +
         money(marketGap,0) + "/wk.";
     } else if (marketPass && !rentAssistPass) {
       $("target-rent-summary").textContent =
-        money(rent,0) + "/wk is inside the general planning aim but is above the current RentAssist rent-share ceiling by about " +
+        money(rent,0) + "/wk is inside the general planning aim but is above the RentAssist ceiling by about " +
         money(Math.max(0,rentAssistGap),0) + "/wk.";
     } else {
       $("target-rent-summary").textContent =
@@ -1297,6 +1353,7 @@
         "/wk above the planning aim and " + money(Math.max(0,rentAssistGap),0) + "/wk above the RentAssist rent-share ceiling.";
     }
   }
+
 
   function openIncomeImpactDetail() {
     const p = selectedPayment();
@@ -1323,23 +1380,77 @@
   }
 
   function renderBondChecks(sc, prop) {
+    if (!$("bond-checks")) return;
+    if (!rentAssistActive()) {
+      $("bond-checks").innerHTML = "";
+      return;
+    }
+
     const limit = householdIncomeLimit();
     const assets = Number($("assets").value || 0);
     const resident = $("permanent-resident").checked;
     const owns = $("owns-property").checked;
     const incomePass = sc.bondIncomeWeek <= limit;
     const assetPass = assets <= cfg.bondAssetLimit;
-    const rentPass = prop ? Number(prop.rent || 0) < sc.bondIncomeWeek * cfg.bondRentPct : null;
+    const rent = prop ? Number(prop.rent || 0) : 0;
+    const rentCeiling = sc.bondIncomeWeek * cfg.bondRentPct;
+    const rentRatio = prop && sc.bondIncomeWeek > 0 ? rent / sc.bondIncomeWeek : null;
+    const rentPass = prop ? rent < rentCeiling : null;
+    const cap = prop ? bondCapForBeds(prop.beds) : 0;
+    const bondAmount = prop ? Number(prop.bond || 0) : 0;
+    const bondPass = prop && bondAmount > 0 && prop.beds
+      ? bondAmount <= cap
+      : prop ? null : null;
+
+    const maximumRAWeek = sc.ra ? Number(sc.ra.maximumFN || 0) / 2 : 0;
+    const rentDetail = prop
+      ? "Your rent share is " + money(rent,0) + "/wk, which is " + pct(rentRatio || 0) +
+        " of the Housing Victoria income basis. The scheme requires less than " +
+        Math.round(cfg.bondRentPct*100) + "%. " +
+        (rentPass
+          ? "You are about " + money(Math.max(0,rentCeiling-rent),0) + "/wk below the current ceiling."
+          : "You are about " + money(Math.max(0,rent-rentCeiling),0) + "/wk above the current ceiling.") +
+        " This income basis includes up to " + money(maximumRAWeek,0) + "/wk of maximum eligible Rent Assistance."
+      : "Add a property to compare your rent share with the under-" + Math.round(cfg.bondRentPct*100) + "% rule.";
 
     const rows = [
-      checkRow(incomePass, "Weekly household income", money(sc.bondIncomeWeek) + " estimated for this test.", "Limit " + money(limit,0)),
-      checkRow(assetPass, "Assets", money(assets) + " entered.", "Limit " + money(cfg.bondAssetLimit,0)),
-      checkRow(resident, "Residency", resident ? "Citizen/permanent-resident requirement marked as met." : "Residency requirement is not met.", "Required"),
-      checkRow(!owns, "Property ownership", owns ? "You marked that you own or part-own residential property." : "No residential property ownership entered.", "Must not own"),
-      checkRow(rentPass, "Rent share", prop ? money(prop.rent) + "/wk compared with " + money(sc.bondIncomeWeek * cfg.bondRentPct) + "/wk." : "Add a property to run this test.", "Under " + Math.round(cfg.bondRentPct*100) + "%")
+      checkRow(incomePass, "Household income limit",
+        "Your estimated income for the scheme is " + money(sc.bondIncomeWeek,0) + "/wk. " +
+        (incomePass
+          ? "That is within the " + money(limit,0) + "/wk limit for the selected household type."
+          : "That is " + money(sc.bondIncomeWeek-limit,0) + "/wk above the " + money(limit,0) + "/wk limit."),
+        "Limit " + money(limit,0) + "/wk"),
+      checkRow(assetPass, "Asset limit",
+        "You entered " + money(assets,0) + " of assessable assets. " +
+        (assetPass
+          ? "That is within the current " + money(cfg.bondAssetLimit,0) + " asset limit."
+          : "That is " + money(assets-cfg.bondAssetLimit,0) + " above the current asset limit."),
+        "Limit " + money(cfg.bondAssetLimit,0)),
+      checkRow(resident, "Residency",
+        resident
+          ? "You marked the Australian permanent-residency/citizenship requirement as met."
+          : "You have not marked the permanent-residency requirement as met.",
+        "Required"),
+      checkRow(!owns, "Residential property ownership",
+        owns
+          ? "You marked that you own or part-own a house, flat or unit, which conflicts with the standard eligibility rule."
+          : "You have not entered any residential property ownership.",
+        "Must not own"),
+      checkRow(rentPass, "Rent share must be under " + Math.round(cfg.bondRentPct*100) + "%", rentDetail,
+        prop && rentRatio != null ? pct(rentRatio) : "Property needed"),
+      checkRow(bondPass, "Bond amount and bedroom cap",
+        prop
+          ? (bondAmount
+              ? "The entered bond is " + money(bondAmount,0) + ". The published maximum for this bedroom size is " +
+                money(cap,0) + ". " + (bondPass === true ? "The entered bond is within that cap." : bondPass === false ? "The entered bond is above that cap by " + money(bondAmount-cap,0) + "." : "Bedroom information is needed to complete this check.")
+              : "Enter the bond amount to compare it with the published bedroom-based maximum.")
+          : "Add a property to check the bond amount.",
+        prop && prop.beds ? "Cap " + money(cap,0) : "Property needed")
     ];
+
     $("bond-checks").innerHTML = rows.join("");
   }
+
 
   function checkRow(pass, title, detail, limit) {
     const state = pass == null ? "pending" : pass ? "pass" : "fail";
@@ -1463,15 +1574,18 @@
 
   function renderPropertyAssessment() {
     if (!$("property-assessment-status")) return;
+    updateRentAssistVisibility();
+
     const prop = propertyForAssessment();
     const hasProperty = prop && Number(prop.rent || 0) > 0;
     const status = $("property-assessment-status");
+    const active = rentAssistActive();
 
     if (!hasProperty) {
       status.className = "assessment-status pending";
       status.textContent = "Waiting for property";
       $("property-assessment-verdict").textContent = "Paste or enter a property";
-      $("property-assessment-copy").textContent = "RentReady will compare the rent and bond with your projected income as soon as the property details are available.";
+      $("property-assessment-copy").textContent = "RentReady will compare the rent with your projected income as soon as the property details are available.";
       ["property-check-rent","property-check-income","property-check-ratio","property-check-ra","property-check-bond","property-check-cap"].forEach(id => $(id).textContent = "—");
       $("property-assessment-details").innerHTML = "<p>Paste a listing or enter rent, bond and bedrooms to see the assessment.</p>";
       return;
@@ -1482,38 +1596,52 @@
     const sc = scenario(workIncomeFN, rent);
     const ratio = sc.householdWeek > 0 ? rent / sc.householdWeek : null;
     const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
-    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
-    const cap = bondCapForBeds(prop.beds);
     const generalGap = rent - generalLimit;
+    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
     const rentAssistGap = rent - bondLimit;
+    const cap = bondCapForBeds(prop.beds);
     const bondGap = bond > 0 ? bond - cap : 0;
 
     $("property-check-rent").textContent = money(rent) + "/wk";
     $("property-check-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "Add income";
     $("property-check-ratio").textContent = ratio == null ? "—" : pct(ratio);
-    $("property-check-ra").textContent = money(sc.actualRAFN / 2) + "/wk";
+    $("property-check-ra").textContent = rentAssistAvailable() ? money(sc.actualRAFN / 2) + "/wk" : "Not included";
     $("property-check-bond").textContent = bond ? money(bond) : "Not found";
     $("property-check-cap").textContent = prop.beds ? money(cap) : "Need bedrooms";
 
     let verdict = "", copy = "", state = "pending";
     if (sc.householdWeek <= 0) {
       verdict = "Add your income to assess this property";
-      copy = "The listing has been read, but affordability needs the income profile from step 1.";
+      copy = "The listing has been read, but affordability needs the income profile from Step 1.";
+    } else if (!active) {
+      if (generalGap > 0) {
+        verdict = "This property is above the current planning benchmark";
+        copy = "The rent is about " + money(generalGap,0) + "/wk above RentReady's general affordability aim at the income entered.";
+        state = "warn";
+      } else {
+        verdict = "This property is inside the current planning benchmark";
+        copy = "The weekly rent is within RentReady's general affordability aim at the projected income.";
+        state = "good";
+      }
     } else if (rentAssistGap >= 0) {
-      verdict = "This rent is above the current RentAssist rent-share range";
-      copy = "The rent is " + money(rentAssistGap) + "/wk above the current RentAssist rent-share ceiling in this model.";
+      verdict = "The rent is above the RentAssist rent-share rule";
+      copy = "Your rent share is about " + pct(sc.bondIncomeWeek > 0 ? rent/sc.bondIncomeWeek : 0) +
+        " of the Housing Victoria income basis. It must be under " + Math.round(cfg.bondRentPct*100) +
+        "%. The rent is about " + money(rentAssistGap,0) + "/wk above the current ceiling.";
       state = "bad";
     } else if (generalGap > 0) {
-      verdict = "RentAssist may fit, but the property is financially tight";
-      copy = "The rent is within the RentAssist rent-share range used here but " + money(generalGap) + "/wk above the general planning benchmark.";
+      verdict = "RentAssist rent-share rule may fit, but the property is financially tight";
+      copy = "The rent is within the RentAssist rent-share rule but about " + money(generalGap,0) +
+        "/wk above the general planning benchmark.";
       state = "warn";
     } else if (bondGap > 0) {
       verdict = "The weekly rent looks workable, but the bond needs attention";
-      copy = "The rent sits inside both rent thresholds, but the entered bond is " + money(bondGap) + " above the bedroom-based RentAssist cap used here.";
+      copy = "The rent sits inside both rent thresholds, but the entered bond is " + money(bondGap,0) +
+        " above the published bedroom-based RentAssist cap.";
       state = "warn";
     } else {
       verdict = "This property looks within the current planning ranges";
-      copy = "The weekly rent is inside both the general planning benchmark and the RentAssist rent-share threshold used by this tool.";
+      copy = "The weekly rent is inside both the general planning benchmark and the RentAssist rent-share rule used by Housing Victoria.";
       state = "good";
     }
 
@@ -1525,16 +1653,21 @@
     const bullets = [];
     if (ratio != null) bullets.push("Rent is " + pct(ratio) + " of projected weekly household income.");
     bullets.push(generalGap <= 0
-      ? "General planning benchmark: " + money(-generalGap) + "/wk of headroom."
-      : "General planning benchmark: " + money(generalGap) + "/wk short.");
-    bullets.push(rentAssistGap < 0
-      ? "RentAssist rent-share test: " + money(-rentAssistGap) + "/wk of headroom."
-      : "RentAssist rent-share test: " + money(rentAssistGap) + "/wk above the current ceiling.");
-    if (bond && prop.beds) bullets.push(bondGap <= 0
-      ? "Bond is within the bedroom-based cap used here."
-      : "Bond is " + money(bondGap) + " above the bedroom-based cap used here.");
+      ? "General planning benchmark: " + money(-generalGap,0) + "/wk of headroom."
+      : "General planning benchmark: " + money(generalGap,0) + "/wk short.");
+
+    if (active) {
+      bullets.push(rentAssistGap < 0
+        ? "RentAssist rent-share rule: " + money(-rentAssistGap,0) + "/wk of headroom before reaching the under-" + Math.round(cfg.bondRentPct*100) + "% ceiling."
+        : "RentAssist rent-share rule: " + money(rentAssistGap,0) + "/wk above the current ceiling.");
+      if (bond && prop.beds) bullets.push(bondGap <= 0
+        ? "Bond is within the published bedroom-based maximum."
+        : "Bond is " + money(bondGap,0) + " above the published bedroom-based maximum.");
+    }
+
     $("property-assessment-details").innerHTML = "<ul>" + bullets.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>";
   }
+
 
   function renderPropertySummary(sc, prop) {
     const box = $("property-summary");
@@ -1561,6 +1694,7 @@
   function renderAffordability(sc = null, prop = null) {
     prop = prop || activeProperty();
     sc = sc || scenario(workIncomeFN, prop ? prop.rent : 0);
+    const active = rentAssistActive();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
     const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
@@ -1573,14 +1707,14 @@
 
     $("metric-weekly-income").textContent = money(sc.householdWeek);
     $("metric-general-rent").textContent = money(generalLimit);
-    $("metric-bond-rent").textContent = money(bondLimit);
     $("metric-property-rent").textContent = prop ? money(rent) : "—";
+    $("metric-bond-rent").textContent = money(bondLimit);
     $("metric-bond-cap").textContent = prop ? money(cap) : "—";
     $("metric-bond-shortfall").textContent = prop ? money(bondAmountGap) : "—";
 
     if (!prop) {
       setScore("general", null, 0, "Add a property to compare rent with your projected weekly income.", "");
-      setScore("bond", null, 0, "Add a property to run the RentAssist rent-share test.", "");
+      if (active) setScore("bond", null, 0, "Add a property to run the RentAssist rent-share test.", "");
       $("shortfall-explainer").innerHTML = "<p>Add a property first.</p>";
       return;
     }
@@ -1589,26 +1723,31 @@
       "Selected rent is " + pct(ratio) + " of projected weekly household income. The planning benchmark is " + Math.round(cfg.generalAffordabilityPct*100) + "%.",
       generalGap <= 0 ? money(-generalGap) + "/wk of headroom to the benchmark." : money(generalGap) + "/wk above the benchmark.");
 
-    setScore("bond", bondGap < 0, bondRatio,
-      "For the bond-loan rent test, the selected rent is " + pct(bondRatio) + " of the estimated income basis used by this tool. The configured threshold is under " + Math.round(cfg.bondRentPct*100) + "%.",
-      bondGap < 0 ? money(-bondGap) + "/wk of headroom to the rent-share limit." : money(bondGap) + "/wk above the rent-share limit.");
+    if (active) {
+      setScore("bond", bondGap < 0, bondRatio,
+        "Your rent share is " + pct(bondRatio) + " of the Housing Victoria income basis. RentAssist requires it to be under " + Math.round(cfg.bondRentPct*100) + "%.",
+        bondGap < 0 ? money(-bondGap) + "/wk of headroom to the RentAssist ceiling." : money(bondGap) + "/wk above the RentAssist ceiling.");
+    }
 
     const items = [];
     if (generalGap > 0) items.push("For the general affordability benchmark, the rent would need to fall by about " + money(generalGap) + " per week at the current income.");
     else items.push("The selected rent is within the general planning benchmark at the current projected income.");
 
-    if (bondGap >= 0) items.push("For the bond-loan rent-share test, the rent is about " + money(bondGap) + " per week above the current estimated limit.");
-    else items.push("The selected rent is within the bond-loan rent-share test at the current estimated income basis.");
+    if (active) {
+      if (bondGap >= 0) items.push("RentAssist: the rent is about " + money(bondGap) + "/wk above the under-" + Math.round(cfg.bondRentPct*100) + "% rent-share ceiling.");
+      else items.push("RentAssist: the selected rent is within the under-" + Math.round(cfg.bondRentPct*100) + "% rent-share rule.");
 
-    if (bondAmountGap > 0) items.push("The entered bond is " + money(bondAmountGap) + " above the published bedroom-based maximum loan amount. The final amount can also depend on occupancy.");
-    else if (prop.bond) items.push("The entered bond does not exceed the published bedroom-based maximum loan amount.");
+      if (bondAmountGap > 0) items.push("RentAssist: the entered bond is " + money(bondAmountGap) + " above the published bedroom-based maximum loan amount.");
+      else if (prop.bond) items.push("RentAssist: the entered bond does not exceed the published bedroom-based maximum loan amount.");
 
-    const incomeLimit = householdIncomeLimit();
-    if (sc.bondIncomeWeek > incomeLimit) items.push("There is also an income-limit issue: estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the configured limit for this household type.");
-    if (Number($("assets").value || 0) > cfg.bondAssetLimit) items.push("Assets are above the configured bond-loan asset limit by " + money(Number($("assets").value || 0) - cfg.bondAssetLimit) + ".");
+      const incomeLimit = householdIncomeLimit();
+      if (sc.bondIncomeWeek > incomeLimit) items.push("RentAssist: estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the current limit for this household type.");
+      if (Number($("assets").value || 0) > cfg.bondAssetLimit) items.push("RentAssist: entered assets are above the current asset limit by " + money(Number($("assets").value || 0) - cfg.bondAssetLimit) + ".");
+    }
 
     $("shortfall-explainer").innerHTML = "<ul>" + items.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>";
   }
+
 
   function renderApplicationReview(sc = null, prop = null) {
     if (!$("app-review-payment")) return;
@@ -1710,29 +1849,33 @@
         shortfalls.push({state:"ok",text:"The selected rent is within the general planning benchmark at the projected income."});
       }
 
-      if (bondGap >= 0) {
-        shortfalls.push({state:"warn",text:"The selected rent is about " + money(bondGap) + "/wk above the current RentAssist rent-share threshold used by this tool."});
-      } else {
-        shortfalls.push({state:"ok",text:"The selected rent is within the RentAssist rent-share threshold used by this tool."});
-      }
+      if (rentAssistActive()) {
+        if (bondGap >= 0) {
+          shortfalls.push({state:"warn",text:"RentAssist: the selected rent is about " + money(bondGap) + "/wk above the current under-" + Math.round(cfg.bondRentPct*100) + "% rent-share ceiling."});
+        } else {
+          shortfalls.push({state:"ok",text:"RentAssist: the selected rent is within the under-" + Math.round(cfg.bondRentPct*100) + "% rent-share rule."});
+        }
 
-      if (bondAmountGap > 0) {
-        shortfalls.push({state:"warn",text:"The entered bond is " + money(bondAmountGap) + " above the published bedroom-based loan cap used by this prototype."});
+        if (rentAssistActive() && bondAmountGap > 0) {
+          shortfalls.push({state:"warn",text:"RentAssist: the entered bond is " + money(bondAmountGap) + " above the published bedroom-based loan cap."});
+        }
       }
     }
 
-    const incomeLimit = householdIncomeLimit();
-    if (sc.bondIncomeWeek > incomeLimit) {
-      shortfalls.push({state:"warn",text:"Estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the configured RentAssist income limit for the selected household type."});
-    }
-    if (Number($("assets").value || 0) > cfg.bondAssetLimit) {
-      shortfalls.push({state:"warn",text:"Entered assets are above the configured RentAssist asset limit."});
-    }
-    if (!$("permanent-resident").checked) {
-      shortfalls.push({state:"warn",text:"The citizenship/permanent-residency requirement is not marked as met."});
-    }
-    if ($("owns-property").checked) {
-      shortfalls.push({state:"warn",text:"Residential property ownership is marked, which conflicts with the configured RentAssist eligibility test."});
+    if (rentAssistActive()) {
+      const incomeLimit = householdIncomeLimit();
+      if (sc.bondIncomeWeek > incomeLimit) {
+        shortfalls.push({state:"warn",text:"RentAssist: estimated weekly household income is " + money(sc.bondIncomeWeek - incomeLimit) + " above the current income limit for the selected household type."});
+      }
+      if (Number($("assets").value || 0) > cfg.bondAssetLimit) {
+        shortfalls.push({state:"warn",text:"RentAssist: entered assets are above the current asset limit."});
+      }
+      if (!$("permanent-resident").checked) {
+        shortfalls.push({state:"warn",text:"RentAssist: the permanent-residency requirement is not marked as met."});
+      }
+      if ($("owns-property").checked) {
+        shortfalls.push({state:"warn",text:"RentAssist: residential property ownership is marked, which conflicts with the standard eligibility rule."});
+      }
     }
     $("app-shortfalls").innerHTML = reviewList(shortfalls.length ? shortfalls : [{state:"ok",text:"No immediate application shortfall is identified from the information entered so far."}]);
 
@@ -1740,17 +1883,19 @@
     if (!prop) {
       strategies.push({state:"warn",text:"Add the property first so the review can calculate rent share, bond amount and the relevant target range."});
     } else {
-      const target = Math.min(generalLimit || Infinity, bondLimit || Infinity);
-      if ((generalGap > 0 || bondGap >= 0) && Number.isFinite(target)) {
+      const target = rentAssistActive()
+        ? Math.min(generalLimit || Infinity, bondLimit || Infinity)
+        : generalLimit;
+      if ((generalGap > 0 || (rentAssistActive() && bondGap >= 0)) && Number.isFinite(target)) {
         strategies.push({state:"ok",text:"A target rent around " + money(Math.max(0,target),0) + "/wk or below improves the position against the tighter current rent threshold."});
       }
-      if (generalGap > 0 || bondGap >= 0) {
+      if (generalGap > 0 || (rentAssistActive() && bondGap >= 0)) {
         strategies.push({state:"ok",text:"Use the optimisation sliders to test whether additional work income improves the rent position after any payment reduction is taken into account."});
       }
       if (bondAmountGap > 0) {
         strategies.push({state:"ok",text:"Compare properties with a lower bond or check the final eligible RentAssist Bond Loan amount before relying on the loan to cover the full bond."});
       }
-      if (properties.length > 1 && (generalGap > 0 || bondGap >= 0 || bondAmountGap > 0)) {
+      if (properties.length > 1 && (generalGap > 0 || (rentAssistActive() && (bondGap >= 0 || bondAmountGap > 0)))) {
         strategies.push({state:"ok",text:"Compare the other properties in your shortlist. A lower weekly rent or lower bond can improve both affordability and the RentAssist position without changing your income."});
       }
     }
@@ -2076,7 +2221,17 @@
       $("target-rent").value = $("target-rent-slider").value;
       renderTargetRentPlanner();
     });
-    $("future-ra").addEventListener("change", recalcAll);
+    $("future-ra").addEventListener("change", () => {
+      if (!$("future-ra").checked) rentAssistExplored = false;
+      updateRentAssistVisibility();
+      recalcAll();
+    });
+    $("rentassist-explore-button").addEventListener("click", () => {
+      if (!$("future-ra").checked) return;
+      rentAssistExplored = true;
+      updateRentAssistVisibility();
+      recalcAll();
+    });
     $("ra-situation").addEventListener("change", recalcAll);
     $("household-type").addEventListener("change", recalcAll);
     $("assets").addEventListener("input", recalcAll);
