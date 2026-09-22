@@ -9,7 +9,7 @@
 .ra-page{width:min(1080px,calc(100% - 28px));margin:0 auto;padding:28px 0 60px}
 .ra-page-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start;margin-bottom:16px}
 .ra-page-hero h1{margin:4px 0 0;font-size:30px;line-height:1.05;letter-spacing:-.04em}
-.ra-page-hero p{max-width:760px;margin:8px 0 0;color:#667085;font-size:11px;line-height:1.6}
+.ra-page-hero p{max-width:760px;margin:8px 0 0;color:#667085;font-size:11px;line-height:1.6}.ra-purpose{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.ra-purpose>div{padding:12px;border:1px solid #e1e6ed;border-radius:9px;background:#fff}.ra-purpose span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:#4f46e5;font-weight:850}.ra-purpose b{display:block;margin-top:4px;font-size:11px}.ra-purpose p{margin:3px 0 0;color:#667085;font-size:8px;line-height:1.45}
 .ra-enable-card{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px;border:1px solid #d8d4ff;border-radius:9px;background:#f8f7ff;margin-bottom:14px}
 .ra-enable-card label{display:flex;gap:9px;align-items:flex-start}
 .ra-enable-card input{margin-top:3px}
@@ -54,7 +54,7 @@
 .ra-info ul{padding-left:18px}
 .ra-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .ra-disclaimer{margin-top:14px;padding:10px;border-radius:6px;background:#fff7ed;color:#9a3412;font-size:9px;line-height:1.45}
-@media(max-width:820px){.ra-page-hero,.ra-grid,.ra-info-grid{grid-template-columns:1fr}.ra-context-grid{grid-template-columns:1fr 1fr}.ra-enable-card{flex-direction:column}.ra-result-strip{grid-template-columns:1fr}}
+@media(max-width:820px){.ra-page-hero,.ra-grid,.ra-info-grid{grid-template-columns:1fr}.ra-purpose{grid-template-columns:1fr}.ra-context-grid{grid-template-columns:1fr 1fr}.ra-enable-card{flex-direction:column}.ra-result-strip{grid-template-columns:1fr}}
 @media(max-width:520px){.ra-context-grid,.ra-fields{grid-template-columns:1fr}.ra-fields .wide{grid-column:auto}}
 </style>
 </head>
@@ -85,10 +85,16 @@
   <section class="ra-page-hero">
     <div>
       <span class="eyebrow">Optional Victorian bond help</span>
-      <h1>Check the RentAssist Bond Loan</h1>
-      <p>Use your RentReady figures to check the main Housing Victoria bond-loan rules. Housing Victoria makes the final eligibility decision.</p>
+      <h1>RentAssist Bond Loan check</h1>
+      <p>This optional step checks the information already entered in RentReady against the main Victorian bond-loan requirements. It stays separate from the general rental-affordability result.</p>
     </div>
     <a class="btn ra-back" href="app.html">← Back to RentReady</a>
+  </section>
+
+  <section class="ra-purpose" aria-label="What this page checks">
+    <div><span>1 · Household</span><b>Income and assets</b><p>Compare the household figures with the current scheme settings.</p></div>
+    <div><span>2 · Property</span><b>Rent and bond</b><p>Check the rent-share rule and the bond amount for the property.</p></div>
+    <div><span>3 · Other rules</span><b>Residency and ownership</b><p>Record the non-financial requirements that affect eligibility.</p></div>
   </section>
 
   <section class="ra-enable-card">
@@ -181,6 +187,9 @@
     <p id="ra-overall-copy">RentReady will compare each figure with the current published scheme settings.</p>
   </section>
 
+  <details class="advanced-panel">
+    <summary>How the RentAssist Bond Loan rules work</summary>
+    <div class="advanced-panel-content">
   <section class="ra-info">
     <h2>What Housing Victoria currently checks</h2>
     <div class="ra-info-grid">
@@ -207,6 +216,8 @@
       <a class="btn" href="https://www.housing.vic.gov.au/apply-rentassist-bond-loan" target="_blank" rel="noopener">How to apply ↗</a>
     </div>
   </section>
+    </div>
+  </details>
 
   <div class="ra-disclaimer">This calculator is a guide only. It does not submit a bond-loan application and cannot determine final eligibility. Housing Victoria may apply additional policy rules, exemptions, evidence requirements or occupancy rules.</div>
 </main>
