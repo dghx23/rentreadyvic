@@ -246,23 +246,17 @@
             </div>
           </div>
 
-          <div class="work-rule-context">
-            <div class="scenario-box">
-              <div class="scenario-box-head">
-                <strong>Other circumstances that can change this payment</strong>
-                <span id="scenario-count">—</span>
+          <div class="relevant-checks-panel">
+            <div class="relevant-checks-head">
+              <div>
+                <span>Only if relevant to your circumstances</span>
+                <strong>Other checks that may still affect this payment</strong>
               </div>
-              <div id="scenario-prompts" class="scenario-prompts"></div>
+              <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">DSS Social Security Guide ↗</a>
             </div>
-
-            <div class="payment-scenario-panel">
-              <div class="payment-scenario-head">
-                <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
-                <small>RentReady flags tests not captured by the work-income slider. <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">DSS Social Security Guide ↗</a></small>
-              </div>
-              <div id="payment-scenario-prompts" class="scenario-pills"></div>
-              <div id="payment-scenario-note" class="scenario-note"></div>
-            </div>
+            <p class="relevant-checks-intro">RentReady uses the circumstance you already selected to remove checks that clearly do not apply. Open any remaining item for an explanation, or mark it <b>Not applicable to me</b> to remove it from this assessment.</p>
+            <div id="scenario-prompts" class="relevant-checks-list"></div>
+            <div id="scenario-count" class="relevant-checks-count">—</div>
           </div>
         </div>
       </section>
@@ -1038,6 +1032,20 @@
       </div>
 
       <p class="credit-modal-disclaimer">Your real balance can differ because Working Credit accrual uses total ordinary income, including some non-employment income, and because actual reported income can vary from fortnight to fortnight. Check your Centrelink online account linked to myGov for the official balance and history.</p>
+    </div>
+  </div>
+
+  <div class="scenario-modal" id="scenario-modal" hidden>
+    <div class="scenario-modal-backdrop" data-close-scenario-modal></div>
+    <div class="scenario-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="scenario-modal-title">
+      <button type="button" class="scenario-modal-close" data-close-scenario-modal aria-label="Close">×</button>
+      <span class="scenario-modal-kicker">Payment eligibility check</span>
+      <h2 id="scenario-modal-title">Other circumstance</h2>
+      <div id="scenario-modal-body"></div>
+      <div class="scenario-modal-actions">
+        <a id="scenario-modal-link" class="btn" href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">Read official guidance ↗</a>
+        <button type="button" class="btn primary" id="scenario-not-applicable">Not applicable to me</button>
+      </div>
     </div>
   </div>
 
