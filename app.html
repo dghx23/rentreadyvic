@@ -92,19 +92,43 @@
       </div>
     </div>
 
-    <div class="grid two">
-      <div class="card">
-        <div class="card-head"><h3>Income-support payment</h3><div class="card-head-tools"><a class="source-link" href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener">Services Australia ↗</a><span id="payment-status" class="status-pill loading">Loading current data…</span></div></div>
-        <div class="card-body fields">
-          <label>Payment
-            <select id="payment-select"></select>
-          </label>
-          <label>Circumstance
-            <select id="payment-rate-select"></select>
-            <small>Choose the situation that best matches you. The current rate appears below.</small>
-          </label>
+    <div class="income-stack">
+      <section class="card income-wide-card payment-wide-card">
+        <div class="card-head income-wide-head">
+          <div>
+            <span class="income-section-kicker">1 · Start here</span>
+            <h3>Income-support payment</h3>
+          </div>
+          <div class="card-head-tools">
+            <a class="source-link" href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener">Services Australia ↗</a>
+            <span id="payment-status" class="status-pill loading">Loading current data…</span>
+          </div>
+        </div>
 
-          <div class="centrelink-rate-box" aria-live="polite">
+        <div class="card-body payment-wide-body">
+          <div class="payment-wide-controls">
+            <label>Payment
+              <select id="payment-select"></select>
+            </label>
+            <label>Circumstance
+              <select id="payment-rate-select"></select>
+              <small>Choose the situation that best matches you. The current rate appears alongside it.</small>
+            </label>
+
+            <label class="toggle-row payment-override-toggle">
+              <input type="checkbox" id="manual-payment-toggle">
+              <span><b>My actual payment amount is different</b><small>Use this if the amount you actually receive differs from the current maximum rate shown.</small></span>
+            </label>
+
+            <div id="manual-payment-wrap" class="manual-payment-wrap" hidden>
+              <label>Your actual payment amount <span class="period-label">per fortnight</span>
+                <div class="money-input"><span>$</span><input id="payment-max" type="number" step="0.01" min="0"></div>
+                <small>RentReady will use this amount instead of the displayed maximum rate.</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="centrelink-rate-box payment-wide-rate" aria-live="polite">
             <div class="centrelink-rate-label">Current Centrelink rate</div>
             <div class="centrelink-rate-value">
               <strong id="centrelink-rate-display">$0.00</strong>
@@ -121,92 +145,101 @@
               <span>Effective <b id="payment-effective">—</b></span>
             </div>
           </div>
+        </div>
+      </section>
 
-          <label class="toggle-row payment-override-toggle">
-            <input type="checkbox" id="manual-payment-toggle">
-            <span><b>My actual payment amount is different</b><small>Use this only if the amount you actually receive is lower or otherwise different from the current maximum rate shown above.</small></span>
-          </label>
+      <section class="card income-wide-card work-wide-card">
+        <div class="card-head income-wide-head">
+          <div>
+            <span class="income-section-kicker">2 · Add your earnings</span>
+            <h3>Work and other household income</h3>
+          </div>
+          <small class="income-head-note">These amounts update your Centrelink estimate and rental position immediately.</small>
+        </div>
 
-          <div id="manual-payment-wrap" class="manual-payment-wrap" hidden>
-            <label>Your actual payment amount <span class="period-label">per fortnight</span>
-              <div class="money-input"><span>$</span><input id="payment-max" type="number" step="0.01" min="0"></div>
-              <small>RentReady will use this amount in the calculations instead of the displayed maximum rate.</small>
+        <div class="card-body">
+          <div class="work-wide-grid">
+            <label class="work-income-field work-income-primary">Gross work income <span class="period-label">per fortnight</span>
+              <div class="money-input money-input-large"><span>$</span><input id="work-income" type="number" step="10" min="0" value="0"></div>
+              <div class="work-income-slider-inline">
+                <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Gross work income slider">
+                <div class="work-income-slider-scale">
+                  <span>$0</span>
+                  <span id="impact-slider-free">Payment reduction starts: —</span>
+                  <span id="impact-slider-cutoff">Payment $0: —</span>
+                </div>
+              </div>
             </label>
+
+            <div class="work-secondary-fields">
+              <label>Other household gross income <span class="period-label">per week</span>
+                <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
+              </label>
+              <label><span id="work-concession-label">Working Credit balance</span>
+                <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
+                <small id="work-concession-help">Used only where the selected payment's configured work-income rule supports it.</small>
+              </label>
+            </div>
+          </div>
+
+          <div class="work-rule-context">
+            <div class="scenario-box">
+              <div class="scenario-box-head">
+                <strong>Other circumstances that can change this payment</strong>
+                <span id="scenario-count">—</span>
+              </div>
+              <div id="scenario-prompts" class="scenario-prompts"></div>
+            </div>
+
+            <div class="payment-scenario-panel">
+              <div class="payment-scenario-head">
+                <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
+                <small>RentReady flags tests not captured by the work-income slider. <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">DSS Social Security Guide ↗</a></small>
+              </div>
+              <div id="payment-scenario-prompts" class="scenario-pills"></div>
+              <div id="payment-scenario-note" class="scenario-note"></div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="card">
-        <div class="card-head"><h3>Work and other household income</h3></div>
-        <div class="card-body fields">
-          <label class="work-income-field">Gross work income <span class="period-label">per fortnight</span>
-            <div class="money-input"><span>$</span><input id="work-income" type="number" step="10" min="0" value="0"></div>
-            <div class="work-income-slider-inline">
-              <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Gross work income slider">
-              <div class="work-income-slider-scale">
-                <span>$0</span>
-                <span id="impact-slider-free">Payment reduction starts: —</span>
-                <span id="impact-slider-cutoff">Payment $0: —</span>
-              </div>
-            </div>
-          </label>
-          <label>Other household gross income <span class="period-label">per week</span>
-            <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
-          </label>
+      <section class="target-rent-planner target-rent-prominent">
+        <div class="target-rent-head">
+          <div>
+            <span>3 · Set your rental target</span>
+            <strong>What weekly rent are you aiming for?</strong>
+            <p>Use this before you have found a property, or to test whether a different rent would fit your income better.</p>
+          </div>
+          <div class="target-rent-callout">Compare the same target against <b>two different tests</b>.</div>
+        </div>
 
-          <div class="target-rent-planner">
-            <div class="target-rent-head">
-              <div>
-                <span>Target rental value</span>
-                <strong>What weekly rent are you aiming for?</strong>
-              </div>
-              <small>Use this before you have found a property, or to test a different rent.</small>
-            </div>
-            <label>Target weekly rent
-              <div class="money-input"><span>$</span><input id="target-rent" type="number" step="5" min="0" value="0" placeholder="450"></div>
-            </label>
+        <div class="target-rent-entry">
+          <label>Target weekly rent
+            <div class="money-input target-rent-money"><span>$</span><input id="target-rent" type="number" step="5" min="0" value="0" placeholder="450"></div>
+          </label>
+          <div class="target-rent-slider-wrap">
             <input id="target-rent-slider" type="range" min="100" max="1200" step="5" value="450" aria-label="Target weekly rent slider">
             <div class="target-rent-scale"><span>$100/wk</span><span>$1,200/wk</span></div>
-
-            <div class="target-rent-results">
-              <div>
-                <span>Market planning aim</span>
-                <strong id="target-market-status">Enter a target rent</strong>
-                <small id="target-market-detail">Based on the general affordability benchmark.</small>
-              </div>
-              <div>
-                <span>RentAssist rent-share test</span>
-                <strong id="target-rentassist-status">Enter a target rent</strong>
-                <small id="target-rentassist-detail">Based on the current RentAssist income basis.</small>
-              </div>
-            </div>
-            <div class="target-rent-summary" id="target-rent-summary">
-              Enter a target weekly rent to see the headroom or shortfall under both tests.
-            </div>
-          </div>
-          <label><span id="work-concession-label">Working Credit balance</span>
-            <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
-            <small id="work-concession-help">Used only where the selected payment's configured work-income rule supports it.</small>
-          </label>
-
-          <div class="scenario-box">
-            <div class="scenario-box-head">
-              <strong>Other circumstances that can change this payment</strong>
-              <span id="scenario-count">—</span>
-            </div>
-            <div id="scenario-prompts" class="scenario-prompts"></div>
-          </div>
-
-          <div class="payment-scenario-panel">
-            <div class="payment-scenario-head">
-              <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
-              <small>RentReady flags tests that are not captured by the work-income slider. <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">DSS Social Security Guide ↗</a></small>
-            </div>
-            <div id="payment-scenario-prompts" class="scenario-pills"></div>
-            <div id="payment-scenario-note" class="scenario-note"></div>
           </div>
         </div>
-      </div>
+
+        <div class="target-rent-results">
+          <div class="target-result-card market">
+            <span>Market planning aim</span>
+            <strong id="target-market-status">Enter a target rent</strong>
+            <small id="target-market-detail">Based on the general affordability benchmark.</small>
+          </div>
+          <div class="target-result-card rentassist">
+            <span>RentAssist rent-share test</span>
+            <strong id="target-rentassist-status">Enter a target rent</strong>
+            <small id="target-rentassist-detail">Based on the current RentAssist income basis.</small>
+          </div>
+        </div>
+
+        <div class="target-rent-summary" id="target-rent-summary">
+          Enter a target weekly rent to see the headroom or shortfall under both tests.
+        </div>
+      </section>
     </div>
 
     <section class="income-impact-explainer income-impact-full">
