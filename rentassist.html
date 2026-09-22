@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RentAssist Bond Loan — RentReady VIC</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.ra-page{width:min(1080px,calc(100% - 28px));margin:0 auto;padding:28px 0 60px}
+.ra-page-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start;margin-bottom:16px}
+.ra-page-hero h1{margin:4px 0 0;font-size:30px;line-height:1.05;letter-spacing:-.04em}
+.ra-page-hero p{max-width:760px;margin:8px 0 0;color:#667085;font-size:11px;line-height:1.6}
+.ra-enable-card{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:14px;border:1px solid #d8d4ff;border-radius:9px;background:#f8f7ff;margin-bottom:14px}
+.ra-enable-card label{display:flex;gap:9px;align-items:flex-start}
+.ra-enable-card input{margin-top:3px}
+.ra-enable-card b{display:block;font-size:12px}
+.ra-enable-card small{display:block;margin-top:3px;color:#6f7890;font-size:9px;line-height:1.45}
+.ra-context-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.ra-context-grid>div{padding:11px;border:1px solid #e1e6ed;border-radius:7px;background:#fff}
+.ra-context-grid span{display:block;font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#7f8a9b;font-weight:850}
+.ra-context-grid strong{display:block;margin-top:3px;font-size:12px}
+.ra-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ra-card{border:1px solid #dfe5ed;border-radius:9px;background:#fff;overflow:hidden}
+.ra-card-head{padding:12px 14px;border-bottom:1px solid #e6eaf0;background:#fafbfc}
+.ra-card-head span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:#4f46e5;font-weight:850}
+.ra-card-head h2{margin:3px 0 0;font-size:15px}
+.ra-card-body{padding:14px}
+.ra-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ra-fields .wide{grid-column:1/-1}
+.ra-fields label{display:block;font-size:9px;font-weight:800}
+.ra-fields small{display:block;margin-top:4px;color:#8490a2;font-weight:400;line-height:1.4}
+.ra-result-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.ra-result-strip>div{padding:10px;border:1px solid #e0e5ed;border-radius:6px;background:#fafbfc}
+.ra-result-strip span{display:block;color:#7d899b;font-size:7px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}
+.ra-result-strip strong{display:block;margin-top:3px;font-size:12px}
+.ra-checks{display:grid;gap:7px}
+.ra-check{display:grid;grid-template-columns:26px 1fr auto;gap:9px;align-items:start;padding:10px;border:1px solid #e0e5ed;border-radius:7px;background:#fff}
+.ra-check i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;font-style:normal;font-size:10px;font-weight:900}
+.ra-check.pass i{background:#dcfce7;color:#166534}
+.ra-check.fail i{background:#fee2e2;color:#991b1b}
+.ra-check.pending i{background:#f1f5f9;color:#64748b}
+.ra-check b{display:block;font-size:10px}
+.ra-check p{margin:3px 0 0;color:#6f7b8d;font-size:8px;line-height:1.45}
+.ra-check em{font-style:normal;font-size:8px;font-weight:850;color:#7d899b;white-space:nowrap}
+.ra-overall{margin:14px 0;padding:14px;border-radius:9px;background:#111827;color:#fff}
+.ra-overall span{display:block;color:#a5b4fc;font-size:8px;text-transform:uppercase;letter-spacing:.07em;font-weight:850}
+.ra-overall strong{display:block;margin-top:4px;font-size:20px}
+.ra-overall p{margin:5px 0 0;color:#cbd5e1;font-size:9px;line-height:1.5}
+.ra-info{margin-top:14px;padding:14px;border:1px solid #dfe5ed;border-radius:9px;background:#fff}
+.ra-info h2{margin:0;font-size:15px}
+.ra-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.ra-info h3{margin:0 0 5px;font-size:11px}
+.ra-info p,.ra-info li{font-size:9px;line-height:1.55;color:#667085}
+.ra-info ul{padding-left:18px}
+.ra-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.ra-disclaimer{margin-top:14px;padding:10px;border-radius:6px;background:#fff7ed;color:#9a3412;font-size:9px;line-height:1.45}
+@media(max-width:820px){.ra-page-hero,.ra-grid,.ra-info-grid{grid-template-columns:1fr}.ra-context-grid{grid-template-columns:1fr 1fr}.ra-enable-card{flex-direction:column}.ra-result-strip{grid-template-columns:1fr}}
+@media(max-width:520px){.ra-context-grid,.ra-fields{grid-template-columns:1fr}.ra-fields .wide{grid-column:auto}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="RentReady VIC home">
+      <span class="brand-mark">R</span>
+      <span><b>RentReady VIC</b><small>RentAssist Bond Loan</small></span>
+    </a>
+  </div>
+</header>
+
+<main class="ra-page">
+  <section class="ra-page-hero">
+    <div>
+      <span class="eyebrow">Optional Victorian bond help</span>
+      <h1>Explore the RentAssist Bond Loan</h1>
+      <p>This page checks the figures you have entered against the main Housing Victoria bond-loan rules. It is a planning tool only. Housing Victoria makes the actual eligibility decision and may apply exemptions or ask for evidence.</p>
+    </div>
+    <a class="btn ra-back" href="app.html">← Back to RentReady</a>
+  </section>
+
+  <section class="ra-enable-card">
+    <label>
+      <input type="checkbox" id="ra-enable">
+      <span><b>Include RentAssist Bond Loan assessment in my RentReady results</b><small>Turning this on sends the selection back to the main RentReady assessment. You can switch it off there or here at any time.</small></span>
+    </label>
+    <a class="btn" href="https://www.housing.vic.gov.au/rentassist-bond-loan" target="_blank" rel="noopener">Housing Victoria ↗</a>
+  </section>
+
+  <div class="ra-context-grid">
+    <div><span>Payment</span><strong id="ctx-payment">—</strong></div>
+    <div><span>Circumstance</span><strong id="ctx-circumstance">—</strong></div>
+    <div><span>Rent Assistance estimate</span><strong id="ctx-ra">—</strong></div>
+    <div><span>Property / target rent</span><strong id="ctx-rent">—</strong></div>
+  </div>
+
+  <div class="ra-grid">
+    <section class="ra-card">
+      <div class="ra-card-head"><span>Your figures</span><h2>Income, rent, assets and property</h2></div>
+      <div class="ra-card-body">
+        <div class="ra-fields">
+          <label>Household type
+            <select id="ra-household">
+              <option value="single">Single person</option>
+              <option value="couple">Couple</option>
+              <option value="family1">Family with 1 dependent child</option>
+              <option value="family2">Family with 2 dependent children</option>
+              <option value="family3">Family with 3 dependent children</option>
+              <option value="family4">Family with 4 dependent children</option>
+              <option value="family5">Family with 5 dependent children</option>
+            </select>
+          </label>
+
+          <label>Gross weekly income before Rent Assistance
+            <div class="money-input"><span>$</span><input id="ra-income" type="number" min="0" step="5"></div>
+            <small>Used for the ordinary weekly income-limit check.</small>
+          </label>
+
+          <label>Maximum eligible Rent Assistance per week
+            <div class="money-input"><span>$</span><input id="ra-max-assistance" type="number" min="0" step="1"></div>
+            <small>Housing Victoria adds the maximum Rent Assistance you may be eligible for when applying the 55% rent-share test.</small>
+          </label>
+
+          <label>Your weekly rent share
+            <div class="money-input"><span>$</span><input id="ra-rent" type="number" min="0" step="5"></div>
+            <small>If sharing, enter only the amount you personally pay.</small>
+          </label>
+
+          <label>Assessable assets
+            <div class="money-input"><span>$</span><input id="ra-assets" type="number" min="0" step="100"></div>
+          </label>
+
+          <label>Bedrooms
+            <input id="ra-beds" type="number" min="0" max="20" step="1">
+          </label>
+
+          <label>Full bond for the property
+            <div class="money-input"><span>$</span><input id="ra-bond" type="number" min="0" step="50"></div>
+          </label>
+
+          <label>Number of people paying the bond/rent
+            <input id="ra-payers" type="number" min="1" max="20" step="1" value="1">
+            <small>Used to estimate your share of the bond in a shared household.</small>
+          </label>
+
+          <label class="wide check-row"><input type="checkbox" id="ra-resident"><span>I meet the permanent Australian resident requirement</span></label>
+          <label class="wide check-row"><input type="checkbox" id="ra-owns"><span>I own or part-own a house, flat or unit</span></label>
+        </div>
+
+        <div class="ra-result-strip">
+          <div><span>Income limit</span><strong id="ra-income-limit">—</strong></div>
+          <div><span>55% rent ceiling</span><strong id="ra-rent-ceiling">—</strong></div>
+          <div><span>Published bedroom cap</span><strong id="ra-bond-cap">—</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="ra-card">
+      <div class="ra-card-head"><span>Rule-by-rule result</span><h2>What currently passes and what does not</h2></div>
+      <div class="ra-card-body">
+        <div class="ra-checks" id="ra-checks"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="ra-overall">
+    <span>Planning result</span>
+    <strong id="ra-overall-title">Enter your figures to begin</strong>
+    <p id="ra-overall-copy">RentReady will compare each figure with the current published scheme settings.</p>
+  </section>
+
+  <section class="ra-info">
+    <h2>What Housing Victoria currently checks</h2>
+    <div class="ra-info-grid">
+      <div>
+        <h3>Main eligibility rules</h3>
+        <ul>
+          <li>Household income and assets must be within the current limits.</li>
+          <li>You must meet the permanent Australian resident requirement.</li>
+          <li>Your share of the rent must be less than 55% of the income basis used by Housing Victoria.</li>
+          <li>You must not own or part-own a house, flat or unit, subject to any applicable exemptions.</li>
+          <li>Proof of identity and residency documents are required when applying.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Bond amount</h3>
+        <p>The published maximum loan varies by property size. Housing Victoria also considers the number of people living in the property, and in a shared household your share can be based on the people paying rent.</p>
+        <p>Do not pay the bond before the loan is approved unless Housing Victoria confirms an exception applies.</p>
+      </div>
+    </div>
+    <div class="ra-links">
+      <a class="btn" href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Eligibility ↗</a>
+      <a class="btn" href="https://www.housing.vic.gov.au/rentassist-bond-loan-income-and-asset-limits" target="_blank" rel="noopener">Income & asset limits ↗</a>
+      <a class="btn" href="https://www.housing.vic.gov.au/how-much-can-i-borrow" target="_blank" rel="noopener">Loan amount limits ↗</a>
+      <a class="btn" href="https://www.housing.vic.gov.au/apply-rentassist-bond-loan" target="_blank" rel="noopener">How to apply ↗</a>
+    </div>
+  </section>
+
+  <div class="ra-disclaimer">This calculator is a guide only. It does not submit a bond-loan application and cannot determine final eligibility. Housing Victoria may apply additional policy rules, exemptions, evidence requirements or occupancy rules.</div>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const DEFAULTS = {
+    assetLimit:27644,
+    income:{single:811,couple:1385,family1:1419,family2:1462,family3:1505},
+    extraChild:43,
+    caps:{one:2150,two:2650,three:2900,fourPlus:2600},
+    rentPct:.55
+  };
+
+  function money(n,d=0){
+    return new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",minimumFractionDigits:d,maximumFractionDigits:d}).format(Number(n||0));
+  }
+
+  function loadContext(){
+    try{return JSON.parse(sessionStorage.getItem("rentready-rentassist-context-v1")||"{}")||{};}catch{return {};}
+  }
+
+  function cfg(){
+    let custom={};
+    try{custom=JSON.parse(localStorage.getItem("rentready-admin-config-v1")||"{}")||{};}catch{}
+    return {
+      assetLimit:Number(custom.bondAssetLimit??DEFAULTS.assetLimit),
+      income:{...DEFAULTS.income,...(custom.bondIncomeLimits||{})},
+      extraChild:Number(custom.extraChildIncomeLimit??DEFAULTS.extraChild),
+      caps:{...DEFAULTS.caps,...(custom.bondCaps||{})},
+      rentPct:Number(custom.bondRentPct??DEFAULTS.rentPct)
+    };
+  }
+
+  function incomeLimit(type,c){
+    if(type==="family4") return Number(c.income.family3)+c.extraChild;
+    if(type==="family5") return Number(c.income.family3)+c.extraChild*2;
+    return Number(c.income[type]||c.income.single);
+  }
+
+  function bondCap(beds,c){
+    beds=Number(beds||0);
+    if(beds<=1) return Number(c.caps.one);
+    if(beds===2) return Number(c.caps.two);
+    if(beds===3) return Number(c.caps.three);
+    return Number(c.caps.fourPlus);
+  }
+
+  function row(state,title,copy,meta){
+    return '<div class="ra-check '+state+'"><i>'+(state==="pass"?"✓":state==="fail"?"!":"?")+'</i><div><b>'+title+'</b><p>'+copy+'</p></div><em>'+meta+'</em></div>';
+  }
+
+  function recalc(){
+    const c=cfg();
+    const type=$("ra-household").value;
+    const income=Number($("ra-income").value||0);
+    const maxRA=Number($("ra-max-assistance").value||0);
+    const rent=Number($("ra-rent").value||0);
+    const assets=Number($("ra-assets").value||0);
+    const beds=Number($("ra-beds").value||0);
+    const bond=Number($("ra-bond").value||0);
+    const payers=Math.max(1,Number($("ra-payers").value||1));
+    const resident=$("ra-resident").checked;
+    const owns=$("ra-owns").checked;
+
+    const iLimit=incomeLimit(type,c);
+    const rentBasis=income+maxRA;
+    const rentCeiling=rentBasis*c.rentPct;
+    const rentRatio=rentBasis>0?rent/rentBasis:null;
+    const cap=bondCap(beds,c);
+    const bondShare=bond/payers;
+
+    $("ra-income-limit").textContent=money(iLimit)+"/wk";
+    $("ra-rent-ceiling").textContent=money(rentCeiling)+"/wk";
+    $("ra-bond-cap").textContent=money(cap);
+
+    const checks=[
+      row(income<=iLimit?"pass":"fail","Household income limit",
+        "Your gross weekly income before Rent Assistance is "+money(income)+". "+(income<=iLimit?"This is within":"This is "+money(income-iLimit)+" above")+" the "+money(iLimit)+"/wk limit for this household type.",
+        money(iLimit)+"/wk"),
+      row(assets<=c.assetLimit?"pass":"fail","Asset limit",
+        "You entered "+money(assets)+" in assessable assets. "+(assets<=c.assetLimit?"This is within the published limit.":"This is "+money(assets-c.assetLimit)+" above the published limit."),
+        money(c.assetLimit)),
+      row(resident?"pass":"fail","Permanent residence",
+        resident?"You marked the permanent Australian resident requirement as met.":"You have not marked the permanent Australian resident requirement as met.",
+        "Required"),
+      row(!owns?"pass":"fail","Residential property ownership",
+        owns?"You marked that you own or part-own a house, flat or unit.":"You have not entered residential property ownership.",
+        "Must not own"),
+      row(rent>0?(rent<rentCeiling?"pass":"fail"):"pending","Rent share under 55%",
+        rent>0
+          ? "Your rent share is "+money(rent)+"/wk, or "+(rentRatio*100).toFixed(1)+"% of the test income basis of "+money(rentBasis)+"/wk. The test requires less than 55%."
+          : "Enter your weekly rent share to run this test.",
+        rent>0?(rentRatio*100).toFixed(1)+"%":"Need rent"),
+      row(bond>0?(bondShare<=cap?"pass":"fail"):"pending","Bond share and published bedroom cap",
+        bond>0
+          ? "Your estimated bond share is "+money(bondShare)+" ("+payers+" rent payer"+(payers===1?"":"s")+"). The published maximum for this property size is "+money(cap)+"."
+          : "Enter the bond amount to compare your share with the published property-size maximum.",
+        money(cap))
+    ];
+
+    $("ra-checks").innerHTML=checks.join("");
+
+    const failures=checks.filter(x=>x.includes('class="ra-check fail"')).length;
+    const pending=checks.filter(x=>x.includes('class="ra-check pending"')).length;
+    if(failures){
+      $("ra-overall-title").textContent=failures+" rule"+(failures===1?"":"s")+" currently outside the published settings";
+      $("ra-overall-copy").textContent="Open the failed checks above to see which figures are outside the current settings. This does not account for any Housing Victoria exemption that may apply.";
+    }else if(pending){
+      $("ra-overall-title").textContent="The entered rules are in range so far";
+      $("ra-overall-copy").textContent="Complete the remaining property figures to finish the planning check.";
+    }else{
+      $("ra-overall-title").textContent="All modelled checks are currently within range";
+      $("ra-overall-copy").textContent="This is a planning indication only. Housing Victoria still decides eligibility and may require additional evidence or apply occupancy rules.";
+    }
+
+    const context=loadContext();
+    Object.assign(context,{
+      grossIncomeWeek:income,
+      maximumRentAssistanceWeek:maxRA,
+      rentWeek:rent,
+      assets,
+      beds,
+      bond,
+      permanentResident:resident,
+      ownsProperty:owns,
+      householdType:type,
+      rentPayers:payers,
+      enabled:$("ra-enable").checked
+    });
+    sessionStorage.setItem("rentready-rentassist-context-v1",JSON.stringify(context));
+    sessionStorage.setItem("rentready-rentassist-enabled-v1",$("ra-enable").checked?"1":"0");
+  }
+
+  function init(){
+    const ctx=loadContext();
+    $("ctx-payment").textContent=ctx.paymentName||"—";
+    $("ctx-circumstance").textContent=ctx.circumstance||"—";
+    $("ctx-ra").textContent=ctx.estimatedRentAssistanceWeek!=null?money(ctx.estimatedRentAssistanceWeek)+"/wk":"—";
+    $("ctx-rent").textContent=ctx.rentWeek?money(ctx.rentWeek)+"/wk":"—";
+
+    $("ra-household").value=ctx.householdType||"single";
+    $("ra-income").value=ctx.grossIncomeWeek??"";
+    $("ra-max-assistance").value=ctx.maximumRentAssistanceWeek??"";
+    $("ra-rent").value=ctx.rentWeek??"";
+    $("ra-assets").value=ctx.assets??0;
+    $("ra-beds").value=ctx.beds??"";
+    $("ra-bond").value=ctx.bond??"";
+    $("ra-payers").value=ctx.rentPayers??1;
+    $("ra-resident").checked=ctx.permanentResident!==false;
+    $("ra-owns").checked=!!ctx.ownsProperty;
+    $("ra-enable").checked=sessionStorage.getItem("rentready-rentassist-enabled-v1")==="1"||!!ctx.enabled;
+
+    document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",recalc));
+    document.querySelectorAll("input,select").forEach(el=>el.addEventListener("change",recalc));
+    recalc();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
