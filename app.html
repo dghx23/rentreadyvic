@@ -981,6 +981,43 @@
       <div class="optimise-stat" id="optimise-rentassist-gap" hidden><span>RentAssist rent-share gap</span><strong id="optimise-bond-gap">$0</strong></div>
     </div>
 
+    <section class="income-gap-resolver" id="income-gap-resolver" hidden>
+      <div class="income-gap-resolver-head">
+        <div>
+          <span>Close the affordability gap</span>
+          <strong>How much work income would bring this property inside the benchmark?</strong>
+          <p>Move the slider to see how extra work income changes your Centrelink payment, projected household income and the remaining affordability gap.</p>
+        </div>
+        <div class="income-gap-target">
+          <span>Modelled work-income target</span>
+          <strong id="income-gap-target-value">—</strong>
+          <small id="income-gap-extra-needed">—</small>
+        </div>
+      </div>
+
+      <div class="income-gap-slider-card">
+        <div class="income-gap-slider-top">
+          <span>Test gross work income</span>
+          <strong id="income-gap-slider-value">—</strong>
+        </div>
+        <input id="income-gap-slider" type="range" min="0" max="4000" step="10" value="0">
+        <div class="income-gap-slider-scale">
+          <span id="income-gap-current-label">Current: —</span>
+          <span id="income-gap-target-label">Target: —</span>
+        </div>
+      </div>
+
+      <div class="income-gap-live-results">
+        <div><span>Projected weekly household income</span><strong id="income-gap-projected-income">—</strong></div>
+        <div><span>Affordable rent at benchmark</span><strong id="income-gap-affordable-rent">—</strong></div>
+        <div><span>Remaining gap</span><strong id="income-gap-remaining">—</strong></div>
+      </div>
+
+      <div class="income-gap-message" id="income-gap-message">
+        Move the slider to see when this property reaches the benchmark.
+      </div>
+    </section>
+
     <div class="card">
       <div class="card-head"><h3>Useful targets</h3></div>
       <div class="card-body target-grid">
