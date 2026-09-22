@@ -271,7 +271,21 @@
 
   function populatePayments() {
     const select = $("payment-select");
-    const preferred = ["jobseeker","disability-support-pension","parenting-payment","carer-payment","youth-allowance","austudy","abstudy","age-pension"];
+    const preferred = [
+      "jobseeker",
+      "disability-support-pension",
+      "parenting-payment",
+      "carer-payment",
+      "age-pension",
+      "youth-allowance-jobseeker",
+      "youth-allowance-student",
+      "austudy",
+      "abstudy-living-allowance",
+      "special-benefit",
+      "farm-household-allowance",
+      "youth-allowance",
+      "abstudy"
+    ];
     const rows = data.payments.slice().sort((a,b) => {
       const ai = preferred.indexOf(a.slug), bi = preferred.indexOf(b.slug);
       return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi) || a.name.localeCompare(b.name);
@@ -364,6 +378,53 @@
     renderApplicationReview(sc, prop);
   }
 
+  function renderPaymentCoverage() {
+    if (!$("payment-scenario-prompts") || !$("additional-support-list")) return;
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+    const prompts = [];
+
+    if (p && Array.isArray(p.scenarioPrompts)) prompts.push(...p.scenarioPrompts);
+    if (rule && Array.isArray(rule.otherTests)) {
+      rule.otherTests.forEach(key => {
+        const text = data && data.otherTests ? data.otherTests[key] : null;
+        prompts.push(text || String(key).replaceAll("_"," "));
+      });
+    }
+    if (p && p.workConcession) {
+      const wc = data && data.workConcessions ? data.workConcessions[p.workConcession] : null;
+      prompts.push(wc ? (wc.name + ": " + wc.description) : String(p.workConcession).replaceAll("_"," "));
+    }
+
+    const unique = [...new Set(prompts.filter(Boolean))];
+    $("payment-scenario-prompts").innerHTML = unique.length
+      ? unique.map(x => '<span>' + esc(x) + '</span>').join("")
+      : '<span>No additional scenario prompts supplied for this payment.</span>';
+
+    if (!p) {
+      $("payment-scenario-note").textContent = "Select a payment to see the tests that can affect it.";
+    } else if (!rule && p.incomeTest) {
+      $("payment-scenario-note").textContent = "This payment has a complex or non-linear assessment. RentReady shows the relevant scenario prompts but does not flatten the test into a misleading earnings slider; use your actual awarded payment amount where necessary.";
+    } else if (rule && rule.incomeBasis && rule.incomeBasis !== "personal_employment_income") {
+      $("payment-scenario-note").textContent = "The work-income chart covers your personal earnings component. This circumstance also needs " + rule.incomeBasis.replaceAll("_"," ") + ", so the actual Centrelink outcome can differ.";
+    } else {
+      $("payment-scenario-note").textContent = "The earnings chart covers the configured personal work-income test. Other listed tests can still change eligibility or the final payment.";
+    }
+
+    const support = (data && Array.isArray(data.additionalSupport)) ? data.additionalSupport : [];
+    $("additional-support-list").innerHTML = support.length ? support.map(item => {
+      const rates = Array.isArray(item.rates) ? item.rates.filter(x => x && x.amount != null) : [];
+      const rateText = rates.slice(0,2).map(x => esc(x.label) + ": " + money(rateToFN(x.amount,x.unit))).join(" · ");
+      return '<div class="support-item">' +
+        '<b>' + esc(item.name) + '</b>' +
+        '<span>' + esc((item.category || "support").replaceAll("_"," ")) + '</span>' +
+        (item.description ? '<p>' + esc(item.description) + '</p>' : '') +
+        (rateText ? '<small>' + rateText + '</small>' : '') +
+        '</div>';
+    }).join("") : '<div class="empty-state">Additional support catalogue is unavailable from the current data feed.</div>';
+  }
+
   function renderIncome(sc) {
     const raMax = sc.ra.maximumFN || 0;
     $("ra-max-display").textContent = money(displayFromFN(raMax));
@@ -390,6 +451,7 @@
     }
     $("income-explanation").textContent = copy;
     renderIncomeImpact(sc);
+    renderPaymentCoverage();
   }
 
   function findPaymentCutoff(creditBalance) {
