@@ -1804,7 +1804,8 @@
       bond: Number($("property-bond").value || 0),
       beds: Number($("property-beds").value || 0),
       available: $("property-available").value.trim(),
-      raw: $("listing-text").value
+      raw: $("listing-text").value,
+      url: $("property-url") ? $("property-url").value.trim() : ""
     };
     properties.push(obj);
     activePropertyId = obj.id;
@@ -1823,7 +1824,7 @@
     const el = $("shortlist");
     if ($("account-shortlist-count")) $("account-shortlist-count").textContent = properties.length + (properties.length === 1 ? " property" : " properties");
     if (!properties.length) {
-      el.innerHTML = '<div class="empty-state">No properties yet. Paste a listing or enter one manually.</div>';
+      el.innerHTML = '<div class="empty-state">No properties yet. Paste a property URL or enter one manually.</div>';
       return;
     }
     el.innerHTML = properties.map(p => '<div class="property-card ' + (p.id === activePropertyId ? "active" : "") + '" data-property="' + p.id + '">' +
@@ -1839,7 +1840,8 @@
       bond: Number($("property-bond").value || 0),
       beds: Number($("property-beds").value || 0),
       available: $("property-available").value.trim(),
-      raw: $("listing-text").value
+      raw: $("listing-text").value,
+      url: $("property-url") ? $("property-url").value.trim() : ""
     };
   }
 
@@ -1863,6 +1865,7 @@
     $("property-beds").value = imported.beds || "";
     $("property-available").value = imported.available || "";
     $("listing-text").value = imported.url ? "Imported from property URL: " + imported.url : "";
+    if ($("property-url")) $("property-url").value = imported.url || "";
     if (imported.rent) {
       $("target-rent").value = imported.rent;
       if (Number(imported.rent) >= 100 && Number(imported.rent) <= 1200) {
@@ -1882,6 +1885,7 @@
     $("property-beds").value = prop.beds || "";
     $("property-available").value = prop.available || "";
     if (prop.raw) $("listing-text").value = prop.raw;
+    if ($("property-url")) $("property-url").value = prop.url || "";
     renderPropertyAssessment();
   }
 
@@ -2686,6 +2690,58 @@
     $("assets").addEventListener("input", recalcAll);
     $("permanent-resident").addEventListener("change", recalcAll);
     $("owns-property").addEventListener("change", recalcAll);
+
+    $("import-property-url").addEventListener("click", async () => {
+      const url = $("property-url").value.trim();
+      const status = $("property-url-status");
+      if (!url) {
+        $("property-url").focus();
+        status.textContent = "Paste a property listing URL first.";
+        status.className = "property-url-status warn";
+        return;
+      }
+
+      status.textContent = "Reading the property listing…";
+      status.className = "property-url-status";
+      $("import-property-url").disabled = true;
+
+      try {
+        const res = await fetch("/api/property-extract", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) throw new Error(json.error || "Could not import this listing.");
+
+        const p = json.property || {};
+        if (p.address) $("property-address").value = p.address;
+        if (p.rent) $("property-rent").value = p.rent;
+        if (p.bond) $("property-bond").value = p.bond;
+        if (p.beds) $("property-beds").value = p.beds;
+        if (p.available) $("property-available").value = p.available;
+        $("listing-text").value = "Imported from property URL: " + (p.url || url);
+
+        if (p.rent) {
+          $("target-rent").value = String(p.rent);
+          if (Number(p.rent) >= 100 && Number(p.rent) <= 1200) {
+            $("target-rent-slider").value = String(p.rent);
+          }
+        }
+
+        const found = [p.address, p.rent, p.bond, p.beds].filter(Boolean).length;
+        status.textContent = found >= 2
+          ? "Property imported. Check the details below before saving."
+          : "The listing was imported, but some details could not be read. Complete them manually below.";
+        status.className = "property-url-status good";
+        recalcAll();
+      } catch (err) {
+        status.textContent = (err && err.message ? err.message : "Could not import this listing.") + " You can still enter the property manually below.";
+        status.className = "property-url-status warn";
+      } finally {
+        $("import-property-url").disabled = false;
+      }
+    });
 
     $("parse-listing").addEventListener("click", () => {
       const p = parseListing($("listing-text").value);
