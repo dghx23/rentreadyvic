@@ -158,14 +158,26 @@
             <div id="scenario-prompts" class="scenario-prompts"></div>
           </div>
 
-          <div class="income-impact-explainer">
+          <div class="payment-scenario-panel">
+            <div class="payment-scenario-head">
+              <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
+              <small>RentReady flags tests that are not captured by the work-income slider.</small>
+            </div>
+            <div id="payment-scenario-prompts" class="scenario-pills"></div>
+            <div id="payment-scenario-note" class="scenario-note"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="income-impact-explainer income-impact-full">
             <div class="income-impact-head">
               <div>
                 <span class="income-impact-kicker">How work affects your payment</span>
                 <strong id="income-impact-title">Enter work income to see the effect</strong>
               </div>
               <button type="button" class="link-btn" id="open-income-impact">Explain this in detail ↗</button>
-            </div>
+      </section>
 
             <p id="income-impact-copy">RentReady will show how the configured income-free area and taper reduce the selected payment as earnings increase.</p>
 
@@ -190,18 +202,6 @@
 
             <div id="income-impact-note" class="income-impact-note"></div>
           </div>
-
-          <div class="payment-scenario-panel">
-            <div class="payment-scenario-head">
-              <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
-              <small>RentReady flags tests that are not captured by the work-income slider.</small>
-            </div>
-            <div id="payment-scenario-prompts" class="scenario-pills"></div>
-            <div id="payment-scenario-note" class="scenario-note"></div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="card accent-card">
       <div class="card-head"><h3>Assume future Rent Assistance</h3></div>
