@@ -576,13 +576,25 @@
     document.querySelectorAll("[data-next]").forEach(b => b.addEventListener("click", () => setStep(b.dataset.next)));
     document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", () => setStep(b.dataset.back)));
 
-    document.querySelectorAll("[data-period]").forEach(b => b.addEventListener("click", () => {
-      document.querySelectorAll("[data-period]").forEach(x => x.classList.remove("active"));
-      b.classList.add("active");
-      currentPeriod = b.dataset.period;
+    function setDisplayPeriod(period) {
+      currentPeriod = period;
+      document.querySelectorAll("[data-period]").forEach(x =>
+        x.classList.toggle("active", x.dataset.period === period)
+      );
+      document.querySelectorAll("[data-rate-period]").forEach(x =>
+        x.classList.toggle("active", x.dataset.ratePeriod === period)
+      );
       syncInputsToPeriod();
       renderOptimiser();
-    }));
+    }
+
+    document.querySelectorAll("[data-period]").forEach(b =>
+      b.addEventListener("click", () => setDisplayPeriod(b.dataset.period))
+    );
+
+    document.querySelectorAll("[data-rate-period]").forEach(b =>
+      b.addEventListener("click", () => setDisplayPeriod(b.dataset.ratePeriod))
+    );
 
     $("payment-select").addEventListener("change", () => { populateRates(); recalcAll(); });
     $("payment-rate-select").addEventListener("change", applySelectedRate);
