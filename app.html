@@ -14,12 +14,6 @@
       <span class="brand-mark">R</span>
       <span><b>RentReady VIC</b><small>Work · Rent · Support</small></span>
     </a>
-    <div class="period-switch" aria-label="Display period">
-      <button data-period="week">Weekly</button>
-      <button data-period="fortnight" class="active">Fortnightly</button>
-      <button data-period="month">Monthly</button>
-      <button data-period="year" class="quiet">Yearly</button>
-    </div>
     <div class="account-zone">
       <button type="button" class="account-toggle" id="account-toggle" aria-expanded="false">
         <span class="account-avatar" id="account-avatar">G</span>
@@ -56,6 +50,16 @@
     <h1>Know what you receive, whether the property fits, and what income would make it work.</h1>
     <p>RentReady helps you identify your income-support payment, compare the property with RentAssist Bond Loan eligibility and affordability, understand what an agent can and cannot ask for, and work out a realistic extra-income target.</p>
   </section>
+
+  <div class="financial-period-preference" aria-label="Financial display preference">
+    <span class="financial-period-label">Always show me the financial figures in</span>
+    <div class="period-switch" aria-label="Display period">
+      <button data-period="week">Weekly</button>
+      <button data-period="fortnight" class="active">Fortnightly</button>
+      <button data-period="month">Monthly</button>
+      <button data-period="year">Yearly</button>
+    </div>
+  </div>
 
   <nav class="wizard-progress" aria-label="RentReady assessment progress">
     <button class="wizard-step active" data-step-target="income">
