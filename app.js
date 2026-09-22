@@ -5,7 +5,8 @@
   const STORAGE = {
     props: "rentready-properties-v3",
     active: "rentready-active-property-v3",
-    config: "rentready-admin-config-v1"
+    config: "rentready-admin-config-v1",
+    account: "rentready-account-v1"
   };
 
   const DEFAULT_CONFIG = {
@@ -40,6 +41,7 @@
   let otherIncomeWeek = 0;
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
+  let accountEmail = localStorage.getItem(STORAGE.account) || "";
 
   function loadConfig() {
     const custom = loadJSON(STORAGE.config, {});
@@ -316,6 +318,7 @@
     renderIncome(sc);
     renderBondChecks(sc, prop);
     renderPropertySummary(sc, prop);
+    renderPropertyAssessment();
     renderAffordability(sc, prop);
     renderApplicationReview(sc, prop);
   }
@@ -342,6 +345,131 @@
       copy += activeProperty() ? " Rent Assistance is estimated from the selected property's rent." : " Until you choose a property, the income projection uses the potential maximum Rent Assistance for the selected household situation.";
     }
     $("income-explanation").textContent = copy;
+    renderIncomeImpact(sc);
+  }
+
+  function findPaymentCutoff(creditBalance) {
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+    if (!rule || paymentMaxFN <= 0) return null;
+
+    const maxSearch = 12000;
+    for (let income = 0; income <= maxSearch; income += 5) {
+      if (paymentAtWork(income, creditBalance).paymentFN <= 0.01) return income;
+    }
+    return null;
+  }
+
+  function renderIncomeImpact(sc) {
+    if (!$("income-impact-chart")) return;
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+    const credit = Number($("working-credit").value || 0);
+    const cutoff = findPaymentCutoff(credit);
+
+    $("impact-reduction").textContent = money(displayFromFN(sc.pay.reduction));
+    $("impact-free-area").textContent = rule ? money(displayFromFN(Number(rule.freeArea || 0))) : "Not modelled";
+    $("impact-cutoff").textContent = cutoff == null ? "Not modelled" : money(displayFromFN(cutoff));
+
+    if (!rule) {
+      $("income-impact-title").textContent = "Work-income impact is not yet modelled for this payment";
+      $("income-impact-copy").textContent = "Your selected payment rate is included in total income, but RentReady does not yet have a configured earnings taper for this payment. The chart therefore cannot estimate a payment cutoff.";
+      $("income-impact-note").className = "income-impact-note warn";
+      $("income-impact-note").textContent = "Use your actual payment amount if earnings have already changed what you receive.";
+      renderIncomeImpactChart(null, credit);
+      return;
+    }
+
+    const label = p ? (p.shortName || p.name) : "payment";
+    const freeArea = Number(rule.freeArea || 0);
+    const assessable = sc.pay.assessableIncome;
+    $("income-impact-title").textContent = workIncomeFN <= freeArea + credit
+      ? "Your earnings are currently inside the protected/free area"
+      : "Your earnings are reducing the estimated " + label;
+    let ruleText = "";
+    if (rule.singleTaper != null) {
+      ruleText = "After the configured income-free area, the estimate reduces by " + Math.round(rule.singleTaper * 100) + " cents for each additional $1 of assessable employment income.";
+    } else {
+      ruleText = "After the configured income-free area, the first taper is " + Math.round(rule.taper1 * 100) + " cents per $1, then " + Math.round(rule.taper2 * 100) + " cents per $1 above the second threshold.";
+    }
+    $("income-impact-copy").textContent = ruleText + " Working Credit can delay when earnings become assessable.";
+
+    $("income-impact-note").className = "income-impact-note " + (sc.pay.reduction > 0 ? "warn" : "ok");
+    $("income-impact-note").textContent = sc.pay.reduction > 0
+      ? "At your current earnings, assessable employment income is " + money(displayFromFN(assessable)) + " per " + PERIODS[currentPeriod].label + " and the estimated payment reduction is " + money(displayFromFN(sc.pay.reduction)) + "."
+      : "At your current earnings and Working Credit balance, this model does not reduce the selected payment yet.";
+
+    renderIncomeImpactChart(cutoff, credit);
+  }
+
+  function renderIncomeImpactChart(cutoff, creditBalance) {
+    const svg = $("income-impact-chart");
+    if (!svg) return;
+
+    const current = Math.max(0, workIncomeFN);
+    const maxX = Math.max(800, current * 1.35, cutoff ? cutoff * 1.12 : 3200);
+    const points = [];
+    for (let i = 0; i <= 24; i++) {
+      const x = maxX * i / 24;
+      const pay = paymentAtWork(x, creditBalance).paymentFN;
+      points.push({ x, pay, total: x + pay });
+    }
+    const maxY = Math.max(paymentMaxFN, ...points.map(d => d.total), 1) * 1.08;
+
+    const W = 620, H = 230, L = 48, R = 14, T = 14, B = 34;
+    const pw = W - L - R, ph = H - T - B;
+    const sx = x => L + (x / maxX) * pw;
+    const sy = y => T + ph - (y / maxY) * ph;
+    const path = key => points.map((d,i) => (i ? "L" : "M") + sx(d.x).toFixed(1) + " " + sy(d[key]).toFixed(1)).join(" ");
+    const currentX = sx(Math.min(current, maxX));
+    const currentPay = paymentAtWork(current, creditBalance).paymentFN;
+    const ticks = [0, .25, .5, .75, 1];
+
+    let markup = '<rect x="0" y="0" width="' + W + '" height="' + H + '" rx="10" fill="white"/>';
+    ticks.forEach(t => {
+      const y = sy(maxY * t);
+      markup += '<line x1="' + L + '" y1="' + y + '" x2="' + (W-R) + '" y2="' + y + '" stroke="#e2e8f0" stroke-width="1"/>';
+      markup += '<text x="' + (L-7) + '" y="' + (y+3) + '" text-anchor="end" font-size="9" fill="#64748b">' + money(displayFromFN(maxY*t),0) + '</text>';
+    });
+    ticks.forEach(t => {
+      const x = L + pw * t;
+      markup += '<text x="' + x + '" y="' + (H-10) + '" text-anchor="middle" font-size="9" fill="#64748b">' + money(displayFromFN(maxX*t),0) + '</text>';
+    });
+    markup += '<path d="' + path("pay") + '" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round"/>';
+    markup += '<path d="' + path("total") + '" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round"/>';
+    markup += '<line x1="' + currentX + '" y1="' + T + '" x2="' + currentX + '" y2="' + (T+ph) + '" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4"/>';
+    markup += '<circle cx="' + currentX + '" cy="' + sy(currentPay) + '" r="4" fill="#b45309"/>';
+    if (cutoff != null && cutoff <= maxX) {
+      const cx = sx(cutoff);
+      markup += '<line x1="' + cx + '" y1="' + T + '" x2="' + cx + '" y2="' + (T+ph) + '" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 4"/>';
+      markup += '<text x="' + Math.min(cx+5,W-110) + '" y="' + (T+11) + '" font-size="9" fill="#64748b">payment reaches $0</text>';
+    }
+    markup += '<text x="' + (L+pw/2) + '" y="' + (H-1) + '" text-anchor="middle" font-size="9" fill="#64748b">gross work income per ' + PERIODS[currentPeriod].label + '</text>';
+    svg.innerHTML = markup;
+  }
+
+  function openIncomeImpactDetail() {
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+    const q = new URLSearchParams({
+      payment: p ? (p.shortName || p.name) : "Payment",
+      circumstance: r ? r.label : "Manual amount",
+      max: String(paymentMaxFN || 0),
+      work: String(workIncomeFN || 0),
+      credit: String(Number($("working-credit").value || 0)),
+      period: currentPeriod
+    });
+    if (rule) {
+      q.set("freeArea", String(rule.freeArea || 0));
+      if (rule.secondThreshold != null) q.set("secondThreshold", String(rule.secondThreshold));
+      if (rule.taper1 != null) q.set("taper1", String(rule.taper1));
+      if (rule.taper2 != null) q.set("taper2", String(rule.taper2));
+      if (rule.singleTaper != null) q.set("singleTaper", String(rule.singleTaper));
+    }
+    window.open("income-impact.html?" + q.toString(), "rentready-income-impact", "popup=yes,width=940,height=760,resizable=yes,scrollbars=yes");
   }
 
   function renderBondChecks(sc, prop) {
@@ -419,6 +547,7 @@
 
   function renderShortlist() {
     const el = $("shortlist");
+    if ($("account-shortlist-count")) $("account-shortlist-count").textContent = properties.length + (properties.length === 1 ? " property" : " properties");
     if (!properties.length) {
       el.innerHTML = '<div class="empty-state">No properties yet. Paste a listing or enter one manually.</div>';
       return;
@@ -426,6 +555,110 @@
     el.innerHTML = properties.map(p => '<div class="property-card ' + (p.id === activePropertyId ? "active" : "") + '" data-property="' + p.id + '">' +
       '<button type="button" data-remove-property="' + p.id + '" aria-label="Remove">×</button>' +
       '<b>' + esc(p.address) + '</b><small>' + money(p.rent,0) + '/wk · ' + (p.beds || "—") + ' bed · bond ' + money(p.bond,0) + '</small></div>').join("");
+  }
+
+  function draftPropertyFromForm() {
+    return {
+      id: "draft",
+      address: $("property-address").value.trim() || "Property being assessed",
+      rent: Number($("property-rent").value || 0),
+      bond: Number($("property-bond").value || 0),
+      beds: Number($("property-beds").value || 0),
+      available: $("property-available").value.trim(),
+      raw: $("listing-text").value
+    };
+  }
+
+  function propertyForAssessment() {
+    const draft = draftPropertyFromForm();
+    if (draft.rent > 0 || draft.bond > 0 || draft.beds > 0 || $("property-address").value.trim()) return draft;
+    return activeProperty();
+  }
+
+  function loadPropertyIntoForm(prop) {
+    if (!prop) return;
+    $("property-address").value = prop.address || "";
+    $("property-rent").value = prop.rent || "";
+    $("property-bond").value = prop.bond || "";
+    $("property-beds").value = prop.beds || "";
+    $("property-available").value = prop.available || "";
+    if (prop.raw) $("listing-text").value = prop.raw;
+    renderPropertyAssessment();
+  }
+
+  function renderPropertyAssessment() {
+    if (!$("property-assessment-status")) return;
+    const prop = propertyForAssessment();
+    const hasProperty = prop && Number(prop.rent || 0) > 0;
+    const status = $("property-assessment-status");
+
+    if (!hasProperty) {
+      status.className = "assessment-status pending";
+      status.textContent = "Waiting for property";
+      $("property-assessment-verdict").textContent = "Paste or enter a property";
+      $("property-assessment-copy").textContent = "RentReady will compare the rent and bond with your projected income as soon as the property details are available.";
+      ["property-check-rent","property-check-income","property-check-ratio","property-check-ra","property-check-bond","property-check-cap"].forEach(id => $(id).textContent = "—");
+      $("property-assessment-details").innerHTML = "<p>Paste a listing or enter rent, bond and bedrooms to see the assessment.</p>";
+      return;
+    }
+
+    const rent = Number(prop.rent || 0);
+    const bond = Number(prop.bond || 0);
+    const sc = scenario(workIncomeFN, rent);
+    const ratio = sc.householdWeek > 0 ? rent / sc.householdWeek : null;
+    const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
+    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const cap = bondCapForBeds(prop.beds);
+    const generalGap = rent - generalLimit;
+    const rentAssistGap = rent - bondLimit;
+    const bondGap = bond > 0 ? bond - cap : 0;
+
+    $("property-check-rent").textContent = money(rent) + "/wk";
+    $("property-check-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "Add income";
+    $("property-check-ratio").textContent = ratio == null ? "—" : pct(ratio);
+    $("property-check-ra").textContent = money(sc.actualRAFN / 2) + "/wk";
+    $("property-check-bond").textContent = bond ? money(bond) : "Not found";
+    $("property-check-cap").textContent = prop.beds ? money(cap) : "Need bedrooms";
+
+    let verdict = "", copy = "", state = "pending";
+    if (sc.householdWeek <= 0) {
+      verdict = "Add your income to assess this property";
+      copy = "The listing has been read, but affordability needs the income profile from step 1.";
+    } else if (rentAssistGap >= 0) {
+      verdict = "This rent is above the current RentAssist rent-share range";
+      copy = "The rent is " + money(rentAssistGap) + "/wk above the current RentAssist rent-share ceiling in this model.";
+      state = "bad";
+    } else if (generalGap > 0) {
+      verdict = "RentAssist may fit, but the property is financially tight";
+      copy = "The rent is within the RentAssist rent-share range used here but " + money(generalGap) + "/wk above the general planning benchmark.";
+      state = "warn";
+    } else if (bondGap > 0) {
+      verdict = "The weekly rent looks workable, but the bond needs attention";
+      copy = "The rent sits inside both rent thresholds, but the entered bond is " + money(bondGap) + " above the bedroom-based RentAssist cap used here.";
+      state = "warn";
+    } else {
+      verdict = "This property looks within the current planning ranges";
+      copy = "The weekly rent is inside both the general planning benchmark and the RentAssist rent-share threshold used by this tool.";
+      state = "good";
+    }
+
+    status.className = "assessment-status " + state;
+    status.textContent = state === "good" ? "Within range" : state === "warn" ? "Tight" : state === "bad" ? "Above range" : "Needs income";
+    $("property-assessment-verdict").textContent = verdict;
+    $("property-assessment-copy").textContent = copy;
+
+    const bullets = [];
+    if (ratio != null) bullets.push("Rent is " + pct(ratio) + " of projected weekly household income.");
+    bullets.push(generalGap <= 0
+      ? "General planning benchmark: " + money(-generalGap) + "/wk of headroom."
+      : "General planning benchmark: " + money(generalGap) + "/wk short.");
+    bullets.push(rentAssistGap < 0
+      ? "RentAssist rent-share test: " + money(-rentAssistGap) + "/wk of headroom."
+      : "RentAssist rent-share test: " + money(rentAssistGap) + "/wk above the current ceiling.");
+    if (bond && prop.beds) bullets.push(bondGap <= 0
+      ? "Bond is within the bedroom-based cap used here."
+      : "Bond is " + money(bondGap) + " above the bedroom-based cap used here.");
+    $("property-assessment-details").innerHTML = "<ul>" + bullets.map(x => "<li>" + esc(x) + "</li>").join("") + "</ul>";
   }
 
   function renderPropertySummary(sc, prop) {
@@ -810,6 +1043,7 @@
     $("work-income").addEventListener("input", () => { workIncomeFN = fnFromDisplay($("work-income").value); recalcAll(); });
     $("other-income-week").addEventListener("input", () => { otherIncomeWeek = weekFromDisplay($("other-income-week").value); recalcAll(); });
     $("working-credit").addEventListener("input", recalcAll);
+    $("open-income-impact").addEventListener("click", openIncomeImpactDetail);
     $("future-ra").addEventListener("change", recalcAll);
     $("ra-situation").addEventListener("change", recalcAll);
     $("household-type").addEventListener("change", recalcAll);
@@ -824,7 +1058,11 @@
       if (p.bond) $("property-bond").value = p.bond;
       if (p.beds) $("property-beds").value = p.beds;
       if (p.available) $("property-available").value = p.available;
+      renderPropertyAssessment();
     });
+    ["property-address","property-rent","property-bond","property-beds","property-available"].forEach(id =>
+      $(id).addEventListener("input", renderPropertyAssessment)
+    );
     $("save-property").addEventListener("click", savePropertyFromForm);
     $("clear-properties").addEventListener("click", () => { properties = []; activePropertyId = null; persistProperties(); renderShortlist(); recalcAll(); });
     $("shortlist").addEventListener("click", e => {
@@ -838,7 +1076,14 @@
       const card = e.target.closest("[data-property]");
       if (card) {
         activePropertyId = card.dataset.property;
-        persistProperties(); renderShortlist(); recalcAll();
+        persistProperties();
+        const selected = activeProperty();
+        loadPropertyIntoForm(selected);
+        renderShortlist();
+        recalcAll();
+        setStep("property");
+        $("account-popover").hidden = true;
+        $("account-toggle").setAttribute("aria-expanded","false");
       }
     });
 
@@ -848,6 +1093,44 @@
 
     $("optimise-work").addEventListener("input", renderOptimiser);
     $("optimise-rent").addEventListener("input", renderOptimiser);
+
+    function renderAccount() {
+      const signed = !!accountEmail;
+      $("account-login").hidden = signed;
+      $("account-signed").hidden = !signed;
+      $("account-label").textContent = signed ? accountEmail.split("@")[0] : "Sign in";
+      $("account-subtitle").textContent = signed ? "Shortlist & saved work" : "Shortlist & saved work";
+      $("account-avatar").textContent = signed ? accountEmail.slice(0,1).toUpperCase() : "G";
+      $("account-email-display").textContent = signed ? accountEmail : "—";
+    }
+
+    $("account-toggle").addEventListener("click", e => {
+      e.stopPropagation();
+      const pop = $("account-popover");
+      pop.hidden = !pop.hidden;
+      $("account-toggle").setAttribute("aria-expanded", String(!pop.hidden));
+    });
+    $("account-popover").addEventListener("click", e => e.stopPropagation());
+    document.addEventListener("click", () => {
+      $("account-popover").hidden = true;
+      $("account-toggle").setAttribute("aria-expanded","false");
+    });
+    $("account-signin").addEventListener("click", () => {
+      const email = $("account-email").value.trim();
+      if (!email || !email.includes("@")) {
+        $("account-email").focus();
+        return;
+      }
+      accountEmail = email;
+      localStorage.setItem(STORAGE.account, accountEmail);
+      renderAccount();
+    });
+    $("account-signout").addEventListener("click", () => {
+      accountEmail = "";
+      localStorage.removeItem(STORAGE.account);
+      renderAccount();
+    });
+    renderAccount();
   }
 
   bind();
