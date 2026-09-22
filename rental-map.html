@@ -22,6 +22,14 @@
 .map-status{margin-top:8px;padding:8px 9px;border-radius:8px;background:#f8fafc;color:var(--muted);font-size:9px;line-height:1.45}
 .map-status.good{background:var(--ok-soft);color:#166534}
 .map-status.warn{background:var(--warn-soft);color:#92400e}
+.map-layer-card{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.map-layer-card>span{display:block;color:var(--brand);font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
+.map-layer-card>strong{display:block;margin-top:3px;font-size:12px}
+.map-layer-list{display:grid;gap:7px;margin-top:9px}
+.map-layer-option{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:9px;border:1px solid var(--line);border-radius:8px;background:#fafbfc;cursor:pointer}
+.map-layer-option input{margin-top:3px;accent-color:var(--brand)}
+.map-layer-option b{display:block;font-size:9px}.map-layer-option small{display:block;margin-top:2px;color:var(--muted);font-size:8px;line-height:1.35}
+.map-layer-help{margin-top:7px;color:var(--muted);font-size:8px;line-height:1.45}
 .map-list{display:grid;gap:8px;margin-top:14px}
 .map-property{padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}
 .map-property b{display:block;font-size:10px}
@@ -84,6 +92,19 @@
         </div>
         <div class="map-status" id="map-status">Search an address or use a property from your shortlist.</div>
 
+        <div class="map-layer-card">
+          <span>Map layers</span>
+          <strong>Choose what to show</strong>
+          <div class="map-layer-list">
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="saved" checked><span><b>Saved rentals</b><small>Your shortlisted rental properties.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="rent"><span><b>Weekly rent</b><small>Shows saved rentals as rent-sized markers with the weekly amount.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="bond"><span><b>Bond amount</b><small>Shows the entered bond for each saved rental.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="parcels"><span><b>Property parcels</b><small>Victorian cadastral parcel boundaries from Vicmap. Best viewed when zoomed in.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="planning"><span><b>Planning zones</b><small>Victorian planning scheme zones from Vicmap.</small></span></label>
+          </div>
+          <div class="map-layer-help">Rental-value layers use only properties you have saved in RentReady. Property and planning layers come from Victorian Government spatial services.</div>
+        </div>
+
         <div class="map-list" id="map-list"></div>
       </div>
     </aside>
@@ -95,10 +116,11 @@
     </section>
   </div>
 
-  <div class="map-note"><b>Map purpose:</b> this is a location view for properties you are considering. It does not provide rental listings, availability, safety rankings or suburb recommendations. Property affordability remains in the RentReady assessment.</div>
+  <div class="map-note"><b>Map purpose:</b> use the rental layers to compare properties you have saved, and the Victorian spatial layers to understand parcel and planning context. The map does not provide live rental listings, safety rankings or suburb recommendations. Affordability remains in the RentReady assessment.</div>
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.15/dist/esri-leaflet.js"></script>
 <script>
 (() => {
   const STORAGE = "rentready-properties-v3";
@@ -112,6 +134,34 @@
     maxZoom:19,
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
   }).addTo(map);
+
+  const savedLayer = L.layerGroup().addTo(map);
+  const rentLayer = L.layerGroup();
+  const bondLayer = L.layerGroup();
+  const searchLayer = L.layerGroup().addTo(map);
+
+  const parcelLayer = L.esri.dynamicMapLayer({
+    url:"https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Parcel/MapServer",
+    layers:[0],
+    opacity:0.58,
+    minZoom:14,
+    attribution:"Vicmap Parcel — State of Victoria"
+  });
+
+  const planningLayer = L.esri.dynamicMapLayer({
+    url:"https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Planning/MapServer",
+    layers:[3],
+    opacity:0.42,
+    attribution:"Vicmap Planning — State of Victoria"
+  });
+
+  const layerRegistry = {
+    saved:savedLayer,
+    rent:rentLayer,
+    bond:bondLayer,
+    parcels:parcelLayer,
+    planning:planningLayer
+  };
 
   const markers = [];
   const geocodeCache = new Map();
@@ -139,8 +189,25 @@
       '<a href="app.html?step=property" onclick="localStorage.setItem(\''+ACTIVE+'\',\''+esc(p.id)+'\')">Open in RentReady →</a>';
   }
   function addMarker(p,geo){
-    const marker=L.marker([geo.lat,geo.lon]).addTo(map).bindPopup(popupHtml(p));
+    const marker=L.marker([geo.lat,geo.lon]).addTo(savedLayer).bindPopup(popupHtml(p));
     markers.push(marker);
+
+    const rent=Number(p.rent||0);
+    if(rent>0){
+      const radius=Math.max(7,Math.min(18,6+rent/70));
+      L.circleMarker([geo.lat,geo.lon],{
+        radius,weight:2,fillOpacity:.28
+      }).bindTooltip(money(rent)+"/wk",{direction:"top"}).bindPopup(popupHtml(p)).addTo(rentLayer);
+    }
+
+    const bond=Number(p.bond||0);
+    if(bond>0){
+      const radius=Math.max(7,Math.min(20,6+bond/350));
+      L.circleMarker([geo.lat,geo.lon],{
+        radius,weight:2,fillOpacity:.2,dashArray:"4 3"
+      }).bindTooltip("Bond "+money(bond),{direction:"bottom"}).bindPopup(popupHtml(p)).addTo(bondLayer);
+    }
+
     return marker;
   }
   async function mapSaved(){
@@ -178,8 +245,12 @@
         const geo=await geocode(p.address);
         if(!geo) throw new Error("Address could not be mapped");
         map.setView([geo.lat,geo.lon],15);
-        const marker=addMarker(p,geo);
-        marker.openPopup();
+        const marker=markers.find(m=>{
+          const ll=m.getLatLng();
+          return Math.abs(ll.lat-geo.lat)<0.000001 && Math.abs(ll.lng-geo.lon)<0.000001;
+        });
+        if(marker) marker.openPopup();
+        else L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup(popupHtml(p)).openPopup();
         status.textContent="Showing "+(geo.label||p.address)+".";
         status.className="map-status good";
       }catch{
@@ -198,7 +269,8 @@
       const geo=await geocode(q);
       if(!geo) throw new Error("not found");
       map.setView([geo.lat,geo.lon],16);
-      L.marker([geo.lat,geo.lon]).addTo(map).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small><a href="app.html?step=property">Add or assess this property →</a>').openPopup();
+      searchLayer.clearLayers();
+      L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small><a href="app.html?step=property">Add or assess this property →</a>').openPopup();
       status.textContent="Showing "+geo.label+".";
       status.className="map-status good";
     }catch{
@@ -206,6 +278,26 @@
       status.className="map-status warn";
     }
   }
+
+  document.querySelectorAll("[data-map-layer]").forEach(input=>{
+    input.addEventListener("change",()=>{
+      const layer=layerRegistry[input.dataset.mapLayer];
+      if(!layer) return;
+      if(input.checked){
+        if(!map.hasLayer(layer)) map.addLayer(layer);
+      }else if(map.hasLayer(layer)){
+        map.removeLayer(layer);
+      }
+    });
+  });
+
+  map.on("zoomend",()=>{
+    const parcelToggle=document.querySelector('[data-map-layer="parcels"]');
+    if(parcelToggle && parcelToggle.checked && map.getZoom()<14){
+      $("map-status").textContent="Zoom in further to see individual Vicmap property parcels.";
+      $("map-status").className="map-status";
+    }
+  });
 
   $("map-search").addEventListener("click",searchAddress);
   $("map-address").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchAddress();}});
