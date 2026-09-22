@@ -292,6 +292,40 @@
           <div class="rental-arrangement-context" id="rental-arrangement-context">Choose an arrangement before setting the target rent.</div>
         </div>
 
+        <div class="card accent-card target-rent-ra-choice">
+          <div class="card-head"><h3>Assume future Rent Assistance</h3></div>
+          <div class="card-body">
+            <label class="toggle-row">
+              <input type="checkbox" id="future-ra">
+              <span><b>Include Rent Assistance once I move into an eligible rental</b><small>Before you choose a property, RentReady shows the maximum potential amount for your household type. Once a property is selected, it switches to an estimate based on that rent.</small></span>
+            </label>
+            <div class="grid two compact" id="rent-assistance-details" hidden>
+              <label>Rent Assistance household situation
+                <select id="ra-situation"></select>
+              </label>
+              <div class="mini-result">
+                <span>Potential maximum</span>
+                <strong id="ra-max-display">$0</strong>
+                <small class="period-label">per fortnight</small>
+              </div>
+            </div>
+
+            <div class="rentassist-explore-offer" id="rentassist-explore-offer" hidden>
+              <div>
+                <span>Optional Victorian bond help</span>
+                <strong>Explore the RentAssist Bond Loan?</strong>
+                <p>Because you have chosen to include Rent Assistance, RentReady can also check the separate Housing Victoria bond-loan rules against your income and property.</p>
+              </div>
+              <button type="button" class="btn" id="rentassist-explore-button">Explore RentAssist Bond Loan →</button>
+            </div>
+            <div class="rentassist-explore-confirmed" id="rentassist-explore-confirmed" hidden>
+              <span>RentAssist assessment enabled</span>
+              <b>The bond-loan rules will now appear when RentReady assesses your target rent or property.</b>
+            </div>
+          </div>
+        </div>
+
+
         <div class="target-rent-entry" id="target-rent-entry" hidden>
           <label><span id="target-rent-label">Target weekly rent</span>
             <div class="money-input target-rent-money"><span>$</span><input id="target-rent" type="number" step="5" min="0" value="0" placeholder="450"></div>
@@ -383,39 +417,6 @@
 
       <div id="income-impact-note" class="income-impact-note"></div>
     </section>
-
-    <div class="card accent-card">
-      <div class="card-head"><h3>Assume future Rent Assistance</h3></div>
-      <div class="card-body">
-        <label class="toggle-row">
-          <input type="checkbox" id="future-ra">
-          <span><b>Include Rent Assistance once I move into an eligible rental</b><small>Before you choose a property, RentReady shows the maximum potential amount for your household type. Once a property is selected, it switches to an estimate based on that rent.</small></span>
-        </label>
-        <div class="grid two compact" id="rent-assistance-details" hidden>
-          <label>Rent Assistance household situation
-            <select id="ra-situation"></select>
-          </label>
-          <div class="mini-result">
-            <span>Potential maximum</span>
-            <strong id="ra-max-display">$0</strong>
-            <small class="period-label">per fortnight</small>
-          </div>
-        </div>
-
-        <div class="rentassist-explore-offer" id="rentassist-explore-offer" hidden>
-          <div>
-            <span>Optional Victorian bond help</span>
-            <strong>Explore the RentAssist Bond Loan?</strong>
-            <p>Because you have chosen to include Rent Assistance, RentReady can also check the separate Housing Victoria bond-loan rules against your income and property.</p>
-          </div>
-          <button type="button" class="btn" id="rentassist-explore-button">Explore RentAssist Bond Loan →</button>
-        </div>
-        <div class="rentassist-explore-confirmed" id="rentassist-explore-confirmed" hidden>
-          <span>RentAssist assessment enabled</span>
-          <b>The bond-loan rules will now appear when RentReady assesses your target rent or property.</b>
-        </div>
-      </div>
-    </div>
 
     <div class="card additional-support-card">
       <div class="card-head">
