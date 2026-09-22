@@ -432,6 +432,7 @@
     renderPropertyAssessment();
     renderAffordability(sc, prop);
     renderApplicationReview(sc, prop);
+    renderPositionDock(sc, prop);
   }
 
   function renderPaymentCoverage() {
@@ -479,6 +480,44 @@
         (rateText ? '<small>' + rateText + '</small>' : '') +
         '</div>';
     }).join("") : '<div class="empty-state">Additional support catalogue is unavailable from the current data feed.</div>';
+  }
+
+  function renderPositionDock(sc, prop) {
+    if (!$("dock-status")) return;
+
+    const payment = selectedPayment();
+    const rent = prop ? Number(prop.rent || 0) : 0;
+    const ratio = sc.householdWeek > 0 && rent > 0 ? rent / sc.householdWeek : null;
+    const rentAssistLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const rentAssistPass = prop && rent > 0 ? rent < rentAssistLimit : null;
+
+    $("dock-payment").textContent = payment ? (payment.shortName || payment.name) : "—";
+    $("dock-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "—";
+    $("dock-property").textContent = prop ? prop.address : "Not selected";
+    $("dock-rent").textContent = prop && rent ? money(rent) + "/wk" : "—";
+    $("dock-ratio").textContent = ratio == null ? "—" : pct(ratio);
+    $("dock-rentassist").textContent = rentAssistPass == null ? "Not tested" : rentAssistPass ? "Within rent-share test" : "Above rent-share test";
+
+    const status = $("dock-status");
+    let state = "", copy = "Add your income to begin";
+    if (sc.householdWeek > 0 && !prop) {
+      state = "warn";
+      copy = "Income profile ready — add a property next";
+    } else if (prop && sc.householdWeek > 0) {
+      const generalPass = rent <= sc.householdWeek * cfg.generalAffordabilityPct;
+      if (generalPass && rentAssistPass) {
+        state = "good";
+        copy = "This property is inside both current planning ranges";
+      } else if (rentAssistPass) {
+        state = "warn";
+        copy = "RentAssist range passes, but general affordability is tight";
+      } else {
+        state = "bad";
+        copy = "This property is above the current RentAssist rent-share range";
+      }
+    }
+    status.className = "dock-status" + (state ? " " + state : "");
+    $("dock-status-copy").textContent = copy;
   }
 
   function renderIncome(sc) {
