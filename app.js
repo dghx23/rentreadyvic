@@ -872,20 +872,132 @@
     renderTargetRentPlanner();
   }
 
+  function supportProfileSignals() {
+    const p = selectedPayment();
+    const r = selectedRate();
+    const paymentSlug = p ? p.slug : "";
+    const rateLabel = String(r && r.label || "").toLowerCase();
+    const raCode = $("ra-situation") ? String($("ra-situation").value || "") : "";
+    const noWorkReason = $("no-work-reason") ? String($("no-work-reason").value || "") : "";
+
+    const hasDependentChildren =
+      /(dependent child|with child|children|principal carer)/i.test(rateLabel) ||
+      /^ftb_/.test(raCode);
+
+    const studentPayment = [
+      "youth-allowance-student",
+      "austudy",
+      "abstudy-living-allowance",
+      "abstudy"
+    ].includes(paymentSlug);
+
+    const carerPayment = paymentSlug === "carer-payment";
+    const disabilityContext =
+      paymentSlug === "disability-support-pension" ||
+      noWorkReason === "reduced_capacity";
+
+    return {
+      has_dependent_children: hasDependentChildren,
+      carer_payment: carerPayment,
+      carer_context: carerPayment,
+      student_payment: studentPayment,
+      student_context: studentPayment || noWorkReason === "study",
+      study_context: studentPayment || noWorkReason === "study",
+      pension_payment: ["age-pension","disability-support-pension"].includes(paymentSlug),
+      disability_context: disabilityContext,
+      crisis_context: noWorkReason === "crisis",
+      disaster_context: noWorkReason === "disaster",
+      age_pension: paymentSlug === "age-pension",
+      older_australian_context: paymentSlug === "age-pension",
+
+      // RentReady does not currently collect enough information to assert these.
+      newborn_context: false,
+      special_child_context: false,
+      child_disability_context: false,
+      relocation_context: false,
+      regional_tertiary_context: false,
+      isolated_children_context: false,
+      mobility_context: false,
+      medical_equipment_context: false,
+      breast_prosthesis_context: false,
+      continence_context: false,
+      stillbirth_context: false,
+      nz_disaster_context: false,
+      terrorism_context: false
+    };
+  }
+
+  function supportMatchesProfile(item, signals) {
+    const match = item && item.match ? item.match : { manual_only: true };
+    if (match.hide_from_other_support || match.manual_only) return false;
+
+    const required = Array.isArray(match.requires) ? match.requires : [];
+    if (required.some(key => !signals[key])) return false;
+
+    const any = Array.isArray(match.requires_any) ? match.requires_any : [];
+    if (any.length && !any.some(key => signals[key])) return false;
+
+    return required.length > 0 || any.length > 0;
+  }
+
+  function supportMatchReason(item, signals) {
+    const match = item && item.match ? item.match : {};
+    const reasons = [];
+    const labels = {
+      has_dependent_children: "your selected circumstance indicates dependent children",
+      carer_payment: "you selected Carer Payment",
+      carer_context: "your answers indicate a carer context",
+      student_payment: "you selected a student payment",
+      student_context: "your answers indicate a student context",
+      study_context: "your answers indicate study or training",
+      pension_payment: "you selected a pension payment",
+      disability_context: "your answers indicate a disability/reduced-capacity context",
+      crisis_context: "you indicated a major personal crisis",
+      disaster_context: "you indicated a disaster affecting you",
+      age_pension: "you selected Age Pension",
+      older_australian_context: "your selected payment indicates an older-Australian context"
+    };
+
+    (match.requires || []).forEach(key => {
+      if (signals[key] && labels[key]) reasons.push(labels[key]);
+    });
+    const anyMatched = (match.requires_any || []).find(key => signals[key] && labels[key]);
+    if (anyMatched) reasons.push(labels[anyMatched]);
+
+    return reasons.length ? "Matched because " + reasons.join(" and ") + "." : "";
+  }
+
   function renderPaymentCoverage() {
     if (!$("additional-support-list")) return;
-    const support = (data && Array.isArray(data.additionalSupport)) ? data.additionalSupport : [];
-    $("additional-support-list").innerHTML = support.length ? support.map(item => {
+
+    const catalogue = (data && Array.isArray(data.additionalSupport)) ? data.additionalSupport : [];
+    const signals = supportProfileSignals();
+    const matched = catalogue.filter(item => supportMatchesProfile(item,signals));
+
+    if (!matched.length) {
+      $("additional-support-list").innerHTML =
+        '<div class="empty-state support-match-empty"><b>No additional supports identified from the answers entered so far.</b>' +
+        '<span>RentReady will only show a support here when the current Australian support data and your earlier answers produce a clear profile match. You can still use “+ Add another support” if you want to check something specific.</span></div>';
+      return;
+    }
+
+    $("additional-support-list").innerHTML = matched.map(item => {
       const rates = Array.isArray(item.rates) ? item.rates.filter(x => x && x.amount != null) : [];
       const rateText = rates.slice(0,2).map(x => esc(x.label) + ": " + money(rateToFN(x.amount,x.unit))).join(" · ");
-      return '<div class="support-item">' +
+      const reason = supportMatchReason(item,signals);
+
+      return '<div class="support-item support-item-matched">' +
+        '<div class="support-match-badge">Matches your answers</div>' +
         '<b>' + esc(item.name) + '</b>' +
         '<span>' + esc((item.category || "support").replaceAll("_"," ")) + '</span>' +
+        (reason ? '<p class="support-match-reason">' + esc(reason) + '</p>' : '') +
         (item.description ? '<p>' + esc(item.description) + '</p>' : '') +
         (rateText ? '<small>' + rateText + '</small>' : '') +
+        '<em>Check the official eligibility rules before treating this as income.</em>' +
         '</div>';
-    }).join("") : '<div class="empty-state">Additional support catalogue is unavailable from the current data feed.</div>';
+    }).join("");
   }
+
 
 
   function renderResultOverview(sc, prop) {
