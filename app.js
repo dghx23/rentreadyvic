@@ -21,9 +21,7 @@
       family3: 1505
     },
     extraChildIncomeLimit: 43,
-    bondCaps: { one: 2150, two: 2650, three: 2900, fourPlus: 2600 },
-    jobseeker: { freeArea: 150, secondThreshold: 256, taper1: 0.50, taper2: 0.60, principalCarerTaper: 0.40 },
-    youthJobseeker: { freeArea: 150, secondThreshold: 250, taper1: 0.50, taper2: 0.60 }
+    bondCaps: { one: 2150, two: 2650, three: 2900, fourPlus: 2600 }
   };
 
   const PERIODS = {
@@ -53,9 +51,7 @@
       ...DEFAULT_CONFIG,
       ...custom,
       bondIncomeLimits: { ...DEFAULT_CONFIG.bondIncomeLimits, ...(custom.bondIncomeLimits || {}) },
-      bondCaps: { ...DEFAULT_CONFIG.bondCaps, ...(custom.bondCaps || {}) },
-      jobseeker: { ...DEFAULT_CONFIG.jobseeker, ...(custom.jobseeker || {}) },
-      youthJobseeker: { ...DEFAULT_CONFIG.youthJobseeker, ...(custom.youthJobseeker || {}) }
+      bondCaps: { ...DEFAULT_CONFIG.bondCaps, ...(custom.bondCaps || {}) }
     };
   }
 
@@ -143,16 +139,6 @@
       };
     }
 
-    // Backward-compatible fallback while an older backend is still deployed.
-    if (slug === "jobseeker") {
-      const principal = /principal carer/i.test(rateLabel || "");
-      return principal ? { freeArea: cfg.jobseeker.freeArea, singleTaper: cfg.jobseeker.principalCarerTaper } : cfg.jobseeker;
-    }
-    if (slug === "youth-allowance" || slug === "youth-allowance-jobseeker") return cfg.youthJobseeker;
-    if (slug === "parenting-payment") {
-      if (/single/i.test(rateLabel || "")) return { freeArea: 232.60, singleTaper: 0.40 };
-      return cfg.jobseeker;
-    }
     return null;
   }
 
@@ -160,11 +146,7 @@
     const p = selectedPayment();
     if (!p || !p.workConcession) return null;
     const configured = data.workConcessions && data.workConcessions[p.workConcession];
-    return configured ? { code: p.workConcession, ...configured } : {
-      code: p.workConcession,
-      name: "Work concession",
-      description: "A payment-specific work-income concession may apply depending on your circumstances."
-    };
+    return configured ? { code: p.workConcession, ...configured } : null;
   }
 
   const SCENARIO_INFO = {
@@ -294,9 +276,13 @@
 
   function workingCreditCap() {
     const p = selectedPayment();
-    if (!p || !workingCreditApplicable()) return 0;
-    if (p.slug === "youth-allowance-jobseeker") return 3500;
-    return 1000;
+    const concession = selectedWorkConcession();
+    if (!p || !concession || !workingCreditApplicable()) return 0;
+    const raw = p.slug === "youth-allowance-jobseeker"
+      ? concession.youth_jobseeker_balance_max
+      : concession.balance_max;
+    const cap = Number(raw);
+    return Number.isFinite(cap) && cap > 0 ? cap : 0;
   }
 
   function wholeFortnightsBetween(start, end) {
@@ -558,21 +544,21 @@
     }
     if (concession && concession.code === "income_bank") {
       $("work-concession-label").textContent = "Income Bank balance";
-      input.max = String(concession.student_balance_max || 13500);
+      input.max = String(Number(concession.student_balance_max || 0));
       $("work-concession-help").textContent = "Income Bank credits can offset employment income before the student payment income test is applied.";
     } else if (concession && concession.code === "work_bonus") {
       $("work-concession-label").textContent = "Work Bonus income bank balance";
-      input.max = String(concession.balance_max || 11800);
+      input.max = String(Number(concession.balance_max || 0));
       $("work-concession-help").textContent = "For eligible pensioners, the Work Bonus can disregard work income before the pension income test.";
     } else if (concession && (concession.code === "working_credit" || concession.code === "working_credit_or_work_bonus_if_age_eligible")) {
       $("work-concession-label").textContent = "Working Credit balance";
       input.max = String(p.slug === "youth-allowance-jobseeker"
-        ? (concession.youth_jobseeker_balance_max || 3500)
-        : (concession.balance_max || 1000));
+        ? Number(concession.youth_jobseeker_balance_max || 0)
+        : Number(concession.balance_max || 0));
       $("work-concession-help").textContent = "Working Credits can offset employment income before the personal income test is applied.";
     } else if (concession) {
       $("work-concession-label").textContent = "Work concession balance, if applicable";
-      input.max = "11800";
+      input.max = String(Number(concession.balance_max || 0));
       $("work-concession-help").textContent = concession.description || "Enter a balance only if this concession applies to you.";
     } else {
       $("work-concession-label").textContent = "Work-income concession balance";
@@ -613,8 +599,17 @@
       usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)), Math.max(0, workFN));
     }
     if (concession === "work_bonus") {
-      const automaticBonus = 300;
-      usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)) + automaticBonus, Math.max(0, workFN));
+      const configured = selectedWorkConcession();
+      const automaticBonus = Number(
+        configured && (
+          configured.automatic_disregard ??
+          configured.fortnightly_disregard ??
+          configured.work_bonus_amount ??
+          configured.amount_per_fortnight
+        )
+      );
+      const bonus = Number.isFinite(automaticBonus) && automaticBonus > 0 ? automaticBonus : 0;
+      usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)) + bonus, Math.max(0, workFN));
     }
 
     const assessable = Math.max(0, workFN - usableCredits);
@@ -643,7 +638,9 @@
     const rentFN = Number(rentWeek || 0) * 2;
     let amount = 0;
     if (rentFN > band.threshold) {
-      amount = Math.min(band.maximum, (rentFN - band.threshold) * Number(data.rentAssistance.taper || .75));
+      const taper = Number(data && data.rentAssistance && data.rentAssistance.taper);
+      if (!Number.isFinite(taper)) return { amountFN: 0, maximumFN: Number(band.maximum || 0), band, unavailable: true };
+      amount = Math.min(band.maximum, (rentFN - band.threshold) * taper);
     }
     return { amountFN: round2(amount), maximumFN: Number(band.maximum || 0), band };
   }
@@ -699,7 +696,7 @@
       const res = await fetch("/api/social-security?mode=payments", { headers: { Accept: "application/json" } });
       if (!res.ok) throw new Error("Payment feed unavailable");
       const json = await res.json();
-      if (!json.ok || !Array.isArray(json.payments)) throw new Error("Invalid payment feed");
+      if (!json.ok || json.source !== "social-security-au" || !Array.isArray(json.payments)) throw new Error("Invalid Social Security AU feed");
       data = json;
       status.className = "status-pill ok";
       status.textContent = "Current data connected";
@@ -718,7 +715,7 @@
       $("payment-max").value = "0";
       $("ra-situation").innerHTML = '<option value="">Rent Assistance data unavailable</option>';
       $("payment-effective").textContent = "Not supplied";
-      data = { payments: [], additionalSupport: [], workConcessions: {}, otherTests: {}, rentAssistance: { taper: .75, bands: [] } };
+      data = { source: "social-security-au", payments: [], additionalSupport: [], workConcessions: {}, otherTests: {}, rentAssistance: { taper: null, bands: [] } };
       recalcAll();
     }
   }
