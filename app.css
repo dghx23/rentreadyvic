@@ -289,18 +289,18 @@ textarea{resize:vertical}
 }
 .compact-intro .intro-copy{max-width:900px}
 .compact-intro h1{
-  font-size:clamp(28px,4vw,42px);
+  font-size:clamp(25px,3.3vw,36px);
   line-height:1.05;
-  margin:10px 0 8px;
+  margin:8px 0 6px;
 }
 .compact-intro p{
-  font-size:14px;
-  line-height:1.55;
-  max-width:900px;
+  font-size:13px;
+  line-height:1.5;
+  max-width:940px;
 }
 .process-strip{
   display:grid;
-  grid-template-columns:repeat(6,minmax(0,1fr));
+  grid-template-columns:repeat(5,minmax(0,1fr));
   gap:7px;
 }
 .process-step{
@@ -373,4 +373,33 @@ textarea{resize:vertical}
   .review-snapshot{grid-template-columns:repeat(2,1fr)}
   .application-checker{grid-template-columns:1fr}
   .review-hero{display:grid}
+}
+
+
+.application-access{
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) auto;gap:14px;align-items:center;
+  padding:11px 13px;border:1px solid var(--brand-line);border-radius:12px;background:linear-gradient(135deg,#fff,#f8f7ff)
+}
+.application-access>div{min-width:0}
+.application-access-kicker{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:900;margin-bottom:2px}
+.application-access b{display:block;font-size:12px;color:var(--ink)}
+.application-access small{display:block;font-size:9px;line-height:1.35;color:var(--muted);margin-top:2px;font-weight:650}
+.application-access p{font-size:10px!important;line-height:1.4!important;color:var(--muted)!important;margin:0!important}
+.application-access .btn{white-space:nowrap}
+.stepnav-divider{width:1px;background:var(--line);margin:5px 2px;flex:none}
+.step-tab.application-tab{margin-left:auto;color:var(--brand);background:var(--brand-soft);border:1px solid var(--brand-line)}
+.step-tab.application-tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.application-number{background:linear-gradient(135deg,#334155,#4f46e5)}
+.application-context-card{margin:10px 0 0;border-left:4px solid var(--brand)}
+.application-context-card .card-body{font-size:11px}
+
+@media(max-width:1050px){
+  .application-access{grid-template-columns:1fr auto}
+  .application-access p{grid-column:1 / -1}
+}
+@media(max-width:700px){
+  .application-access{grid-template-columns:1fr}
+  .application-access .btn{justify-self:start}
+  .stepnav-divider{display:none}
+  .step-tab.application-tab{margin-left:0}
 }
