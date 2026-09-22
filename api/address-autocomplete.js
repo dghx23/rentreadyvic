@@ -48,7 +48,7 @@ module.exports = async function addressAutocomplete(req, res) {
 
   if (q.length < 3) {
     res.setHeader("Cache-Control", "no-store");
-    return res.status(200).json({ ok: true, suggestions: [] });
+    return res.status(200).json({ ok: true, suggestions: [], results: [] });
   }
 
   try {
@@ -76,9 +76,13 @@ module.exports = async function addressAutocomplete(req, res) {
       .slice(0, 6);
 
     res.setHeader("Cache-Control", "public, max-age=120, s-maxage=600");
-    return res.status(200).json({ ok: true, suggestions });
+    return res.status(200).json({
+      ok: true,
+      suggestions,
+      results: suggestions.map(item => ({ ...item, address:item.label }))
+    });
   } catch (err) {
     res.setHeader("Cache-Control", "no-store");
-    return res.status(200).json({ ok: false, suggestions: [] });
+    return res.status(200).json({ ok: false, suggestions: [], results: [] });
   }
 };
