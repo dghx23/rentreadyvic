@@ -777,16 +777,67 @@
     $("centrelink-rate-circumstance").textContent = r ? r.label : "Manual amount";
     if (!r || r.amount == null) {
       $("payment-effective").textContent = "Not supplied";
+      renderMaximumSupportBox();
       return;
     }
     const from = r.effectiveFrom || "—";
     const to = r.effectiveTo ? " to " + r.effectiveTo : "";
     $("payment-effective").textContent = from + to;
+    renderMaximumSupportBox();
+  }
+
+  function renderMaximumSupportBox() {
+    if (!$("maximum-support-display")) return;
+    const rateFN = selectedRateFN();
+    const band = selectedRABand();
+    const maxRAFN = band ? Number(band.maximum || 0) : 0;
+    const totalFN = rateFN + maxRAFN;
+
+    $("maximum-support-display").textContent = money(displayFromFN(totalFN));
+    $("maximum-support-payment").textContent = money(displayFromFN(rateFN),0);
+    $("maximum-support-ra").textContent = money(displayFromFN(maxRAFN),0);
+
+    const context = band
+      ? "Assumes maximum Rent Assistance for " + band.label + "."
+      : "Rent Assistance household situation not yet available.";
+    $("maximum-support-context").textContent = context;
+  }
+
+  function syncRABandFromPaymentCircumstance() {
+    if (!$("ra-situation") || !data || !data.rentAssistance) return;
+    const options = [...$("ra-situation").options].map(o => o.value);
+    const r = selectedRate();
+    const label = String(r && r.label || "").toLowerCase();
+    if (!label) return;
+
+    let code = "";
+    const hasChildren = /(dependent child|with child|children|principal carer)/i.test(label);
+    const partnered = /(partnered|couple)/i.test(label);
+    const single = /single/i.test(label);
+
+    if (/separated.*illness|respite|prison/i.test(label) && options.includes("isp_separated_illness")) {
+      code = "isp_separated_illness";
+    } else if (/temporarily separated/i.test(label) && options.includes("isp_temporarily_separated")) {
+      code = "isp_temporarily_separated";
+    } else if (hasChildren && single && options.includes("ftb_single_1_2")) {
+      code = "ftb_single_1_2";
+    } else if (hasChildren && partnered && options.includes("ftb_couple_1_2")) {
+      code = "ftb_couple_1_2";
+    } else if (partnered && options.includes("isp_couple")) {
+      code = "isp_couple";
+    } else if (single && options.includes("isp_single")) {
+      code = "isp_single";
+    }
+
+    if (code) $("ra-situation").value = code;
+    if (typeof syncRentAssistanceToArrangement === "function") syncRentAssistanceToArrangement();
+    renderMaximumSupportBox();
   }
 
   function applySelectedRate() {
     const r = selectedRate();
     const rateFN = selectedRateFN();
+    syncRABandFromPaymentCircumstance();
     renderSelectedCentrelinkRate();
     renderPaymentScenarioGuidance();
 
@@ -810,6 +861,8 @@
     select.innerHTML = bands.map(b => '<option value="' + esc(b.code) + '">' + esc(b.label) + '</option>').join("");
     const single = bands.find(b => b.code === "isp_single");
     if (single) select.value = single.code;
+    syncRABandFromPaymentCircumstance();
+    renderMaximumSupportBox();
   }
 
   function syncInputsToPeriod() {
@@ -894,6 +947,7 @@
     updateRentalArrangementUI();
     updateOtherHouseholdIncomeVisibility();
     renderPaymentScenarioGuidance();
+    renderMaximumSupportBox();
     const prop = propertyForAssessment();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const sc = scenario(workIncomeFN, rent);
