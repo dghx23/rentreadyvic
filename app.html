@@ -163,25 +163,46 @@
 
         <div class="card-body">
           <div class="work-wide-grid">
-            <label class="work-income-field work-income-primary">Gross work income <span class="period-label">per fortnight</span>
-              <div class="money-input money-input-large"><span>$</span><input id="work-income" type="number" step="10" min="0" value="0"></div>
-              <div class="work-income-slider-inline">
-                <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Gross work income slider">
-                <div class="work-income-slider-scale">
-                  <span>$0</span>
-                  <span id="impact-slider-free">Payment reduction starts: —</span>
-                  <span id="impact-slider-cutoff">Payment $0: —</span>
-                </div>
+            <div class="work-status-question">
+              <span class="work-question-kicker">First</span>
+              <strong>Do you currently work?</strong>
+              <div class="work-status-options" role="radiogroup" aria-label="Do you currently work?">
+                <label><input type="radio" name="work-status" id="work-status-yes" value="yes"><span>Yes, I currently work</span></label>
+                <label><input type="radio" name="work-status" id="work-status-no" value="no"><span>No, I do not currently work</span></label>
               </div>
-            </label>
+            </div>
 
-            <div class="no-work-panel">
-              <label class="check-row no-work-toggle">
-                <input type="checkbox" id="no-work-toggle">
-                <span><b>I do not currently work</b><small>Select this if your current gross work income is $0. RentReady will ask why so it can show the relevant Centrelink context.</small></span>
+            <div id="current-work-income-wrap" class="current-work-income-wrap" hidden>
+              <label class="work-income-field work-income-primary">Gross work income <span class="period-label">per fortnight</span>
+                <div class="money-input money-input-large"><span>$</span><input id="work-income" type="number" step="10" min="0" value="0"></div>
+                <div class="work-income-slider-inline">
+                  <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Gross work income slider">
+                  <div class="work-income-slider-scale">
+                    <span>$0</span>
+                    <span id="impact-slider-free">Payment reduction starts: —</span>
+                    <span id="impact-slider-cutoff">Payment $0: —</span>
+                  </div>
+                </div>
               </label>
 
-              <div id="no-work-reason-wrap" class="no-work-reason-wrap" hidden>
+              <div class="income-free-warning" id="income-free-warning" hidden>
+                <span class="income-free-warning-icon">!</span>
+                <div>
+                  <strong id="income-free-warning-title">Your earnings are above the income-free area</strong>
+                  <p id="income-free-warning-copy">This may affect your Centrelink payment. The amount depends on the selected payment, circumstance and any available work-income credits.</p>
+                  <button type="button" class="link-btn" id="income-free-warning-detail">Show me the payment impact ↓</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="no-work-panel" id="no-work-panel" hidden>
+              <div class="no-work-intro">
+                <span>You told us you do not currently work</span>
+                <strong>What best explains your current situation?</strong>
+                <p>This does not automatically mean you are exempt from Centrelink requirements. RentReady uses your answer only to show the most relevant official context.</p>
+              </div>
+
+              <div id="no-work-reason-wrap" class="no-work-reason-wrap">
                 <label>Why are you not currently working?
                   <select id="no-work-reason">
                     <option value="">Select the situation that best matches you</option>
