@@ -74,7 +74,7 @@
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="result">
       <span class="wizard-number">3</span>
-      <span><b>Eligibility & fit</b><small>RentAssist + property</small></span>
+      <span><b>Eligibility & fit</b><small>Property affordability</small></span>
     </button>
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="optimise">
@@ -308,7 +308,7 @@
             <strong id="target-market-status">Enter a target rent</strong>
             <small id="target-market-detail">Based on the general affordability benchmark.</small>
           </div>
-          <div class="target-result-card rentassist">
+          <div class="target-result-card rentassist" id="target-rentassist-card" hidden>
             <span>RentAssist rent-share test</span>
             <strong id="target-rentassist-status">Enter a target rent</strong>
             <small id="target-rentassist-detail">Based on the current RentAssist income basis.</small>
@@ -383,10 +383,10 @@
       <div class="card-head"><h3>Assume future Rent Assistance</h3></div>
       <div class="card-body">
         <label class="toggle-row">
-          <input type="checkbox" id="future-ra" checked>
+          <input type="checkbox" id="future-ra">
           <span><b>Include Rent Assistance once I move into an eligible rental</b><small>Before you choose a property, RentReady shows the maximum potential amount for your household type. Once a property is selected, it switches to an estimate based on that rent.</small></span>
         </label>
-        <div class="grid two compact">
+        <div class="grid two compact" id="rent-assistance-details" hidden>
           <label>Rent Assistance household situation
             <select id="ra-situation"></select>
           </label>
@@ -395,6 +395,19 @@
             <strong id="ra-max-display">$0</strong>
             <small class="period-label">per fortnight</small>
           </div>
+        </div>
+
+        <div class="rentassist-explore-offer" id="rentassist-explore-offer" hidden>
+          <div>
+            <span>Optional Victorian bond help</span>
+            <strong>Explore the RentAssist Bond Loan?</strong>
+            <p>Because you have chosen to include Rent Assistance, RentReady can also check the separate Housing Victoria bond-loan rules against your income and property.</p>
+          </div>
+          <button type="button" class="btn" id="rentassist-explore-button">Explore RentAssist Bond Loan →</button>
+        </div>
+        <div class="rentassist-explore-confirmed" id="rentassist-explore-confirmed" hidden>
+          <span>RentAssist assessment enabled</span>
+          <b>The bond-loan rules will now appear when RentReady assesses your target rent or property.</b>
         </div>
       </div>
     </div>
@@ -460,7 +473,7 @@
       <span class="section-number">2</span>
       <div>
         <h2>Add the property you are considering</h2>
-        <p>Paste the advertisement or enter the numbers manually. The selected property feeds the Rent Assistance estimate, bond-loan test and affordability calculations.</p>
+        <p>Paste the advertisement or enter the numbers manually. The selected property feeds the Rent Assistance estimate and general affordability calculation. If you choose to explore RentAssist, the same property is then checked against the separate bond-loan rules.</p>
       </div>
     </div>
 
@@ -497,16 +510,16 @@
             <div><span>Rent as % of income</span><strong id="property-check-ratio">—</strong></div>
             <div><span>Estimated Rent Assistance</span><strong id="property-check-ra">—</strong></div>
             <div><span>Bond entered</span><strong id="property-check-bond">—</strong></div>
-            <div><span>RentAssist bond cap</span><strong id="property-check-cap">—</strong></div>
+            <div id="property-rentassist-cap-metric" hidden><span>RentAssist bond cap</span><strong id="property-check-cap">—</strong></div>
           </div>
 
           <div id="property-assessment-details" class="property-assessment-details">
             <p>Paste a listing or enter rent, bond and bedrooms to see the assessment.</p>
           </div>
 
-          <div class="notice info property-assessment-note">
-            <b>Two different affordability views.</b>
-            The general planning benchmark and the RentAssist rent-share test are shown separately because they answer different questions.
+          <div class="notice info property-assessment-note" id="property-assessment-note">
+            <b>General affordability first.</b>
+            RentAssist is an optional Housing Victoria scheme check and only appears after you choose Rent Assistance and then select “Explore RentAssist Bond Loan”.
           </div>
         </div>
       </div>
@@ -523,8 +536,8 @@
     <div class="section-head">
       <span class="section-number">3</span>
       <div>
-        <h2>Does this property fit your income and RentAssist?</h2>
-        <p>This screen compares the property you entered with your projected income and the RentAssist Bond Loan rules. It shows whether the rent and bond fit, where the shortfalls are, and what to do next.</p>
+        <h2>Does this property fit your income?</h2>
+        <p>Start with the property's affordability against your projected income. If you have chosen to explore the RentAssist Bond Loan, its separate Housing Victoria rules appear underneath.</p>
       </div>
     </div>
 
@@ -532,7 +545,7 @@
       <div class="result-overview-copy">
         <span class="result-kicker">Overall position</span>
         <strong id="result-overall-status">Add a property to see the result</strong>
-        <p id="result-overall-copy">RentReady will compare the property with your projected income, Rent Assistance and RentAssist settings.</p>
+        <p id="result-overall-copy">RentReady will compare the property with your projected income and selected Rent Assistance settings.</p>
       </div>
       <div class="result-overview-metrics">
         <div><span>Weekly income</span><strong id="result-income">—</strong></div>
@@ -542,46 +555,12 @@
       </div>
     </div>
 
-    <div class="result-section-heading">
-      <div><span>Part 1</span><h3>RentAssist Bond Loan</h3></div>
-      <p>Check whether the household and selected property fit the Victorian RentAssist Bond Loan requirements.</p>
-    </div>
-
-    <div class="grid two">
-      <div class="card">
-        <div class="card-head"><h3>Household details</h3></div>
-        <div class="card-body fields">
-          <label>Household type
-            <select id="household-type">
-              <option value="single">Single person</option>
-              <option value="couple">Couple</option>
-              <option value="family1">Family with 1 dependent child</option>
-              <option value="family2">Family with 2 dependent children</option>
-              <option value="family3">Family with 3 dependent children</option>
-              <option value="family4">Family with 4 dependent children</option>
-              <option value="family5">Family with 5 dependent children</option>
-            </select>
-          </label>
-          <label>Assessable assets
-            <div class="money-input"><span>$</span><input id="assets" type="number" step="100" min="0" value="0"></div>
-          </label>
-          <label class="check-row"><input type="checkbox" id="permanent-resident" checked><span>I am an Australian citizen or permanent resident</span></label>
-          <label class="check-row"><input type="checkbox" id="owns-property"><span>I own or part-own a house, flat or unit</span></label>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head"><h3>RentAssist checks</h3><a class="source-link" href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Housing Victoria eligibility ↗</a></div>
-        <div class="card-body check-list" id="bond-checks"></div>
-      </div>
-    </div>
-
     <div class="result-section-heading affordability-heading">
-      <div><span>Part 2</span><h3>Can the household afford this rent?</h3></div>
-      <p>Compare the property against a general budget benchmark and the separate RentAssist rent-share test.</p>
+      <div><span>Affordability</span><h3>Can the household afford this rent?</h3></div>
+      <p>This is RentReady's general planning view. It is separate from any Housing Victoria scheme eligibility test.</p>
     </div>
 
-    <div class="grid two result-cards">
+    <div class="result-cards general-only">
       <div class="score-card">
         <span class="score-kicker">General planning benchmark</span>
         <strong id="general-afford-status">Waiting for a property</strong>
@@ -589,28 +568,80 @@
         <p id="general-afford-copy">Add a property to compare rent with projected weekly income.</p>
         <div class="shortfall" id="general-afford-shortfall"></div>
       </div>
-      <div class="score-card">
-        <span class="score-kicker">RentAssist rent-share test</span>
-        <strong id="bond-rent-status">Waiting for a property</strong>
-        <div class="big-number" id="bond-rent-ratio">—</div>
-        <p id="bond-rent-copy">The property rent must also satisfy the RentAssist rent-share rule.</p>
-        <div class="shortfall" id="bond-rent-shortfall"></div>
-      </div>
     </div>
 
-    <div class="grid three metrics">
+    <div class="grid three metrics general-metrics">
       <div class="metric"><span>Projected weekly household income</span><strong id="metric-weekly-income">$0</strong></div>
       <div class="metric"><span>General benchmark rent</span><strong id="metric-general-rent">$0</strong></div>
-      <div class="metric"><span>RentAssist rent ceiling</span><strong id="metric-bond-rent">$0</strong></div>
       <div class="metric"><span>Selected property rent</span><strong id="metric-property-rent">$0</strong></div>
-      <div class="metric"><span>Published bond cap by bedrooms</span><strong id="metric-bond-cap">$0</strong></div>
-      <div class="metric"><span>Bond amount shortfall</span><strong id="metric-bond-shortfall">$0</strong></div>
     </div>
 
     <div class="card">
-      <div class="card-head"><h3>What is causing the shortfall?</h3></div>
+      <div class="card-head"><h3>What is causing the affordability shortfall?</h3></div>
       <div class="card-body" id="shortfall-explainer"></div>
     </div>
+
+    <section class="rentassist-result-section" id="rentassist-result-section" hidden>
+      <div class="result-section-heading">
+        <div><span>Optional scheme assessment</span><h3>RentAssist Bond Loan</h3></div>
+        <p>Housing Victoria applies separate eligibility rules. RentReady compares the information you entered with those rules; Housing Victoria makes the actual decision.</p>
+      </div>
+
+      <div class="rentassist-rule-summary">
+        <div><span>Rent share</span><b>Must be less than 55% of gross weekly income</b></div>
+        <div><span>Income & assets</span><b>Must be within the current household limits</b></div>
+        <div><span>Residency</span><b>Permanent Australian resident requirement</b></div>
+        <div><span>Property ownership</span><b>Must not own or part-own a house, flat or unit</b></div>
+        <div><span>Bond amount</span><b>Subject to bedroom and occupancy limits</b></div>
+      </div>
+
+      <div class="rentassist-income-note">
+        <b>Important:</b> for the 55% rent-share test, Housing Victoria uses the maximum Centrelink Rent Assistance you may be eligible for when calculating the income basis.
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <div class="card-head"><h3>Household details for this scheme</h3></div>
+          <div class="card-body fields">
+            <label>Household type
+              <select id="household-type">
+                <option value="single">Single person</option>
+                <option value="couple">Couple</option>
+                <option value="family1">Family with 1 dependent child</option>
+                <option value="family2">Family with 2 dependent children</option>
+                <option value="family3">Family with 3 dependent children</option>
+                <option value="family4">Family with 4 dependent children</option>
+                <option value="family5">Family with 5 dependent children</option>
+              </select>
+            </label>
+            <label>Assessable assets
+              <div class="money-input"><span>$</span><input id="assets" type="number" step="100" min="0" value="0"></div>
+            </label>
+            <label class="check-row"><input type="checkbox" id="permanent-resident" checked><span>I am an Australian citizen or permanent resident</span></label>
+            <label class="check-row"><input type="checkbox" id="owns-property"><span>I own or part-own a house, flat or unit</span></label>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Your RentAssist rule checks</h3><a class="source-link" href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Housing Victoria eligibility ↗</a></div>
+          <div class="card-body check-list" id="bond-checks"></div>
+        </div>
+      </div>
+
+      <div class="score-card rentassist-score-card">
+        <span class="score-kicker">RentAssist rent-share test</span>
+        <strong id="bond-rent-status">Waiting for a property</strong>
+        <div class="big-number" id="bond-rent-ratio">—</div>
+        <p id="bond-rent-copy">The property rent must be less than 55% of the Housing Victoria income basis.</p>
+        <div class="shortfall" id="bond-rent-shortfall"></div>
+      </div>
+
+      <div class="grid three metrics rentassist-metrics">
+        <div class="metric"><span>RentAssist rent ceiling</span><strong id="metric-bond-rent">$0</strong></div>
+        <div class="metric"><span>Published bond cap by bedrooms</span><strong id="metric-bond-cap">$0</strong></div>
+        <div class="metric"><span>Bond amount shortfall</span><strong id="metric-bond-shortfall">$0</strong></div>
+      </div>
+    </section>
 
     <div class="result-next-choices">
       <div>
