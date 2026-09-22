@@ -284,7 +284,14 @@
 
   function setStep(name) {
     document.querySelectorAll(".step-panel").forEach(p => p.classList.toggle("active", p.id === "step-" + name));
-    document.querySelectorAll(".wizard-step, .wizard-rights").forEach(b =>
+    const order = ["income","property","result","optimise"];
+    const currentIndex = order.indexOf(name);
+    document.querySelectorAll(".wizard-step").forEach(b => {
+      const stepIndex = order.indexOf(b.dataset.stepTarget);
+      b.classList.toggle("active", b.dataset.stepTarget === name);
+      b.classList.toggle("completed", currentIndex > stepIndex && stepIndex >= 0);
+    });
+    document.querySelectorAll(".wizard-rights").forEach(b =>
       b.classList.toggle("active", b.dataset.stepTarget === name)
     );
     window.scrollTo({ top: 0, behavior: "smooth" });
