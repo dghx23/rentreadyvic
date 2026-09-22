@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Map saved RentReady VIC rental properties and search Victorian addresses.">
+<title>Rental Map — RentReady VIC</title>
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+.map-page{width:min(1180px,calc(100% - 28px));margin:auto;padding:30px 0 60px}
+.map-hero{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;margin-bottom:14px}
+.map-hero h1{margin:5px 0 7px;font-size:30px;line-height:1.05;letter-spacing:-.04em}
+.map-hero p{margin:0;max-width:760px;color:var(--muted);font-size:11px;line-height:1.55}
+.map-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:12px}
+.map-panel,.map-canvas-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.map-panel-head{padding:13px 14px;border-bottom:1px solid var(--line);background:#fafbfc}
+.map-panel-head span{display:block;color:var(--brand);font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
+.map-panel-head h2{margin:3px 0 0;font-size:14px}
+.map-panel-body{padding:14px}
+.map-search-row{display:grid;grid-template-columns:1fr auto;gap:7px}
+.map-status{margin-top:8px;padding:8px 9px;border-radius:8px;background:#f8fafc;color:var(--muted);font-size:9px;line-height:1.45}
+.map-status.good{background:var(--ok-soft);color:#166534}
+.map-status.warn{background:var(--warn-soft);color:#92400e}
+.map-list{display:grid;gap:8px;margin-top:14px}
+.map-property{padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.map-property b{display:block;font-size:10px}
+.map-property small{display:block;margin-top:3px;color:var(--muted);font-size:8px}
+.map-property button{margin-top:7px}
+#rental-map{height:620px;width:100%}
+.map-canvas-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--line);background:#fafbfc}
+.map-canvas-head b{font-size:11px}.map-canvas-head span{font-size:8px;color:var(--muted)}
+.map-empty{padding:12px;color:var(--muted);font-size:9px}
+.map-note{margin-top:12px;padding:11px 13px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:9px;line-height:1.5}
+.leaflet-popup-content{font:11px/1.45 var(--font)}
+.leaflet-popup-content b{display:block;font-size:11px}.leaflet-popup-content small{display:block;color:#64748b;margin:3px 0 7px}
+.leaflet-popup-content a{font-weight:800}
+@media(max-width:820px){.map-layout{grid-template-columns:1fr}#rental-map{height:500px}.map-hero{grid-template-columns:1fr}}
+@media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:430px}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="RentReady VIC home">
+      <span class="brand-mark">R</span>
+      <span><b>RentReady VIC</b><small>Work · Rent · Support</small></span>
+    </a>
+    <nav class="top-resource-nav" aria-label="RentReady navigation">
+      <a class="top-resource-link" href="about.html">About</a>
+      <a class="top-resource-link compass-top-link" href="https://sentrixdigital.com.au/compass/au" target="_blank" rel="noopener">Social Security Compass <span aria-hidden="true">↗</span></a>
+      <a class="top-resource-link" href="rental-map.html" aria-current="page">Rental Map</a>
+      <details class="resource-menu">
+        <summary>Resources <span aria-hidden="true">▾</span></summary>
+        <div class="resource-menu-panel">
+          <div class="resource-menu-heading"><span>Official information</span><strong>Useful sources</strong></div>
+          <a href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener"><span><b>Services Australia</b><small>Payments and Rent Assistance</small></span><i>↗</i></a>
+          <a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener"><span><b>Housing Victoria</b><small>RentAssist Bond Loan</small></span><i>↗</i></a>
+          <a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener"><span><b>Consumer Affairs Victoria</b><small>Rental applications and rights</small></span><i>↗</i></a>
+        </div>
+      </details>
+    </nav>
+    <a class="btn primary" href="app.html?step=property">Add property →</a>
+  </div>
+</header>
+
+<main class="map-page">
+  <section class="map-hero">
+    <div>
+      <span class="eyebrow">Rental Map</span>
+      <h1>See your shortlisted rentals on a map.</h1>
+      <p>RentReady maps the properties saved in this browser. You can also search any Victorian address to see where it is before adding or assessing the property.</p>
+    </div>
+    <a class="btn" href="app.html?step=property">← Property workspace</a>
+  </section>
+
+  <div class="map-layout">
+    <aside class="map-panel">
+      <div class="map-panel-head"><span>Find a location</span><h2>Search a Victorian address</h2></div>
+      <div class="map-panel-body">
+        <div class="map-search-row">
+          <input id="map-address" type="text" placeholder="Street, suburb VIC" autocomplete="off">
+          <button class="btn primary" type="button" id="map-search">Find</button>
+        </div>
+        <div class="map-status" id="map-status">Search an address or use a property from your shortlist.</div>
+
+        <div class="map-list" id="map-list"></div>
+      </div>
+    </aside>
+
+    <section class="map-canvas-wrap">
+      <div class="map-canvas-head"><b>Victoria rental map</b><span id="map-count">0 saved properties mapped</span></div>
+      <div id="rental-map" aria-label="Map of rental properties"></div>
+      <div class="map-empty" id="map-empty" hidden>No saved properties have an address that can be mapped yet.</div>
+    </section>
+  </div>
+
+  <div class="map-note"><b>Map purpose:</b> this is a location view for properties you are considering. It does not provide rental listings, availability, safety rankings or suburb recommendations. Property affordability remains in the RentReady assessment.</div>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(() => {
+  const STORAGE = "rentready-properties-v3";
+  const ACTIVE = "rentready-active-property-v3";
+  const $ = id => document.getElementById(id);
+  let properties = [];
+  try { properties = JSON.parse(localStorage.getItem(STORAGE) || "[]") || []; } catch {}
+
+  const map = L.map("rental-map",{scrollWheelZoom:true}).setView([-37.2,144.8],7);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:19,
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  const markers = [];
+  const geocodeCache = new Map();
+
+  function esc(v){
+    return String(v||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
+  }
+  function money(n){
+    return new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",maximumFractionDigits:0}).format(Number(n||0));
+  }
+  async function geocode(address){
+    const key=String(address||"").trim().toLowerCase();
+    if(!key) return null;
+    if(geocodeCache.has(key)) return geocodeCache.get(key);
+    const r=await fetch("/api/address-autocomplete?q="+encodeURIComponent(address));
+    const data=await r.json().catch(()=>({}));
+    const row=data && Array.isArray(data.results) ? data.results.find(x=>Number.isFinite(Number(x.lat))&&Number.isFinite(Number(x.lon))) : null;
+    const result=row ? {lat:Number(row.lat),lon:Number(row.lon),label:row.label||address} : null;
+    geocodeCache.set(key,result);
+    return result;
+  }
+  function popupHtml(p){
+    return '<b>'+esc(p.address||"Rental property")+'</b>'+
+      '<small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+(p.bond?' · bond '+money(p.bond):'')+'</small>'+
+      '<a href="app.html?step=property" onclick="localStorage.setItem(\''+ACTIVE+'\',\''+esc(p.id)+'\')">Open in RentReady →</a>';
+  }
+  function addMarker(p,geo){
+    const marker=L.marker([geo.lat,geo.lon]).addTo(map).bindPopup(popupHtml(p));
+    markers.push(marker);
+    return marker;
+  }
+  async function mapSaved(){
+    const mapped=[];
+    for(const p of properties){
+      if(!p || !p.address) continue;
+      try{
+        const geo=await geocode(p.address);
+        if(!geo) continue;
+        addMarker(p,geo);
+        mapped.push([geo.lat,geo.lon]);
+      }catch{}
+    }
+    $("map-count").textContent=mapped.length+(mapped.length===1?" saved property mapped":" saved properties mapped");
+    $("map-empty").hidden=!!mapped.length;
+    if(mapped.length===1) map.setView(mapped[0],14);
+    else if(mapped.length>1) map.fitBounds(mapped,{padding:[28,28]});
+  }
+  function renderList(){
+    const el=$("map-list");
+    if(!properties.length){
+      el.innerHTML='<div class="map-status">No properties saved yet. Add a property in RentReady, then return here to map it.</div>';
+      return;
+    }
+    el.innerHTML=properties.map((p,i)=>
+      '<div class="map-property" data-list-index="'+i+'"><b>'+esc(p.address||"Untitled property")+'</b>'+
+      '<small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+'</small>'+
+      '<button class="btn" type="button" data-map-property="'+i+'">Show on map</button></div>'
+    ).join("");
+    el.querySelectorAll("[data-map-property]").forEach(btn=>btn.addEventListener("click",async()=>{
+      const p=properties[Number(btn.dataset.mapProperty)];
+      const status=$("map-status");
+      status.textContent="Finding "+(p.address||"property")+"…";
+      try{
+        const geo=await geocode(p.address);
+        if(!geo) throw new Error("Address could not be mapped");
+        map.setView([geo.lat,geo.lon],15);
+        const marker=addMarker(p,geo);
+        marker.openPopup();
+        status.textContent="Showing "+(geo.label||p.address)+".";
+        status.className="map-status good";
+      }catch{
+        status.textContent="This saved address could not be mapped. Try searching it manually.";
+        status.className="map-status warn";
+      }
+    }));
+  }
+  async function searchAddress(){
+    const q=$("map-address").value.trim();
+    const status=$("map-status");
+    if(!q){$("map-address").focus();return;}
+    status.textContent="Finding address…";
+    status.className="map-status";
+    try{
+      const geo=await geocode(q);
+      if(!geo) throw new Error("not found");
+      map.setView([geo.lat,geo.lon],16);
+      L.marker([geo.lat,geo.lon]).addTo(map).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small><a href="app.html?step=property">Add or assess this property →</a>').openPopup();
+      status.textContent="Showing "+geo.label+".";
+      status.className="map-status good";
+    }catch{
+      status.textContent="That address could not be found. Try including the suburb and VIC.";
+      status.className="map-status warn";
+    }
+  }
+
+  $("map-search").addEventListener("click",searchAddress);
+  $("map-address").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchAddress();}});
+  renderList();
+  mapSaved();
+})();
+</script>
+</body>
+</html>
