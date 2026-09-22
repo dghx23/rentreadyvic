@@ -52,15 +52,15 @@
 
 <main class="shell app-shell">
   <section class="intro compact-intro">
-    <span class="eyebrow">Guided rental assessment</span>
-    <h1>Four steps to see whether the property works.</h1>
-    <p>Start with your income, add the property, then see the RentAssist and affordability result together. If the numbers are tight, use the final step to test a better combination.</p>
+    <span class="eyebrow">Income support · property · RentAssist · rights</span>
+    <h1>Know what you receive, whether the property fits, and what income would make it work.</h1>
+    <p>RentReady helps you identify your income-support payment, compare the property with RentAssist Bond Loan eligibility and affordability, understand what an agent can and cannot ask for, and work out a realistic extra-income target.</p>
   </section>
 
   <nav class="wizard-progress" aria-label="RentReady assessment progress">
     <button class="wizard-step active" data-step-target="income">
       <span class="wizard-number">1</span>
-      <span><b>Income</b><small>Payment + work</small></span>
+      <span><b>Payment & income</b><small>Identify what you receive</small></span>
     </button>
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="property">
@@ -70,16 +70,16 @@
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="result">
       <span class="wizard-number">3</span>
-      <span><b>Your result</b><small>RentAssist + affordability</small></span>
+      <span><b>Eligibility & fit</b><small>RentAssist + property</small></span>
     </button>
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="optimise">
       <span class="wizard-number">4</span>
-      <span><b>Improve</b><small>Try another combination</small></span>
+      <span><b>Income target</b><small>How much extra helps</small></span>
     </button>
     <button class="wizard-rights" data-step-target="application">
       <span>A</span>
-      <span><b>Application & Rights</b><small>Use when you are ready to apply</small></span>
+      <span><b>Application & Rights</b><small>What can and cannot be asked</small></span>
     </button>
   </nav>
 
@@ -87,8 +87,8 @@
     <div class="section-head">
       <span class="section-number">1</span>
       <div>
-        <h2>Tell us about your income</h2>
-        <p>Choose the payment and circumstance that best match you, then add any work or other household income. We will use this same income profile in every later step.</p>
+        <h2>Identify your payment and income</h2>
+        <p>Choose the income-support payment and circumstance that match you. RentReady shows the current rate, then adds work and household income so the same income position can be tested against the property and RentAssist.</p>
       </div>
     </div>
 
@@ -313,8 +313,8 @@
     <div class="section-head">
       <span class="section-number">3</span>
       <div>
-        <h2>Your rental result</h2>
-        <p>Here is the full picture for the property you entered. RentAssist and general affordability are shown together, but kept clearly separate because they use different rules.</p>
+        <h2>Does this property fit your income and RentAssist?</h2>
+        <p>This screen compares the property you entered with your projected income and the RentAssist Bond Loan rules. It shows whether the rent and bond fit, where the shortfalls are, and what to do next.</p>
       </div>
     </div>
 
@@ -685,9 +685,26 @@
     <div class="section-head">
       <span class="section-number">4</span>
       <div>
-        <h2>Try ways to improve the position</h2>
-        <p>Test the two levers you can usually change: work income and target rent. RentReady recalculates the payment estimate, projected Rent Assistance and both affordability thresholds as you move them.</p>
+        <h2>Work out your extra-income target</h2>
+        <p>See how much additional work income changes your payment and rental position. RentReady shows the point where payment reductions begin, the modelled payment cutoff, and the minimum work-income target needed for the selected property to fit both current planning tests.</p>
       </div>
+    </div>
+
+    <div class="income-target-summary">
+      <div class="income-target-main">
+        <span>Planning target for this property</span>
+        <strong id="ideal-work-target">—</strong>
+        <p id="ideal-work-target-copy">Add your income and property first.</p>
+      </div>
+      <div><span>Current work income</span><strong id="target-current-work">—</strong></div>
+      <div><span>Payment starts reducing around</span><strong id="target-reduction-start">—</strong></div>
+      <div><span>Modelled payment reaches $0 around</span><strong id="target-payment-cutoff">—</strong></div>
+      <div><span>Extra work income needed</span><strong id="target-extra-work">—</strong></div>
+    </div>
+
+    <div class="income-target-note">
+      <b>This is a planning target, not advice about how much you should work.</b>
+      It shows the minimum modelled work income that would bring the selected property inside both RentReady planning thresholds, after allowing for the configured payment reduction rules.
     </div>
 
     <div class="grid two">
