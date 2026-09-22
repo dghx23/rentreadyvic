@@ -40,4 +40,23 @@ app.use((_req, res) => {
 
 app.listen(port, "0.0.0.0", () => {
   console.log(`RentReady VIC listening on port ${port}`);
+  const probe = `http://127.0.0.1:${port}/api/rental-market`;
+  setTimeout(async () => {
+    try {
+      const response = await fetch(probe, { headers: { "User-Agent": "RentReadyVIC-startup-check/1.0" } });
+      const payload = await response.json().catch(() => ({}));
+      const areas = payload && payload.areas ? Object.keys(payload.areas).length : 0;
+      if (!response.ok || !payload.ok || !areas) {
+        console.warn("Rental market preflight failed", { status: response.status, error: payload.error || null, areas });
+        return;
+      }
+      console.log("Rental market preflight OK", {
+        latest_period: payload.latest_period || null,
+        source_area_count: areas,
+        geometry_mode: payload.geometry_mode || (payload.geojson && payload.geojson.features && payload.geojson.features.length ? "embedded" : "unknown")
+      });
+    } catch (error) {
+      console.warn("Rental market preflight error", error && error.message ? error.message : error);
+    }
+  }, 1200);
 });
