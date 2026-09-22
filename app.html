@@ -52,71 +52,42 @@
 
 <main class="shell app-shell">
   <section class="intro compact-intro">
-    <span class="eyebrow">Five simple steps</span>
-    <h1>Work through one thing at a time.</h1>
-    <p>Start with your income. Then add the property. RentReady carries those details forward into RentAssist, affordability and optimisation automatically.</p>
+    <span class="eyebrow">Guided rental assessment</span>
+    <h1>Four steps to see whether the property works.</h1>
+    <p>Start with your income, add the property, then see the RentAssist and affordability result together. If the numbers are tight, use the final step to test a better combination.</p>
   </section>
 
-  <div class="journey-rail">
-    <div class="rail-heading">
-      <span>Your journey</span>
-      <b id="rail-current-copy">Step 1 of 5</b>
-    </div>
-
-    <nav class="stepnav" aria-label="RentReady steps">
-      <button class="step-tab active" data-step-target="income">
-        <span>1</span><b>Income</b><small>Payment, work and Rent Assistance</small>
-      </button>
-      <button class="step-tab" data-step-target="property">
-        <span>2</span><b>Property</b><small>Paste the listing, rent and bond</small>
-      </button>
-      <button class="step-tab" data-step-target="bond">
-        <span>3</span><b>RentAssist</b><small>Check the Bond Loan requirements</small>
-      </button>
-      <button class="step-tab" data-step-target="affordability">
-        <span>4</span><b>Affordability</b><small>See the gaps and shortfalls</small>
-      </button>
-      <button class="step-tab" data-step-target="optimise">
-        <span>5</span><b>Optimise</b><small>Try different rent and work income</small>
-      </button>
-
-      <div class="rail-separator"><span>Also available</span></div>
-
-      <button class="step-tab application-tab" data-step-target="application">
-        <span>A</span><b>Application & Rights</b><small>Evidence, questions and discrimination</small>
-      </button>
-    </nav>
-
-  <aside class="position-dock" aria-label="Your current RentReady position">
-    <div class="dock-title">
-      <span>Your position</span>
-      <strong>Live summary</strong>
-    </div>
-    <div class="dock-status" id="dock-status">
-      <span class="dock-status-dot"></span>
-      <b id="dock-status-copy">Add your income to begin</b>
-    </div>
-    <div class="dock-metrics">
-      <div><span>Payment</span><strong id="dock-payment">—</strong></div>
-      <div><span>Projected income</span><strong id="dock-income">—</strong></div>
-      <div><span>Property</span><strong id="dock-property">Not selected</strong></div>
-      <div><span>Weekly rent</span><strong id="dock-rent">—</strong></div>
-      <div><span>Rent share</span><strong id="dock-ratio">—</strong></div>
-      <div><span>RentAssist</span><strong id="dock-rentassist">Not tested</strong></div>
-    </div>
-    <button type="button" class="dock-review" data-step-target="application">
-      <span>Application & rights</span>
-      <b>Review this profile →</b>
+  <nav class="wizard-progress" aria-label="RentReady assessment progress">
+    <button class="wizard-step active" data-step-target="income">
+      <span class="wizard-number">1</span>
+      <span><b>Income</b><small>Payment + work</small></span>
     </button>
-    <p class="dock-note">This summary follows the same information through every stage. It is a planning view, not an entitlement or legal determination.</p>
-  </aside>
-  </div>
+    <span class="wizard-line" aria-hidden="true"></span>
+    <button class="wizard-step" data-step-target="property">
+      <span class="wizard-number">2</span>
+      <span><b>Property</b><small>Rent + bond</small></span>
+    </button>
+    <span class="wizard-line" aria-hidden="true"></span>
+    <button class="wizard-step" data-step-target="result">
+      <span class="wizard-number">3</span>
+      <span><b>Your result</b><small>RentAssist + affordability</small></span>
+    </button>
+    <span class="wizard-line" aria-hidden="true"></span>
+    <button class="wizard-step" data-step-target="optimise">
+      <span class="wizard-number">4</span>
+      <span><b>Improve</b><small>Try another combination</small></span>
+    </button>
+    <button class="wizard-rights" data-step-target="application">
+      <span>A</span>
+      <span><b>Application & Rights</b><small>Use when you are ready to apply</small></span>
+    </button>
+  </nav>
 
   <section class="step-panel active" id="step-income">
     <div class="section-head">
-      <span class="section-number">01</span>
+      <span class="section-number">1</span>
       <div>
-        <h2>1. Tell us about your income</h2>
+        <h2>Tell us about your income</h2>
         <p>Choose the payment and circumstance that best match you, then add any work or other household income. We will use this same income profile in every later step.</p>
       </div>
     </div>
@@ -271,14 +242,14 @@
     </div>
 
     <div id="income-explanation" class="explanation"></div>
-    <div class="step-actions"><button class="btn primary" data-next="property">Continue to property →</button></div>
+    <div class="step-actions"><button class="btn primary" data-next="property">Next: add the property →</button></div>
   </section>
 
 <section class="step-panel" id="step-property">
     <div class="section-head">
-      <span class="section-number">02</span>
+      <span class="section-number">2</span>
       <div>
-        <h2>Add the actual property</h2>
+        <h2>Add the property you are considering</h2>
         <p>Paste the advertisement or enter the numbers manually. The selected property feeds the Rent Assistance estimate, bond-loan test and affordability calculations.</p>
       </div>
     </div>
@@ -335,21 +306,40 @@
       <p>Select or save a property to complete the rent and affordability tests.</p>
     </div>
 
-    <div class="step-actions"><button class="btn" data-back="income">← Income</button><button class="btn primary" data-next="bond">Check RentAssist Bond Loan →</button></div>
+    <div class="step-actions"><button class="btn" data-back="income">← Income</button><button class="btn primary" data-next="result">See my result →</button></div>
   </section>
 
-<section class="step-panel" id="step-bond">
+<section class="step-panel" id="step-result">
     <div class="section-head">
-      <span class="section-number">03</span>
+      <span class="section-number">3</span>
       <div>
-        <h2>3. Check the RentAssist Bond Loan</h2>
-        <p>With the property selected, RentReady checks the RentAssist Bond Loan requirements against household income, assets, residency, property ownership, weekly rent and the entered bond.</p>
+        <h2>Your rental result</h2>
+        <p>Here is the full picture for the property you entered. RentAssist and general affordability are shown together, but kept clearly separate because they use different rules.</p>
       </div>
+    </div>
+
+    <div class="result-overview" id="result-overview">
+      <div class="result-overview-copy">
+        <span class="result-kicker">Overall position</span>
+        <strong id="result-overall-status">Add a property to see the result</strong>
+        <p id="result-overall-copy">RentReady will compare the property with your projected income, Rent Assistance and RentAssist settings.</p>
+      </div>
+      <div class="result-overview-metrics">
+        <div><span>Weekly income</span><strong id="result-income">—</strong></div>
+        <div><span>Weekly rent</span><strong id="result-rent">—</strong></div>
+        <div><span>Rent share</span><strong id="result-ratio">—</strong></div>
+        <div><span>Estimated Rent Assistance</span><strong id="result-ra">—</strong></div>
+      </div>
+    </div>
+
+    <div class="result-section-heading">
+      <div><span>Part 1</span><h3>RentAssist Bond Loan</h3></div>
+      <p>Check whether the household and selected property fit the Victorian RentAssist Bond Loan requirements.</p>
     </div>
 
     <div class="grid two">
       <div class="card">
-        <div class="card-head"><h3>Your household</h3></div>
+        <div class="card-head"><h3>Household details</h3></div>
         <div class="card-body fields">
           <label>Household type
             <select id="household-type">
@@ -371,40 +361,29 @@
       </div>
 
       <div class="card">
-        <div class="card-head"><h3>Requirements so far</h3><a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Official eligibility ↗</a></div>
+        <div class="card-head"><h3>RentAssist checks</h3><a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Official eligibility ↗</a></div>
         <div class="card-body check-list" id="bond-checks"></div>
       </div>
     </div>
 
-    <div class="notice info">
-      <b>The selected property is included in this assessment.</b> RentReady compares the weekly rent with the configured RentAssist income basis and shows the relevant bond amount for the bedroom count.
-    </div>
-
-    <div class="step-actions"><button class="btn" data-back="property">← Property</button><button class="btn primary" data-next="affordability">See affordability →</button></div>
-  </section>
-
-<section class="step-panel" id="step-affordability">
-    <div class="section-head">
-      <span class="section-number">04</span>
-      <div>
-        <h2>4. See whether the property fits</h2>
-        <p>RentReady shows two different views: a general budget benchmark and the specific RentAssist bond-loan rent-share test. They are not the same rule.</p>
-      </div>
+    <div class="result-section-heading affordability-heading">
+      <div><span>Part 2</span><h3>Can the household afford this rent?</h3></div>
+      <p>Compare the property against a general budget benchmark and the separate RentAssist rent-share test.</p>
     </div>
 
     <div class="grid two result-cards">
       <div class="score-card">
-        <span class="score-kicker">General affordability benchmark</span>
+        <span class="score-kicker">General planning benchmark</span>
         <strong id="general-afford-status">Waiting for a property</strong>
         <div class="big-number" id="general-afford-ratio">—</div>
-        <p id="general-afford-copy">Add a property to compare rent with your projected weekly income.</p>
+        <p id="general-afford-copy">Add a property to compare rent with projected weekly income.</p>
         <div class="shortfall" id="general-afford-shortfall"></div>
       </div>
       <div class="score-card">
-        <span class="score-kicker">RentAssist bond-loan rent test</span>
+        <span class="score-kicker">RentAssist rent-share test</span>
         <strong id="bond-rent-status">Waiting for a property</strong>
         <div class="big-number" id="bond-rent-ratio">—</div>
-        <p id="bond-rent-copy">The property rent must satisfy the configured rent-share rule.</p>
+        <p id="bond-rent-copy">The property rent must also satisfy the RentAssist rent-share rule.</p>
         <div class="shortfall" id="bond-rent-shortfall"></div>
       </div>
     </div>
@@ -412,7 +391,7 @@
     <div class="grid three metrics">
       <div class="metric"><span>Projected weekly household income</span><strong id="metric-weekly-income">$0</strong></div>
       <div class="metric"><span>General benchmark rent</span><strong id="metric-general-rent">$0</strong></div>
-      <div class="metric"><span>Bond-loan rent ceiling</span><strong id="metric-bond-rent">$0</strong></div>
+      <div class="metric"><span>RentAssist rent ceiling</span><strong id="metric-bond-rent">$0</strong></div>
       <div class="metric"><span>Selected property rent</span><strong id="metric-property-rent">$0</strong></div>
       <div class="metric"><span>Published bond cap by bedrooms</span><strong id="metric-bond-cap">$0</strong></div>
       <div class="metric"><span>Bond amount shortfall</span><strong id="metric-bond-shortfall">$0</strong></div>
@@ -423,10 +402,17 @@
       <div class="card-body" id="shortfall-explainer"></div>
     </div>
 
+    <div class="result-next-choices">
+      <div>
+        <span>If the numbers are tight</span>
+        <b>Try a different rent or work-income scenario.</b>
+      </div>
+      <button class="btn primary" data-next="optimise">Improve the position →</button>
+      <button class="btn" data-step-target="application">Application & Rights</button>
+    </div>
+
     <div class="step-actions">
-      <button class="btn" data-back="bond">← RentAssist</button>
-      <button class="btn" data-step-target="application">Application & Rights review</button>
-      <button class="btn primary" data-next="optimise">Optimise the situation →</button>
+      <button class="btn" data-back="property">← Back to property</button>
     </div>
   </section>
 
@@ -690,16 +676,16 @@
     </div>
 
     <div class="step-actions">
-      <button class="btn" data-step-target="affordability">← Back to affordability</button>
+      <button class="btn" data-step-target="result">← Back to affordability</button>
       <button class="btn primary" data-step-target="optimise">Open optimisation sliders →</button>
     </div>
   </section>
 
 <section class="step-panel" id="step-optimise">
     <div class="section-head">
-      <span class="section-number">05</span>
+      <span class="section-number">4</span>
       <div>
-        <h2>5. Try ways to improve the position</h2>
+        <h2>Try ways to improve the position</h2>
         <p>Test the two levers you can usually change: work income and target rent. RentReady recalculates the payment estimate, projected Rent Assistance and both affordability thresholds as you move them.</p>
       </div>
     </div>
@@ -748,7 +734,7 @@
     </div>
 
     <div class="step-actions">
-      <button class="btn" data-back="affordability">← Affordability</button>
+      <button class="btn" data-back="result">← Your result</button>
       <button class="btn" data-step-target="application">Application & Rights review</button>
       <button class="btn primary" data-step-target="income">Review income</button>
     </div>
