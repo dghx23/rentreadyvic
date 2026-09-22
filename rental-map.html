@@ -150,6 +150,8 @@
   const money = n => n == null ? "—" : new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",maximumFractionDigits:0}).format(Number(n));
   const esc = v => String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
   const periodLabel = p => !p ? "—" : ({03:"Mar",06:"Jun",09:"Sep",12:"Dec"}[String(p).slice(5,7)] || String(p).slice(5,7))+" "+String(p).slice(0,4);
+  const norm = v => String(v||"").normalize("NFKD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]+/g," ").trim();
+  const VICMAP_LOCALITIES = "https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Admin/MapServer/11";
 
   let properties = [];
   try { properties = JSON.parse(localStorage.getItem(STORAGE) || "[]") || []; } catch {}
@@ -161,6 +163,8 @@
   let selectedType = "all";
   const featureByName = new Map();
   const layerByArea = new Map();
+  const areaByLocality = new Map();
+  let marketUsesLiveVicmap = false;
 
   const map = L.map("rental-map",{scrollWheelZoom:true,minZoom:6}).setView([-37.15,144.8],7);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
@@ -184,8 +188,70 @@
   const markers=[];
   const geocodeCache=new Map();
 
+  function buildAreaIndex(){
+    areaByLocality.clear();
+    if(!market || !market.areas) return;
+    const aliases={
+      "MELBOURNE":"CBD",
+      "MELBOURNE CBD":"CBD",
+      "ST KILDA WEST":"WEST ST KILDA",
+      "MOUNT WAVERLEY":"MT WAVERLEY",
+      "MOUNT ELIZA":"MT ELIZA",
+      "MOUNT MARTHA":"MT MARTHA",
+      "MOUNT EVELYN":"MT EVELYN"
+    };
+    Object.entries(market.areas).forEach(([id,area])=>{
+      const label=String(area.label||"").trim();
+      if(!label) return;
+      const register=name=>{
+        const key=norm(name);
+        if(key && !areaByLocality.has(key)) areaByLocality.set(key,{id,area});
+      };
+      register(label);
+      label.split(/\s+-\s+|\s*\/\s*/).forEach(part=>{if(part.trim().length>2) register(part);});
+      if(label.includes("-")) label.split("-").forEach(part=>{if(part.trim().length>2) register(part);});
+    });
+    Object.entries(aliases).forEach(([locality,source])=>{
+      const hit=areaByLocality.get(norm(source));
+      if(hit) areaByLocality.set(norm(locality),hit);
+    });
+  }
+
+  function sourceForLocality(locality){
+    const key=norm(locality);
+    if(!key) return null;
+    const exact=areaByLocality.get(key);
+    if(exact) return exact;
+    for(const [id,area] of Object.entries((market&&market.areas)||{})){
+      const label=" "+norm(area.label)+" ";
+      if(label.includes(" "+key+" ")) return {id,area};
+    }
+    return null;
+  }
+
+  function decorateFeature(feature){
+    if(!feature) return feature;
+    feature.properties=feature.properties||{};
+    const p=feature.properties;
+    const locality=p.locality||p.locality_name||p.LOCALITY_NAME||p.gazetted_locality_name||p.GAZETTED_LOCALITY_NAME||"";
+    p.locality=locality;
+    if(!p.source_area_id){
+      const hit=sourceForLocality(locality);
+      if(hit){
+        p.source_area_id=hit.id;
+        p.source_area=hit.area.label;
+        p.latest=hit.area.latest||{};
+      }
+    }
+    return feature;
+  }
+
   function rentForFeature(feature,type=selectedType){
-    const row=feature && feature.properties && feature.properties.latest && feature.properties.latest[type];
+    if(!feature) return null;
+    decorateFeature(feature);
+    const p=feature.properties||{};
+    const area=market&&market.areas&&market.areas[p.source_area_id];
+    const row=(area&&area.latest&&area.latest[type])||(p.latest&&p.latest[type]);
     return row && Number.isFinite(Number(row.median)) ? Number(row.median) : null;
   }
   function rentColour(v){
@@ -199,7 +265,16 @@
   }
   function marketStyle(feature){
     const value=rentForFeature(feature);
-    return {color:"#ffffff",weight:.8,opacity:1,fillColor:rentColour(value),fillOpacity:value==null?.22:.72};
+    return {color:"#ffffff",weight:.8,opacity:1,fillColor:rentColour(value),fillOpacity:value==null ? .13 : .72};
+  }
+  function restyleMarket(){
+    if(!marketLayer) return;
+    if(marketUsesLiveVicmap && marketLayer.eachFeature){
+      marketLayer.eachFeature(layer=>{if(layer.feature) layer.setStyle(marketStyle(layer.feature));});
+    }else if(marketLayer.setStyle){
+      marketLayer.setStyle(marketStyle);
+    }
+    if(selectedLayer) selectedLayer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});
   }
   function updateLegend(){
     const labels=[["#dbeafe","Under $350"],["#bfdbfe","$350–449"],["#93c5fd","$450–549"],["#60a5fa","$550–649"],["#3b82f6","$650–749"],["#1d4ed8","$750+"],["#e5e7eb","No published value"]];
@@ -210,34 +285,52 @@
     const row=(market&&market.property_types||[]).find(x=>x.key===key);
     return row?row.label:key;
   }
+  function bindMarketFeature(feature,layer){
+    decorateFeature(feature);
+    const props=feature.properties||{};
+    const key=norm(props.locality);
+    if(key) featureByName.set(key,{feature,layer});
+    if(props.source_area_id && !layerByArea.has(props.source_area_id)) layerByArea.set(props.source_area_id,{feature,layer});
+    layer.on({
+      mouseover(){layer.setStyle({weight:2,color:"#0f3b66",fillOpacity:rentForFeature(feature)==null ? .22 : .82});},
+      mouseout(){if(layer!==selectedLayer) layer.setStyle(marketStyle(feature));},
+      click(){
+        if(selectedLayer && selectedLayer!==layer && selectedFeature) selectedLayer.setStyle(marketStyle(selectedFeature));
+        selectedLayer=layer;selectedFeature=feature;
+        layer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});
+        renderDetail(feature);
+      }
+    });
+  }
+
   function drawMarket(){
     if(!market) return;
     if(marketLayer && map.hasLayer(marketLayer)) map.removeLayer(marketLayer);
-    featureByName.clear(); layerByArea.clear();
-    marketLayer=L.geoJSON(market.geojson,{
-      style:marketStyle,
-      onEachFeature(feature,layer){
-        const props=feature.properties||{};
-        const key=String(props.locality||"").toLowerCase();
-        if(key) featureByName.set(key,{feature,layer});
-        if(props.source_area_id) layerByArea.set(props.source_area_id,{feature,layer});
-        layer.on({
-          mouseover(){layer.setStyle({weight:2,color:"#0f3b66",fillOpacity:.82});},
-          mouseout(){ if(layer!==selectedLayer) marketLayer.resetStyle(layer); },
-          click(){
-            if(selectedLayer && selectedLayer!==layer) marketLayer.resetStyle(selectedLayer);
-            selectedLayer=layer;selectedFeature=feature;
-            layer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});
-            renderDetail(feature);
-          }
-        });
-      }
-    }).addTo(map);
+    featureByName.clear();layerByArea.clear();
+    buildAreaIndex();
+    const embedded=market.geojson&&Array.isArray(market.geojson.features)&&market.geojson.features.length>0;
+    if(embedded){
+      marketUsesLiveVicmap=false;
+      marketLayer=L.geoJSON(market.geojson,{style:marketStyle,onEachFeature:bindMarketFeature}).addTo(map);
+      if(market.geojson.features.length) map.fitBounds(marketLayer.getBounds(),{padding:[10,10]});
+    }else{
+      marketUsesLiveVicmap=true;
+      marketLayer=L.esri.featureLayer({
+        url:VICMAP_LOCALITIES,
+        simplifyFactor:.65,
+        precision:5,
+        fields:["ufi","locality_name","gazetted_locality_name"],
+        style:marketStyle,
+        attribution:"Vicmap Admin — State of Victoria"
+      }).addTo(map);
+      marketLayer.on("createfeature",e=>bindMarketFeature(e.feature,e.layer));
+    }
     layerRegistry.market=marketLayer;
     updateLegend();
   }
 
   function renderDetail(feature){
+    decorateFeature(feature);
     const p=feature.properties||{};
     const area=market&&market.areas&&market.areas[p.source_area_id]||{};
     const latest=area.latest||p.latest||{};
@@ -288,18 +381,17 @@
     try{
       const r=await fetch("/api/rental-market",{headers:{"Accept":"application/json"}});
       const data=await r.json().catch(()=>({}));
-      if(!r.ok || !data.ok || !data.geojson) throw new Error(data.error||"Rental data unavailable");
+      if(!r.ok || !data.ok || !data.areas) throw new Error(data.error||"Rental data unavailable");
       market=data;
       const sel=$("property-type");
       sel.innerHTML=(data.property_types||[]).map(t=>'<option value="'+esc(t.key)+'">'+esc(t.label)+'</option>').join("");
       if(!sel.querySelector('option[value="all"]')) sel.insertAdjacentHTML("afterbegin",'<option value="all">All properties</option>');
       sel.value="all";
       drawMarket();
-      const mapped=(data.coverage&&data.coverage.mapped_locality_count)||data.geojson.features.length;
-      $("map-count").textContent=mapped.toLocaleString("en-AU")+" mapped localities · source period "+periodLabel(data.latest_period);
-      status.textContent="Showing latest available official rental data: "+periodLabel(data.latest_period)+". Click a locality for detail.";
+      const sourceAreas=(data.coverage&&data.coverage.source_area_count)||Object.keys(data.areas||{}).length;
+      $("map-count").textContent=sourceAreas.toLocaleString("en-AU")+" Homes Victoria rental areas · "+periodLabel(data.latest_period);
+      status.textContent="Showing "+periodLabel(data.latest_period)+" Homes Victoria rental statistics on authoritative Vicmap localities. Click a locality for source-area detail.";
       status.className="map-status good";
-      if(data.geojson.features.length) map.fitBounds(marketLayer.getBounds(),{padding:[10,10]});
     }catch(error){
       status.textContent="Official rental-market data is temporarily unavailable. Saved properties and Victorian spatial layers still work.";
       status.className="map-status warn";
@@ -315,7 +407,7 @@
     const r=await fetch("/api/address-autocomplete?q="+encodeURIComponent(address));
     const data=await r.json().catch(()=>({}));
     const row=data&&Array.isArray(data.results)?data.results.find(x=>Number.isFinite(Number(x.lat))&&Number.isFinite(Number(x.lon))):null;
-    const result=row?{lat:Number(row.lat),lon:Number(row.lon),label:row.label||address}:null;
+    const result=row?{lat:Number(row.lat),lon:Number(row.lon),label:row.label||address,suburb:row.suburb||"",postcode:row.postcode||""}:null;
     geocodeCache.set(key,result);return result;
   }
   function popupHtml(p){
@@ -338,29 +430,41 @@
       const marker=markers.find(m=>{const ll=m.getLatLng();return Math.abs(ll.lat-geo.lat)<.000001&&Math.abs(ll.lng-geo.lon)<.000001;});if(marker)marker.openPopup();
     }));
   }
+  function openLoadedLocality(name){
+    const found=featureByName.get(norm(name));
+    if(!found) return false;
+    if(found.layer.getBounds) map.fitBounds(found.layer.getBounds(),{padding:[25,25]});
+    found.layer.fire("click");
+    $("map-status").textContent="Showing "+(found.feature.properties.locality||name)+".";
+    $("map-status").className="map-status good";
+    return true;
+  }
+
   async function searchPlace(){
     const q=$("map-address").value.trim();if(!q)return;
-    const lower=q.toLowerCase().replace(/,?\s+vic(?:toria)?(?:\s+\d{4})?$/i,"").trim();
-    if(market){
-      const exact=featureByName.get(lower);
-      const fuzzy=!exact?[...featureByName.entries()].find(([name])=>name.startsWith(lower)||lower.startsWith(name)):null;
-      const found=exact||(fuzzy&&fuzzy[1]);
-      if(found){
-        map.fitBounds(found.layer.getBounds(),{padding:[25,25]});found.layer.fire("click");
-        $("map-status").textContent="Showing "+(found.feature.properties.locality||q)+".";
-        $("map-status").className="map-status good";return;
-      }
-    }
+    const clean=q.replace(/,?\s+vic(?:toria)?(?:\s+\d{4})?$/i,"").trim();
+    if(market && openLoadedLocality(clean)) return;
     try{
       const geo=await geocode(q);if(!geo)throw new Error();
-      searchLayer.clearLayers();L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small>').openPopup();map.setView([geo.lat,geo.lon],15);
-      $("map-status").textContent="Address found. Click the surrounding rental locality for official market detail.";$("map-status").className="map-status good";
-    }catch{$("map-status").textContent="That place could not be found. Try a Victorian suburb, town or full address.";$("map-status").className="map-status warn";}
+      searchLayer.clearLayers();
+      L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small>').openPopup();
+      const target=geo.suburb||clean;
+      let opened=false;
+      const reveal=()=>{if(!opened && openLoadedLocality(target)) opened=true;};
+      map.once("moveend",()=>setTimeout(reveal,350));
+      map.setView([geo.lat,geo.lon],13);
+      setTimeout(reveal,1000);
+      $("map-status").textContent="Address found. Loading its Vicmap locality and Homes Victoria rental-area match…";
+      $("map-status").className="map-status good";
+    }catch{
+      $("map-status").textContent="That place could not be found. Try a Victorian suburb, town or full address.";
+      $("map-status").className="map-status warn";
+    }
   }
 
   $("property-type").addEventListener("change",e=>{
     selectedType=e.target.value||"all";
-    if(marketLayer){marketLayer.setStyle(marketStyle);if(selectedLayer)selectedLayer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});}
+    restyleMarket();
     updateLegend();if(selectedFeature)renderDetail(selectedFeature);
   });
   document.querySelectorAll("[data-map-layer]").forEach(input=>input.addEventListener("change",()=>{
