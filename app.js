@@ -286,6 +286,17 @@
     document.querySelectorAll(".step-panel").forEach(p => p.classList.toggle("active", p.id === "step-" + name));
     document.querySelectorAll(".step-tab").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
     document.querySelectorAll(".process-step").forEach(b => b.classList.toggle("active", b.dataset.stepTarget === name));
+    if ($("rail-current-copy")) {
+      const labels = {
+        income: "Step 1 of 5",
+        property: "Step 2 of 5",
+        bond: "Step 3 of 5",
+        affordability: "Step 4 of 5",
+        optimise: "Step 5 of 5",
+        application: "Application & Rights"
+      };
+      $("rail-current-copy").textContent = labels[name] || "";
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (name === "affordability") renderAffordability();
     if (name === "application") renderApplicationReview();
