@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en-AU" data-theme="light">
+<!doctype html>
+<html lang="en-AU">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>About RentReady VIC</title>
 <link rel="stylesheet" href="app.css">
+<style>
+.about-simple{width:min(900px,calc(100% - 28px));margin:auto;padding:44px 0 64px}
+.about-simple-hero{max-width:720px;margin-bottom:28px}
+.about-simple-hero h1{font-size:clamp(34px,5vw,52px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 14px}
+.about-simple-hero p{color:#667085;font-size:13px;line-height:1.7;margin:0}
+.about-simple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.about-simple-card{background:#fff;border:1px solid #dfe5ed;border-radius:10px;padding:18px}
+.about-simple-card h2{font-size:14px;margin:0 0 8px}
+.about-simple-card p,.about-simple-card li{color:#667085;font-size:10px;line-height:1.55}
+.about-simple-card ul{margin:0;padding-left:18px}
+.about-simple-wide{margin-top:10px;background:#f8fafc;border:1px solid #dfe5ed;border-radius:10px;padding:18px}
+.about-simple-wide h2{margin:0 0 8px;font-size:14px}
+.about-simple-wide p{margin:0;color:#667085;font-size:10px;line-height:1.6}
+.about-simple-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+@media(max-width:700px){.about-simple-grid{grid-template-columns:1fr}.top-resource-nav{display:none}}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -13,126 +29,61 @@
       <span class="brand-mark">R</span>
       <span><b>RentReady VIC</b><small>Work · Rent · Support</small></span>
     </a>
-    <nav class="top-resource-nav" aria-label="RentReady resources">
+    <nav class="top-resource-nav" aria-label="RentReady navigation">
       <a class="top-resource-link" href="about.html">About</a>
       <details class="resource-menu">
         <summary>Resources <span aria-hidden="true">▾</span></summary>
         <div class="resource-menu-panel">
-          <div class="resource-menu-heading"><span>Official information</span><strong>Check the source rules</strong></div>
-          <a href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener"><span><b>Services Australia</b><small>Payments, Rent Assistance and Centrelink information</small></span><i>↗</i></a>
-          <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener"><span><b>DSS Social Security Guide</b><small>Detailed social-security policy and rules</small></span><i>↗</i></a>
-          <a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener"><span><b>Housing Victoria</b><small>RentAssist Bond Loan eligibility</small></span><i>↗</i></a>
-          <a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener"><span><b>Consumer Affairs Victoria</b><small>Rental applications and what can be asked</small></span><i>↗</i></a>
-          <a href="https://www.humanrights.vic.gov.au/for-individuals/hotels-camping-sites-and-rental-properties/" target="_blank" rel="noopener"><span><b>VEOHRC</b><small>Discrimination and accommodation rights</small></span><i>↗</i></a>
+          <div class="resource-menu-heading"><span>Official information</span><strong>Useful sources</strong></div>
+          <a href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener"><span><b>Services Australia</b><small>Payments and Rent Assistance</small></span><i>↗</i></a>
+          <a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener"><span><b>Housing Victoria</b><small>RentAssist Bond Loan</small></span><i>↗</i></a>
+          <a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener"><span><b>Consumer Affairs Victoria</b><small>Rental applications and rights</small></span><i>↗</i></a>
         </div>
       </details>
-      <a class="top-resource-link compass-link" href="https://sentrixdigital.com.au/compass/au" target="_blank" rel="noopener">Social Security Compass <span aria-hidden="true">↗</span></a>
     </nav>
-    <a class="btn primary" href="app.html">Open RentReady →</a>
+    <a class="btn primary" href="app.html">Start →</a>
   </div>
 </header>
 
-<main class="about-page">
-  <section class="about-hero">
+<main class="about-simple">
+  <section class="about-simple-hero">
     <span class="eyebrow">About RentReady VIC</span>
-    <h1>Identify your payment, test the property, check RentAssist, understand your rights and find the income target.</h1>
-    <p>RentReady is designed around the renter’s actual decision: identify the income-support payment and current rate, compare that income with the property being considered, check whether the household and property fit the RentAssist Bond Loan rules, understand what the rental provider or agent can and cannot ask for, and see how additional work income would change both the payment and the rental position.</p>
-    <div class="about-actions"><a class="btn primary" href="app.html">Start with your income →</a><a class="btn" href="index.html">Home</a></div>
+    <h1>A simpler way to test a rental against your income.</h1>
+    <p>RentReady brings the main numbers into one place so you can compare your income with a property before you apply.</p>
+    <div class="about-simple-actions"><a class="btn primary" href="app.html">Start my assessment →</a><a class="btn" href="index.html">Home</a></div>
   </section>
 
-  <div class="about-grid">
-    <section class="about-card">
-      <h2>The objective</h2>
-      <p>RentReady turns a fragmented rental journey into one connected assessment. The renter enters their circumstances once, then the same information is reused to identify the relevant payment, estimate work-income effects and Rent Assistance, test the actual property against RentAssist and affordability settings, review application rights, and calculate the minimum modelled extra work income that would bring the property inside the current planning ranges.</p>
-      <p>The tool is not intended to replace a government decision, legal advice or a personal financial recommendation. Its purpose is to make the interactions between the systems visible early enough for a renter to see whether a property is realistic, what is causing a shortfall, what their application rights are, and whether a different rent or level of employment income could improve the position.</p>
-    </section>
-
-    <section class="about-card">
-      <h2>The gap RentReady is trying to fill</h2>
+  <div class="about-simple-grid">
+    <section class="about-simple-card">
+      <h2>What you enter</h2>
       <ul>
-        <li>Centrelink tells a person about a payment, but a rental decision also depends on the actual weekly rent and bond.</li>
-        <li>Rent Assistance depends on rent and household circumstances, so it becomes meaningful only when connected to a property.</li>
-        <li>RentAssist Bond Loan eligibility uses its own income, asset and rent-share tests.</li>
-        <li>Real-estate applications require evidence, references and personal information under Victorian rental rules.</li>
-        <li>Discrimination protections sit in a separate legal framework again.</li>
-      </ul>
-      <p>RentReady brings those pieces together and shows the shortfalls, trade-offs and possible optimisation strategies in one place.</p>
-    </section>
-
-    <section class="about-card about-wide">
-      <h2>Payments and support reflected in the tool</h2>
-      <p>The income layer is built to distinguish different payment streams and their different work-income rules instead of applying one generic Centrelink calculation to everybody.</p>
-      <div class="institution-grid">
-        <div class="institution"><b>JobSeeker Payment</b><p>Working-age income support, including different rates and income-test treatment for principal carers and other circumstances.</p></div>
-        <div class="institution"><b>Disability Support Pension</b><p>Pension-rate income support with adult and youth circumstances, pension income testing and other eligibility tests.</p></div>
-        <div class="institution"><b>Age Pension</b><p>Pension rates, pension income testing, assets/deeming considerations and the Work Bonus.</p></div>
-        <div class="institution"><b>Carer Payment</b><p>Income-support pension for eligible carers, with pension means testing and care-related eligibility rules.</p></div>
-        <div class="institution"><b>Parenting Payment</b><p>Single and partnered circumstances, personal and partner income tests and dependent-child considerations.</p></div>
-        <div class="institution"><b>Youth Allowance</b><p>Separate job-seeker and student/apprentice streams, including dependent/independent and living-arrangement scenarios.</p></div>
-        <div class="institution"><b>Austudy</b><p>Student income support with the student personal-income test and Income Bank.</p></div>
-        <div class="institution"><b>ABSTUDY Living Allowance</b><p>Age, living arrangement, family status, parental/partner tests and Income Bank considerations.</p></div>
-        <div class="institution"><b>Special Benefit</b><p>Individually assessed support with different income treatment from ordinary allowance payments.</p></div>
-        <div class="institution"><b>Farm Household Allowance</b><p>A more complex farm/off-farm income and asset assessment that should not be reduced to a simple generic taper.</p></div>
-        <div class="institution"><b>Rent Assistance</b><p>Rent thresholds, household bands and maximum amounts used once an actual or prospective rent is known.</p></div>
-        <div class="institution"><b>Family and supplementary support</b><p>Family Tax Benefit, Parental Leave Pay, Carer Allowance and other supplementary supports can be relevant to the wider household position.</p></div>
-      </div>
-    </section>
-
-
-    <section class="about-card about-wide">
-      <h2>How the components, organisations and rules fit together</h2>
-      <p>RentReady connects the renter's information across several systems, but it does not merge the rules into one test. Each component below has a different purpose and a different decision-maker.</p>
-      <div class="about-rule-map">
-        <div><b>Income-support payment</b><span>Services Australia / Department of Social Services</span><p>Payment rates, circumstances, personal work-income tests and concessions. The 20 September 2026 Australian Government payments guide is the current rate reference used by the structured backend.</p></div>
-        <div><b>Rent Assistance</b><span>Services Australia</span><p>A separate rent supplement. The amount depends on household situation and the rent being paid; it is recalculated when the property rent is known.</p></div>
-        <div><b>RentAssist Bond Loan</b><span>Housing Victoria / Homes Victoria</span><p>Interest-free bond assistance with its own income and asset limits, residency and property-ownership requirements, and a rule that the renter's share of rent must be less than 55% of gross weekly income. Housing Victoria uses maximum eligible Rent Assistance in that test.</p></div>
-        <div><b>Property affordability</b><span>RentReady planning layer</span><p>A planning comparison between the selected rent and projected household income. This is deliberately shown separately from the official RentAssist test.</p></div>
-        <div><b>Rental application information</b><span>Consumer Affairs Victoria</span><p>Victorian application rules. From 31 March 2026 the prescribed rental application form applies and agents/providers are limited to the information allowed by that form and the rental laws.</p></div>
-        <div><b>Discrimination protections</b><span>Victorian Equal Opportunity & Human Rights Commission</span><p>Equal Opportunity Act protections apply to accommodation. The tool highlights protected-characteristic context and possible red flags without deciding that unlawful discrimination occurred.</p></div>
-        <div><b>Residential-tenancy disputes</b><span>VCAT</span><p>VCAT is the formal tribunal pathway for many tenancy disputes and remedies. RentReady is an information and planning tool, not a tribunal or legal decision-maker.</p></div>
-      </div>
-    </section>
-
-    <section class="about-card about-wide">
-      <h2>Who does what</h2>
-      <div class="institution-grid">
-        <div class="institution"><b>Services Australia</b><p>Administers Centrelink payments, Rent Assistance, Medicare and many family/student payments, and provides the current payment rates and claimant-facing rules.</p></div>
-        <div class="institution"><b>Department of Social Services</b><p>Maintains much of the social-security policy framework and Social Security Guide that sits behind income-support rules.</p></div>
-        <div class="institution"><b>Housing Victoria / Homes Victoria</b><p>Provides the RentAssist Bond Loan and publishes its income, asset, residency and rent-share eligibility requirements.</p></div>
-        <div class="institution"><b>Consumer Affairs Victoria</b><p>Explains Victorian renting law, the prescribed rental application process, permitted application information and renter protections.</p></div>
-        <div class="institution"><b>Victorian Equal Opportunity and Human Rights Commission</b><p>Explains discrimination protections in accommodation and provides a pathway for equal-opportunity complaints and information.</p></div>
-        <div class="institution"><b>VCAT</b><p>The Victorian Civil and Administrative Tribunal decides residential tenancy disputes and other matters within its jurisdiction.</p></div>
-        <div class="institution"><b>Residential Tenancies Bond Authority</b><p>Holds rental bonds lodged for Victorian residential tenancies and administers bond-related processes.</p></div>
-        <div class="institution"><b>Real-estate agents and rental providers</b><p>Manage the property application and tenancy process, but must operate within the information, privacy and discrimination rules that apply in Victoria.</p></div>
-        <div class="institution"><b>RentReady VIC</b><p>Connects the numbers and rules so the renter can see how their income and a specific property interact before and during the application process.</p></div>
-      </div>
-    </section>
-
-    <section class="about-card">
-      <h2>What RentReady calculates</h2>
-      <ul>
-        <li>Current selected payment rate and circumstance.</li>
-        <li>Estimated reduction in the payment as employment income changes where a reliable personal-income test can be modelled.</li>
-        <li>Working Credit, Income Bank or Work Bonus treatment where applicable.</li>
-        <li>Potential and property-specific Rent Assistance.</li>
-        <li>Rent as a percentage of projected household income.</li>
-        <li>RentAssist income/assets/rent-share/bond checks.</li>
-        <li>General affordability shortfalls and optimisation scenarios.</li>
+        <li>Your payment and income</li>
+        <li>The rent and bond</li>
+        <li>Relevant household details</li>
       </ul>
     </section>
-
-    <section class="about-card">
-      <h2>What it deliberately does not pretend to decide</h2>
-      <p>Some Centrelink assessments depend on partner income, parental means tests, assets, deeming, maintenance income, farm-business results, residence rules or other facts that cannot be inferred from one earnings number. RentReady identifies these tests and asks the renter to consider them rather than silently flattening them into an inaccurate calculation.</p>
-      <p>Likewise, the application review can identify potential discrimination red flags but it does not make a legal finding that discrimination occurred.</p>
+    <section class="about-simple-card">
+      <h2>What you see</h2>
+      <ul>
+        <li>Projected household income</li>
+        <li>How the rent compares</li>
+        <li>Possible support and income targets</li>
+      </ul>
     </section>
-
-    <section class="about-card about-wide">
-      <h2>Designed around the renter's decision</h2>
-      <p>The intended outcome is practical: after entering income and a property, the renter should be able to see whether the rent is within range, whether the bond support looks available, what the likely shortfall is, what evidence they can prepare, and which levers — such as target rent, work income, another shortlisted property or a different application strategy — may improve the position.</p>
-      <p><b>RentReady VIC is a planning and information tool by sentrixdigital.com.au.</b> Government agencies remain responsible for official eligibility decisions, payment calculations, rental-law enforcement and dispute resolution.</p>
+    <section class="about-simple-card">
+      <h2>What stays separate</h2>
+      <ul>
+        <li>RentReady planning estimates</li>
+        <li>Government eligibility rules</li>
+        <li>Rental application and rights information</li>
+      </ul>
     </section>
   </div>
+
+  <section class="about-simple-wide">
+    <h2>Important</h2>
+    <p>RentReady is an independent planning tool. It does not replace Services Australia, Housing Victoria, Consumer Affairs Victoria, legal advice or an official eligibility decision. Use the linked sources to confirm important rules and amounts.</p>
+  </section>
 </main>
 </body>
 </html>
