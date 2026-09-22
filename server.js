@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const socialSecurity = require("./api/social-security.js");
+const propertyExtract = require("./api/property-extract.js");
 
 const app = express();
 const port = Number(process.env.PORT || 10000);
@@ -12,7 +13,9 @@ app.get("/_health", (_req, res) => {
   res.status(200).json({ ok: true, service: "rentready-vic" });
 });
 
+app.use(express.json({ limit:"32kb" }));
 app.get("/api/social-security", socialSecurity);
+app.post("/api/property-extract", propertyExtract);
 
 app.use(express.static(root, {
   extensions: ["html"],
