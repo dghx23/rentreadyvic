@@ -1734,3 +1734,129 @@ body{background:#f5f7fb}
 @media(max-width:460px){
   .credit-estimate-grid{grid-template-columns:1fr}
 }
+
+
+/* Interview-style work, rental arrangement and relevant checks */
+.work-status-question{
+  grid-column:1/-1;padding:13px;border:1px solid #dce2eb;border-radius:8px;background:#fff
+}
+.work-question-kicker{
+  display:block;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:850
+}
+.work-status-question>strong{display:block;margin-top:3px;font-size:14px}
+.work-status-options{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px
+}
+.work-status-options label,
+.rental-arrangement-options label{
+  display:flex;align-items:flex-start;gap:8px;padding:11px;
+  border:1px solid #dfe5ed;border-radius:7px;background:#fafbfc;cursor:pointer
+}
+.work-status-options input,
+.rental-arrangement-options input{margin-top:2px}
+.work-status-options label:has(input:checked),
+.rental-arrangement-options label:has(input:checked){
+  border-color:#aaa4ff;background:#f4f2ff
+}
+.current-work-income-wrap{display:grid;gap:9px}
+.income-free-warning{
+  display:grid;grid-template-columns:30px 1fr;gap:10px;
+  padding:11px;border:1px solid #fecaca;border-radius:7px;background:#fff1f2;color:#7f1d1d
+}
+.income-free-warning-icon{
+  display:grid;place-items:center;width:28px;height:28px;border-radius:50%;
+  background:#dc2626;color:#fff;font-weight:900
+}
+.income-free-warning strong{display:block;font-size:11px}
+.income-free-warning p{margin:3px 0 4px;font-size:9px;line-height:1.45;color:#991b1b}
+.income-free-warning .link-btn{color:#b91c1c!important;padding:0!important}
+.no-work-intro span{
+  display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);font-weight:850
+}
+.no-work-intro strong{display:block;margin-top:3px;font-size:11px}
+.no-work-intro p{margin:4px 0 0;font-size:9px;color:#6f7b8d;line-height:1.45}
+
+.relevant-checks-panel{
+  margin-top:12px;padding:12px;border:1px solid #dfe5ed;border-radius:8px;background:#fafbfc
+}
+.relevant-checks-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px
+}
+.relevant-checks-head>div{display:grid}
+.relevant-checks-head span{
+  font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--brand);font-weight:850
+}
+.relevant-checks-head strong{margin-top:2px;font-size:12px}
+.relevant-checks-head>a{font-size:8px;color:var(--brand);font-weight:850;white-space:nowrap}
+.relevant-checks-intro{margin:7px 0 9px;font-size:9px!important;color:#748095;line-height:1.5}
+.relevant-checks-list{display:grid;gap:6px}
+.relevant-check{
+  width:100%;display:grid;grid-template-columns:1fr 24px;gap:10px;align-items:center;
+  padding:10px;border:1px solid #dce2eb;border-radius:6px;background:#fff;text-align:left;cursor:pointer
+}
+.relevant-check:hover{border-color:#b9b4ff;background:#f8f7ff}
+.relevant-check span{display:grid}
+.relevant-check b{font-size:10px;color:#344054}
+.relevant-check small{margin-top:2px;font-size:8px;line-height:1.35;color:#7f8b9d}
+.relevant-check i{
+  display:grid;place-items:center;width:22px;height:22px;border-radius:50%;
+  background:#f1efff;color:var(--brand);font-size:10px;font-style:normal;font-weight:900
+}
+.relevant-checks-count{margin-top:7px;font-size:8px;color:#8b96a6}
+
+.scenario-modal,.rental-arrangement-modal{
+  position:fixed;inset:0;z-index:125
+}
+.scenario-modal[hidden],.rental-arrangement-modal[hidden]{display:none!important}
+.scenario-modal-backdrop,.rental-arrangement-modal-backdrop{
+  position:absolute;inset:0;background:rgba(15,23,42,.62);backdrop-filter:blur(3px)
+}
+.scenario-modal-dialog,.rental-arrangement-modal-dialog{
+  position:relative;z-index:1;width:min(620px,calc(100% - 28px));
+  max-height:calc(100vh - 42px);overflow:auto;margin:21px auto;padding:22px;
+  border-radius:12px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28)
+}
+.scenario-modal-close,.rental-arrangement-modal-close{
+  position:absolute;right:14px;top:12px;width:30px;height:30px;border:0;border-radius:50%;
+  background:#f1f3f6;color:#475467;font-size:18px;cursor:pointer
+}
+.scenario-modal-kicker,.rental-arrangement-modal-kicker{
+  display:block;font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:850
+}
+.scenario-modal-dialog h2,.rental-arrangement-modal-dialog h2{
+  margin:4px 38px 8px 0;font-size:21px;letter-spacing:-.025em
+}
+.scenario-modal-dialog p,.rental-arrangement-modal-dialog p{
+  font-size:10px;line-height:1.55;color:#606c7d
+}
+.scenario-modal-actions{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid #e5e9ef
+}
+
+.rental-arrangement-question{
+  margin:0 0 12px;padding:13px;border:1px solid #d8d4ff;border-radius:8px;background:#fff
+}
+.rental-arrangement-title{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px
+}
+.rental-arrangement-title>div{display:grid}
+.rental-arrangement-title span{
+  font-size:8px;text-transform:uppercase;letter-spacing:.08em;color:var(--brand);font-weight:850
+}
+.rental-arrangement-title strong{margin-top:3px;font-size:14px;line-height:1.25}
+.rental-arrangement-help{flex:none}
+.rental-arrangement-options{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px
+}
+.rental-arrangement-options b{display:block;font-size:10px}
+.rental-arrangement-options small{display:block;margin-top:2px;font-size:8px;color:#7f8a9b;line-height:1.35}
+.rental-arrangement-context{
+  margin-top:8px;padding:8px 9px;border-radius:5px;background:#f7f7ff;color:#69658d;font-size:9px;line-height:1.4
+}
+.rental-arrangement-modal-links{display:grid;gap:6px;margin-top:12px}
+.rental-arrangement-modal-links a{font-size:9px;color:var(--brand);font-weight:850}
+
+@media(max-width:700px){
+  .work-status-options,.rental-arrangement-options{grid-template-columns:1fr}
+  .relevant-checks-head,.scenario-modal-actions{align-items:flex-start;flex-direction:column}
+}
