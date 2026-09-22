@@ -2138,3 +2138,70 @@ body{background:#f5f7fb}
 .address-suggestion:hover,.address-suggestion:focus{background:#f6f5ff;outline:none}
 .address-suggestion strong{font-size:10px;line-height:1.3;color:#344054}
 .address-suggestion small{margin-top:2px;font-size:8px;color:#8a95a5}
+
+
+/* Current payment + maximum possible support pair */
+.payment-wide-body{
+  grid-template-columns:minmax(0,1.05fr) minmax(420px,.95fr)!important
+}
+.payment-rate-pair{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  min-width:0
+}
+.payment-rate-pair .centrelink-rate-box{
+  min-width:0;
+  padding:12px!important
+}
+.payment-rate-pair .centrelink-rate-value strong{
+  font-size:22px!important
+}
+.payment-rate-pair .rate-period-slider{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:4px
+}
+.payment-rate-pair .rate-period-slider button{
+  min-width:0;
+  padding:5px 4px!important;
+  font-size:8px!important
+}
+.maximum-support-box{
+  border-color:#fecaca!important;
+  background:linear-gradient(180deg,#fffafa 0%,#fff 100%)!important
+}
+.maximum-support-box .centrelink-rate-label{
+  color:#b42318!important
+}
+.maximum-support-value strong{
+  color:#991b1b!important
+}
+.maximum-support-breakdown{
+  display:grid;
+  gap:5px;
+  margin:10px 0;
+  padding:8px;
+  border-radius:6px;
+  background:#fff1f2
+}
+.maximum-support-breakdown span{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  color:#8a3a3a;
+  font-size:8px
+}
+.maximum-support-breakdown b{
+  color:#7f1d1d
+}
+.maximum-support-box .centrelink-rate-meta{
+  line-height:1.4
+}
+@media(max-width:980px){
+  .payment-wide-body{grid-template-columns:1fr!important}
+  .payment-rate-pair{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  .payment-rate-pair{grid-template-columns:1fr}
+}
