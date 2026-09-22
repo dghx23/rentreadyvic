@@ -909,7 +909,8 @@
     if (!$("income-free-warning")) return;
     const status = currentWorkStatus();
     const freeArea = rule ? Number(rule.freeArea || 0) : 0;
-    const above = status === "yes" && rule && workIncomeFN > freeArea;
+    const workEntered = status === "yes" && workIncomeFN > 0 && !$("current-work-income-wrap").hidden;
+    const above = workEntered && rule && workIncomeFN > freeArea;
     $("income-free-warning").hidden = !above;
     if (!above) return;
 
