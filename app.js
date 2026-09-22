@@ -825,6 +825,9 @@
     if ($("rentassist-result-section")) $("rentassist-result-section").hidden = !active;
     if ($("target-rentassist-card")) $("target-rentassist-card").hidden = !active;
     if ($("property-rentassist-cap-metric")) $("property-rentassist-cap-metric").hidden = !active;
+    if ($("optimise-rentassist-gap")) $("optimise-rentassist-gap").hidden = !active;
+    if ($("target-rentassist-rent")) $("target-rentassist-rent").hidden = !active;
+    if ($("target-rentassist-income")) $("target-rentassist-income").hidden = !active;
 
     if ($("property-assessment-note")) {
       $("property-assessment-note").innerHTML = active
@@ -1677,14 +1680,16 @@
       return;
     }
     box.className = "property-summary";
-    const cap = bondCapForBeds(prop.beds);
-    box.innerHTML = '<div class="property-summary-grid">' +
-      summaryCell("Selected property", prop.address) +
-      summaryCell("Weekly rent", money(prop.rent,0)) +
-      summaryCell("Estimated Rent Assistance", money(sc.actualRAFN/2) + "/wk") +
-      summaryCell("Bond", money(prop.bond,0)) +
-      summaryCell("Published bedroom cap", money(cap,0)) +
-      '</div>';
+    const cells = [
+      summaryCell("Selected property", prop.address),
+      summaryCell("Weekly rent", money(prop.rent,0)),
+      summaryCell("Estimated Rent Assistance", rentAssistAvailable() ? money(sc.actualRAFN/2) + "/wk" : "Not included"),
+      summaryCell("Bond", money(prop.bond,0))
+    ];
+    if (rentAssistActive()) {
+      cells.push(summaryCell("RentAssist bedroom cap", money(bondCapForBeds(prop.beds),0)));
+    }
+    box.innerHTML = '<div class="property-summary-grid">' + cells.join("") + '</div>';
   }
 
   function summaryCell(label, value) {
@@ -1841,7 +1846,9 @@
 
     const shortfalls = [];
     if (!prop) {
-      shortfalls.push({state:"warn",text:"No property is selected yet, so RentReady cannot assess property-specific affordability or bond-loan shortfalls."});
+      shortfalls.push({state:"warn",text: rentAssistActive()
+        ? "No property is selected yet, so RentReady cannot assess property-specific affordability or RentAssist shortfalls."
+        : "No property is selected yet, so RentReady cannot assess property-specific affordability."});
     } else {
       if (generalGap > 0) {
         shortfalls.push({state:"warn",text:"The selected rent is about " + money(generalGap) + "/wk above the general " + Math.round(cfg.generalAffordabilityPct*100) + "% planning benchmark."});
@@ -1965,36 +1972,50 @@
     const work = Number($("optimise-work").value || 0);
     const rent = Number($("optimise-rent").value || 0);
     renderIncomeTarget();
+    updateRentAssistVisibility();
+
     const sc = scenario(work, rent);
     const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
-    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
     const generalGap = rent - generalLimit;
-    const bondGap = rent - bondLimit;
+    const generalPass = generalGap <= 0;
 
     $("optimise-work-label").textContent = money(displayFromFN(work),0) + " / " + PERIODS[currentPeriod].label;
     $("optimise-rent-label").textContent = money(rent,0) + " / week";
     $("optimise-income").textContent = money(sc.householdWeek) + "/wk";
     $("optimise-general-gap").textContent = gapText(generalGap);
-    $("optimise-bond-gap").textContent = gapText(bondGap);
     $("target-general-rent").textContent = money(generalLimit,0) + "/wk";
-    $("target-bond-rent").textContent = money(bondLimit,0) + "/wk";
+    $("target-general-income").textContent = requiredWorkText(rent, cfg.generalAffordabilityPct, "general");
 
-    const generalPass = generalGap <= 0;
-    const bondPass = bondGap < 0;
-    if (generalPass && bondPass) {
-      $("optimise-verdict").textContent = "This combination is inside both rent thresholds";
-      $("optimise-copy").textContent = "At this work income and target rent, both the general planning benchmark and the bond-loan rent-share test are within range.";
-    } else if (bondPass) {
-      $("optimise-verdict").textContent = "RentAssist rent test passes; general affordability is tighter";
-      $("optimise-copy").textContent = "The property is inside the bond-loan rent-share threshold, but above the general planning benchmark.";
-    } else {
-      $("optimise-verdict").textContent = "The RentAssist rent-share test is still the immediate constraint";
-      $("optimise-copy").textContent = "Move rent down or work income up to see where the test crosses into range.";
+    if (!rentAssistActive()) {
+      $("optimise-verdict").textContent = generalPass
+        ? "This combination is inside the general planning benchmark"
+        : "The rent is still above the general planning benchmark";
+      $("optimise-copy").textContent = generalPass
+        ? "At this work income and rent, the general affordability planning benchmark is within range."
+        : "Move rent down or work income up to see where the general planning benchmark crosses into range.";
+      return;
     }
 
-    $("target-general-income").textContent = requiredWorkText(rent, cfg.generalAffordabilityPct, "general");
+    const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
+    const bondGap = rent - bondLimit;
+    const bondPass = bondGap < 0;
+
+    $("optimise-bond-gap").textContent = gapText(bondGap);
+    $("target-bond-rent").textContent = money(bondLimit,0) + "/wk";
     $("target-bond-income").textContent = requiredWorkText(rent, cfg.bondRentPct, "bond");
+
+    if (generalPass && bondPass) {
+      $("optimise-verdict").textContent = "This combination is inside both active thresholds";
+      $("optimise-copy").textContent = "At this work income and target rent, both the general planning benchmark and the RentAssist rent-share rule are within range.";
+    } else if (bondPass) {
+      $("optimise-verdict").textContent = "RentAssist rent-share rule fits; general affordability is tighter";
+      $("optimise-copy").textContent = "The rent is inside the RentAssist rent-share rule, but above the general planning benchmark.";
+    } else {
+      $("optimise-verdict").textContent = "The RentAssist rent-share rule is still a constraint";
+      $("optimise-copy").textContent = "Move rent down or work income up to see where the under-" + Math.round(cfg.bondRentPct*100) + "% RentAssist rule crosses into range.";
+    }
   }
+
 
   function paymentReductionStartFN() {
     const p = selectedPayment();
@@ -2023,7 +2044,7 @@
     for (let w = 0; w <= max; w += 10) {
       const sc = scenario(w, rent);
       const generalPass = rent <= sc.householdWeek * cfg.generalAffordabilityPct;
-      const rentAssistPass = rent < sc.bondIncomeWeek * cfg.bondRentPct;
+      const rentAssistPass = !rentAssistActive() || rent < sc.bondIncomeWeek * cfg.bondRentPct;
       if (generalPass && rentAssistPass) return w;
     }
     return Infinity;
@@ -2057,7 +2078,9 @@
     if (target === Infinity) {
       $("ideal-work-target").textContent = "Above the modelled work-income range";
       $("target-extra-work").textContent = "Above modelled range";
-      $("ideal-work-target-copy").textContent = "Increasing work income alone does not bring this property inside both planning thresholds within the modelled range. A lower rent may be the more effective lever.";
+      $("ideal-work-target-copy").textContent = rentAssistActive()
+        ? "Increasing work income alone does not bring this property inside both active thresholds within the modelled range. A lower rent may be the more effective lever."
+        : "Increasing work income alone does not bring this property inside the general planning benchmark within the modelled range. A lower rent may be the more effective lever.";
       return;
     }
 
@@ -2069,12 +2092,14 @@
 
     if (extra > 0) {
       $("ideal-work-target-copy").textContent =
-        "For the current rent of " + money(rent,0) + " per week, the model first reaches both planning thresholds at about " +
+        "For the current rent of " + money(rent,0) + " per week, the model first reaches " +
+        (rentAssistActive() ? "both active thresholds" : "the general planning benchmark") + " at about " +
         money(displayFromFN(target),0) + " of gross work income per " + PERIODS[currentPeriod].label +
         ". That is about " + money(displayFromFN(extra),0) + " more than the work income currently entered.";
     } else {
       $("ideal-work-target-copy").textContent =
-        "Your current work income is already at or above the minimum modelled level needed for this property to sit inside both planning thresholds.";
+        "Your current work income is already at or above the minimum modelled level needed for this property to sit inside " +
+        (rentAssistActive() ? "both active thresholds." : "the general planning benchmark.");
     }
   }
 
