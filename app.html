@@ -20,7 +20,33 @@
       <button data-period="month">Monthly</button>
       <button data-period="year" class="quiet">Yearly</button>
     </div>
-    <a class="admin-link" href="admin.html">Admin</a>
+    <div class="account-zone">
+      <button type="button" class="account-toggle" id="account-toggle" aria-expanded="false">
+        <span class="account-avatar" id="account-avatar">G</span>
+        <span class="account-copy"><b id="account-label">Sign in</b><small id="account-subtitle">Shortlist & saved work</small></span>
+        <span class="account-chevron">▾</span>
+      </button>
+      <div class="account-popover" id="account-popover" hidden>
+        <div class="account-login" id="account-login">
+          <strong>Sign in to your RentReady workspace</strong>
+          <p>For this prototype, sign-in and saved work are stored in this browser.</p>
+          <label>Email
+            <input type="email" id="account-email" placeholder="you@example.com" autocomplete="email">
+          </label>
+          <button type="button" class="btn primary" id="account-signin">Sign in</button>
+        </div>
+        <div class="account-signed" id="account-signed" hidden>
+          <div><span>Signed in as</span><strong id="account-email-display">—</strong></div>
+          <button type="button" class="link-btn" id="account-signout">Sign out</button>
+        </div>
+        <div class="account-shortlist-head">
+          <div><strong>Your shortlist</strong><small id="account-shortlist-count">0 properties</small></div>
+          <button type="button" class="link-btn" id="clear-properties">Clear</button>
+        </div>
+        <div id="shortlist" class="shortlist account-shortlist"></div>
+        <button type="button" class="btn account-open-property" data-step-target="property">Open property workspace</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -237,10 +263,32 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head"><h3>Your shortlist</h3><button class="link-btn" id="clear-properties">Clear</button></div>
+      <div class="card property-assessment-card">
+        <div class="card-head"><h3>Can I afford this property?</h3><span id="property-assessment-status" class="assessment-status pending">Waiting for property</span></div>
         <div class="card-body">
-          <div id="shortlist" class="shortlist"></div>
+          <div class="property-assessment-hero" id="property-assessment-hero">
+            <span>Affordability indication</span>
+            <strong id="property-assessment-verdict">Paste or enter a property</strong>
+            <p id="property-assessment-copy">RentReady will compare the rent and bond with your projected income as soon as the property details are available.</p>
+          </div>
+
+          <div class="property-assessment-metrics">
+            <div><span>Weekly rent</span><strong id="property-check-rent">—</strong></div>
+            <div><span>Projected weekly income</span><strong id="property-check-income">—</strong></div>
+            <div><span>Rent as % of income</span><strong id="property-check-ratio">—</strong></div>
+            <div><span>Estimated Rent Assistance</span><strong id="property-check-ra">—</strong></div>
+            <div><span>Bond entered</span><strong id="property-check-bond">—</strong></div>
+            <div><span>RentAssist bond cap</span><strong id="property-check-cap">—</strong></div>
+          </div>
+
+          <div id="property-assessment-details" class="property-assessment-details">
+            <p>Paste a listing or enter rent, bond and bedrooms to see the assessment.</p>
+          </div>
+
+          <div class="notice info property-assessment-note">
+            <b>Two different affordability views.</b>
+            The general planning benchmark and the RentAssist rent-share test are shown separately because they answer different questions.
+          </div>
         </div>
       </div>
     </div>
@@ -674,7 +722,7 @@
   <div class="shell footer-inner">
     <div><b>RentReady VIC</b><br><span>Independent guidance prototype for Victorian renters.</span></div>
     <div><span>Rules and thresholds should be checked against the linked official sources before you rely on them.</span></div>
-    <div>Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
+    <div class="footer-actions"><a href="admin.html">Admin login</a><span>·</span> Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
   </div>
 </footer>
 
