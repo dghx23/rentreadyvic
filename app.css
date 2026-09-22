@@ -1860,3 +1860,7 @@ body{background:#f5f7fb}
   .work-status-options,.rental-arrangement-options{grid-template-columns:1fr}
   .relevant-checks-head,.scenario-modal-actions{align-items:flex-start;flex-direction:column}
 }
+
+
+/* Honour semantic hidden state globally */
+[hidden]{display:none!important}
