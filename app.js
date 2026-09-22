@@ -1118,6 +1118,7 @@
     const generalPass = prop && rent > 0 && sc.householdWeek > 0 ? rent <= generalLimit : null;
 
     $("result-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "—";
+    setRentAssistanceIncomeSubline("result-income-ra", sc);
     $("result-rent").textContent = prop && rent ? money(rent) + "/wk" : "—";
     $("result-ratio").textContent = ratio == null ? "—" : pct(ratio);
     $("result-ra").textContent = rentAssistAvailable() ? money(sc.actualRAFN / 2) + "/wk" : "Not included";
@@ -1286,6 +1287,23 @@
     }
   }
 
+  function rentAssistanceIncomeSubline(sc) {
+    const actualWeek = Number(sc && sc.actualRAFN || 0) / 2;
+    if (rentAssistAvailable()) {
+      return "+ estimated Rent Assistance " + money(actualWeek,0) + "/wk included";
+    }
+
+    const band = selectedRABand();
+    const potentialWeek = band ? Number(band.maximum || 0) / 2 : 0;
+    return potentialWeek > 0
+      ? "+ potential Rent Assistance up to " + money(potentialWeek,0) + "/wk"
+      : "+ Rent Assistance not yet available";
+  }
+
+  function setRentAssistanceIncomeSubline(id, sc) {
+    if ($(id)) $(id).textContent = rentAssistanceIncomeSubline(sc);
+  }
+
   function renderIncome(sc) {
     const raMax = sc.ra.maximumFN || 0;
     $("ra-max-display").textContent = money(displayFromFN(raMax));
@@ -1294,6 +1312,7 @@
     $("income-ra-result").textContent = money(displayFromFN(sc.actualRAFN));
     const totalFN = sc.householdWeek * 2;
     $("income-total-result").textContent = money(displayFromFN(totalFN));
+    setRentAssistanceIncomeSubline("income-total-result-ra", sc);
 
     const p = selectedPayment();
     const label = p ? p.shortName || p.name : "your payment";
@@ -1868,6 +1887,7 @@
 
     $("property-check-rent").textContent = money(rent) + "/wk";
     $("property-check-income").textContent = sc.householdWeek > 0 ? money(sc.householdWeek) + "/wk" : "Add income";
+    setRentAssistanceIncomeSubline("property-check-income-ra", sc);
     $("property-check-ratio").textContent = ratio == null ? "—" : pct(ratio);
     $("property-check-ra").textContent = rentAssistAvailable() ? money(sc.actualRAFN / 2) + "/wk" : "Not included";
     $("property-check-bond").textContent = bond ? money(bond) : "Not found";
@@ -1972,6 +1992,7 @@
     const bondAmountGap = prop ? Math.max(0, Number(prop.bond || 0) - cap) : 0;
 
     $("metric-weekly-income").textContent = money(sc.householdWeek);
+    setRentAssistanceIncomeSubline("metric-weekly-income-ra", sc);
     $("metric-general-rent").textContent = money(generalLimit);
     $("metric-property-rent").textContent = prop ? money(rent) : "—";
     $("metric-bond-rent").textContent = money(bondLimit);
@@ -2035,6 +2056,7 @@
     $("app-review-payment").textContent = payment ? (payment.shortName || payment.name) : "Manual payment";
     $("app-review-circumstance").textContent = rate ? rate.label : "Manual amount";
     $("app-review-income").textContent = money(sc.householdWeek) + "/wk";
+    setRentAssistanceIncomeSubline("app-review-income-ra", sc);
     $("app-review-property").textContent = prop ? prop.address : "No property selected";
     $("app-review-rent").textContent = prop ? money(rent) + "/wk" : "—";
     $("app-review-rent-share").textContent = rentShare == null ? "—" : pct(rentShare);
@@ -2246,6 +2268,7 @@
     $("optimise-work-label").textContent = money(displayFromFN(work),0) + " / " + PERIODS[currentPeriod].label;
     $("optimise-rent-label").textContent = money(rent,0) + " / week";
     $("optimise-income").textContent = money(sc.householdWeek) + "/wk";
+    setRentAssistanceIncomeSubline("optimise-income-ra", sc);
     $("optimise-general-gap").textContent = gapText(generalGap);
     $("target-general-rent").textContent = money(generalLimit,0) + "/wk";
     $("target-general-income").textContent = requiredWorkText(rent, cfg.generalAffordabilityPct, "general");
@@ -2362,6 +2385,7 @@
     $("income-gap-slider-value").textContent =
       money(displayFromFN(testedFN),0) + " / " + PERIODS[currentPeriod].label;
     $("income-gap-projected-income").textContent = money(sc.householdWeek,0) + "/wk";
+    setRentAssistanceIncomeSubline("income-gap-projected-income-ra", sc);
     $("income-gap-affordable-rent").textContent = money(affordableRent,0) + "/wk";
     $("income-gap-remaining").textContent = gap <= 0
       ? money(Math.abs(gap),0) + "/wk headroom"
