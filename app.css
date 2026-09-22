@@ -403,3 +403,38 @@ textarea{resize:vertical}
   .stepnav-divider{display:none}
   .step-tab.application-tab{margin-left:0}
 }
+
+
+.income-impact-explainer{
+  margin-top:4px;padding:14px;border:1px solid var(--brand-line);border-radius:12px;
+  background:linear-gradient(135deg,#fbfdff,#f6f4ff)
+}
+.income-impact-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.income-impact-kicker{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--brand);font-weight:900}
+.income-impact-head strong{display:block;font-size:13px;margin-top:2px}
+.income-impact-head .link-btn{white-space:nowrap;font-size:10px}
+.income-impact-explainer>p{margin:7px 0 10px;font-size:11px;color:var(--muted)}
+.income-impact-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:10px}
+.income-impact-stats>div{padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.income-impact-stats span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:850}
+.income-impact-stats strong{display:block;font-size:13px;margin-top:2px}
+.income-impact-chart-card{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.income-impact-chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
+.income-impact-chart-head strong{font-size:11px}
+.income-impact-chart-head span{font-size:9px;color:var(--muted)}
+#income-impact-chart{width:100%;height:auto;display:block;overflow:visible}
+.income-impact-legend{display:flex;flex-wrap:wrap;gap:11px;margin-top:5px;font-size:9px;color:var(--muted)}
+.income-impact-legend span{display:flex;align-items:center;gap:5px}
+.legend-line{width:16px;height:2px;border-radius:999px;display:inline-block}
+.legend-line.payment{background:var(--brand)}
+.legend-line.total{background:var(--ok)}
+.legend-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.legend-dot.current{background:var(--warn)}
+.income-impact-note{margin-top:9px;padding:9px 10px;border-radius:8px;background:var(--surface2);font-size:10px;color:var(--ink2)}
+.income-impact-note.warn{background:var(--warn-soft);color:#78350f}
+.income-impact-note.ok{background:var(--ok-soft);color:#166534}
+@media(max-width:700px){
+  .income-impact-head{display:grid}
+  .income-impact-head .link-btn{justify-self:start}
+  .income-impact-stats{grid-template-columns:1fr}
+}
