@@ -108,13 +108,45 @@
   }
 
   function currentWorkRule(slug, rateLabel) {
+    const payment = selectedPayment();
+    const test = payment && payment.incomeTest ? payment.incomeTest : null;
+    const label = String(rateLabel || "").toLowerCase();
+
+    if (test) {
+      let rule = test;
+      if (Array.isArray(test.variants) && test.variants.length) {
+        const matched = test.variants.find(v =>
+          Array.isArray(v.match) && v.match.length &&
+          v.match.every(term => label.includes(String(term).toLowerCase()))
+        );
+        rule = matched || test.variants.find(v => !v.match || !v.match.length) || test.variants[0];
+      }
+
+      if (rule.type === "complex_threshold" || test.type === "complex_threshold") return null;
+      return {
+        ...test,
+        ...rule,
+        freeArea: Number(rule.free_area ?? test.free_area ?? rule.freeArea ?? test.freeArea ?? 0),
+        secondThreshold: rule.second_threshold == null && test.second_threshold == null
+          ? null : Number(rule.second_threshold ?? test.second_threshold),
+        taper1: rule.taper1 == null && test.taper1 == null ? null : Number(rule.taper1 ?? test.taper1),
+        taper2: rule.taper2 == null && test.taper2 == null ? null : Number(rule.taper2 ?? test.taper2),
+        singleTaper: rule.single_taper == null && test.single_taper == null
+          ? null : Number(rule.single_taper ?? test.single_taper),
+        incomeBasis: rule.income_basis || test.income_basis || "personal_employment_income",
+        otherTests: rule.other_tests || test.other_tests || [],
+        workConcession: payment.workConcession || null
+      };
+    }
+
+    // Backward-compatible fallback while an older backend is still deployed.
     if (slug === "jobseeker") {
       const principal = /principal carer/i.test(rateLabel || "");
       return principal ? { freeArea: cfg.jobseeker.freeArea, singleTaper: cfg.jobseeker.principalCarerTaper } : cfg.jobseeker;
     }
-    if (slug === "youth-allowance") return cfg.youthJobseeker;
+    if (slug === "youth-allowance" || slug === "youth-allowance-jobseeker") return cfg.youthJobseeker;
     if (slug === "parenting-payment") {
-      if (/single/i.test(rateLabel || "")) return { freeArea: 150, singleTaper: 0.40 };
+      if (/single/i.test(rateLabel || "")) return { freeArea: 232.60, singleTaper: 0.40 };
       return cfg.jobseeker;
     }
     return null;
@@ -130,7 +162,16 @@
       return { paymentFN: maxFN, reduction: 0, assessableIncome: workFN, rule: null };
     }
 
-    const usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)), Math.max(0, workFN));
+    const concession = rule.workConcession || (p && p.workConcession) || null;
+    let usableCredits = 0;
+    if (concession === "working_credit" || concession === "income_bank" || concession === "working_credit_or_work_bonus_if_age_eligible") {
+      usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)), Math.max(0, workFN));
+    }
+    if (concession === "work_bonus") {
+      const automaticBonus = 300;
+      usableCredits = Math.min(Math.max(0, Number(creditBalance || 0)) + automaticBonus, Math.max(0, workFN));
+    }
+
     const assessable = Math.max(0, workFN - usableCredits);
     let reduction = 0;
 
@@ -336,8 +377,11 @@
     const label = p ? p.shortName || p.name : "your payment";
     let copy = "Projected income combines work, the selected support payment and other household income.";
     if (sc.pay.rule) {
-      copy += " For " + escText(label) + ", the configured work-income test reduces the payment by " + money(sc.pay.reduction) +
-        " per fortnight at this work income. Assessable employment income after Working Credits is " + money(sc.pay.assessableIncome) + ".";
+      copy += " For " + escText(label) + ", the configured personal work-income test reduces the payment by " + money(sc.pay.reduction) +
+        " per fortnight at this work income. Assessable employment income after the selected work-income concession is " + money(sc.pay.assessableIncome) + ".";
+      if (sc.pay.rule.incomeBasis && sc.pay.rule.incomeBasis !== "personal_employment_income") {
+        copy += " This circumstance also has a " + sc.pay.rule.incomeBasis.replaceAll("_"," ") + " test, so use your actual payment amount if that additional test is already affecting what you receive.";
+      }
     } else if (p) {
       copy += " The selected payment does not yet have a work-income taper model in this prototype, so the chosen payment amount is held constant as work income changes.";
     }
