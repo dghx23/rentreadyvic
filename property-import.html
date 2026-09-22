@@ -10,7 +10,7 @@
 .import-hero{margin-bottom:16px}
 .import-hero .eyebrow{display:block;margin-bottom:5px}
 .import-hero h1{margin:0;font-size:30px;letter-spacing:-.035em}
-.import-hero p{max-width:760px;color:#667085;font-size:11px}
+.import-hero p{max-width:760px;color:#667085;font-size:11px}.import-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.import-flow>div{padding:11px;border:1px solid #dfe5ee;border-radius:9px;background:#fff}.import-flow span{display:block;color:#4f46e5;font-size:8px;font-weight:850;text-transform:uppercase}.import-flow b{display:block;margin-top:3px;font-size:10px}.import-flow p{margin:3px 0 0;color:#667085;font-size:8px;line-height:1.4}
 .import-card{border:1px solid #dfe5ee;background:#fff;border-radius:9px;overflow:hidden}
 .import-card-head{padding:14px;border-bottom:1px solid #e5e9ef;background:#fafbfc}
 .import-card-head h2{margin:0;font-size:14px}
@@ -25,7 +25,7 @@
 .import-grid .wide{grid-column:1/-1}
 .import-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #e5e9ef}
 .import-source{font-size:8px;color:#98a2b3;overflow-wrap:anywhere}
-@media(max-width:640px){.import-url-row,.import-grid{grid-template-columns:1fr}.import-actions{align-items:stretch;flex-direction:column-reverse}.import-actions .btn{width:100%}}
+@media(max-width:640px){.import-flow,.import-url-row,.import-grid{grid-template-columns:1fr}.import-actions{align-items:stretch;flex-direction:column-reverse}.import-actions .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -55,11 +55,17 @@
   <section class="import-hero">
     <span class="eyebrow">Step 2 · Property</span>
     <h1>Import a rental listing</h1>
-    <p>Paste a listing URL. RentReady will try to fill in the property details for you.</p>
+    <p>Use this when you already have a rental listing. RentReady will try to extract the key property details, then you can check them before returning to the assessment.</p>
   </section>
 
+  <div class="import-flow" aria-label="Property import steps">
+    <div><span>1 · Paste</span><b>Add the listing URL</b><p>Use the public URL for the rental property.</p></div>
+    <div><span>2 · Check</span><b>Review the extracted details</b><p>Correct anything that the listing importer could not read accurately.</p></div>
+    <div><span>3 · Return</span><b>Use it in your assessment</b><p>The accepted property is sent back to Step 2 in RentReady.</p></div>
+  </div>
+
   <section class="import-card">
-    <div class="import-card-head"><h2>1. Enter the listing URL</h2></div>
+    <div class="import-card-head"><h2>Paste the listing URL</h2></div>
     <div class="import-card-body">
       <div class="import-url-row">
         <input id="property-url" type="url" placeholder="https://www.example.com.au/property/..." autocomplete="url">
