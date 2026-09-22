@@ -2350,6 +2350,10 @@
       return;
     }
 
+    $("ideal-work-target").removeAttribute("href");
+    $("ideal-work-target").removeAttribute("data-step-target");
+    $("ideal-work-target").setAttribute("aria-disabled","true");
+
     if (target === Infinity) {
       $("ideal-work-target").textContent = "Above the modelled work-income range";
       $("target-extra-work").textContent = "Above modelled range";
