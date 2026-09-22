@@ -633,6 +633,8 @@
       if (rule.taper2 != null) q.set("taper2", String(rule.taper2));
       if (rule.singleTaper != null) q.set("singleTaper", String(rule.singleTaper));
     }
+    if (p && p.workConcession) q.set("concession", p.workConcession);
+    if (p && Array.isArray(p.scenarioPrompts)) q.set("checks", p.scenarioPrompts.join(" | "));
     window.open("income-impact.html?" + q.toString(), "rentready-income-impact", "popup=yes,width=940,height=760,resizable=yes,scrollbars=yes");
   }
 
