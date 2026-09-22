@@ -1901,10 +1901,10 @@
     if (!hasProperty) {
       status.className = "assessment-status pending";
       status.textContent = "Waiting for property";
-      $("property-assessment-verdict").textContent = "Paste or enter a property";
+      $("property-assessment-verdict").textContent = "Paste a URL or enter a property";
       $("property-assessment-copy").textContent = "RentReady will compare the rent with your projected income as soon as the property details are available.";
       ["property-check-rent","property-check-income","property-check-ratio","property-check-ra","property-check-bond","property-check-cap"].forEach(id => $(id).textContent = "—");
-      $("property-assessment-details").innerHTML = "<p>Paste a listing or enter rent, bond and bedrooms to see the assessment.</p>";
+      $("property-assessment-details").innerHTML = "<p>Paste a property URL or enter rent, bond and bedrooms to see the assessment.</p>";
       return;
     }
 
