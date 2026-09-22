@@ -65,6 +65,7 @@ module.exports = async function handler(req, res) {
         category: p.category || "supplementary",
         administrator: p.administrator || "Services Australia",
         description: p.description || "",
+        match: p.match || { manual_only: true },
         rates: normaliseRates(p.rates)
       }));
       workConcessions = rr.work_concessions || {};
