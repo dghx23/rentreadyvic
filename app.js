@@ -38,6 +38,7 @@
   let currentPeriod = "fortnight";
   let paymentMaxFN = 0;
   let workIncomeFN = 0;
+  let impactTestWorkFN = null;
   let otherIncomeWeek = 0;
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
@@ -590,21 +591,25 @@
     $("impact-free-area").textContent = rule ? money(displayFromFN(Number(rule.freeArea || 0))) : "Not modelled";
     $("impact-cutoff").textContent = cutoff == null ? "Not modelled" : money(displayFromFN(cutoff));
 
+    if (impactTestWorkFN == null) impactTestWorkFN = workIncomeFN;
+
     if (!rule) {
       $("income-impact-title").textContent = "Work-income impact is not yet modelled for this payment";
       $("income-impact-copy").textContent = "Your selected payment rate is included in total income, but RentReady does not yet have a configured earnings taper for this payment. The chart therefore cannot estimate a payment cutoff.";
       $("income-impact-note").className = "income-impact-note warn";
       $("income-impact-note").textContent = "Use your actual payment amount if earnings have already changed what you receive.";
-      renderIncomeImpactChart(null, credit);
+      renderIncomeImpactExplorer(null, cutoff, credit);
+      renderIncomeImpactChart(cutoff, credit, impactTestWorkFN);
       return;
     }
 
     const label = p ? (p.shortName || p.name) : "payment";
-    const freeArea = Number(rule.freeArea || 0);
+    const reductionStart = paymentReductionStartFN();
     const assessable = sc.pay.assessableIncome;
-    $("income-impact-title").textContent = workIncomeFN <= freeArea + credit
+    $("income-impact-title").textContent = reductionStart != null && workIncomeFN <= reductionStart
       ? "Your earnings are currently inside the protected/free area"
       : "Your earnings are reducing the estimated " + label;
+
     let ruleText = "";
     if (rule.singleTaper != null) {
       ruleText = "After the configured income-free area, the estimate reduces by " + Math.round(rule.singleTaper * 100) + " cents for each additional $1 of assessable employment income.";
@@ -620,15 +625,91 @@
       ? "At your current earnings, assessable employment income is " + money(displayFromFN(assessable)) + " per " + PERIODS[currentPeriod].label + " and the estimated payment reduction is " + money(displayFromFN(sc.pay.reduction)) + "."
       : "At your current earnings and any applicable work-income concession, this model does not reduce the selected payment yet.";
 
-    renderIncomeImpactChart(cutoff, credit);
+    renderIncomeImpactExplorer(rule, cutoff, credit);
+    renderIncomeImpactChart(cutoff, credit, impactTestWorkFN);
   }
 
-  function renderIncomeImpactChart(cutoff, creditBalance) {
+  function impactSliderStep() {
+    if (currentPeriod === "week") return 10;
+    if (currentPeriod === "fortnight") return 20;
+    if (currentPeriod === "month") return 50;
+    return 500;
+  }
+
+  function renderIncomeImpactExplorer(rule, cutoff, creditBalance) {
+    const slider = $("impact-income-slider");
+    if (!slider) return;
+
+    const reductionStart = rule ? paymentReductionStartFN() : null;
+    const maxFN = Math.max(
+      3200,
+      cutoff ? cutoff * 1.15 : 0,
+      workIncomeFN * 1.5,
+      Number(impactTestWorkFN || 0) * 1.2
+    );
+    const maxDisplay = Math.max(impactSliderStep(), displayFromFN(maxFN));
+    const testDisplay = Math.min(maxDisplay, Math.max(0, displayFromFN(impactTestWorkFN || 0)));
+
+    slider.min = "0";
+    slider.max = String(Math.ceil(maxDisplay / impactSliderStep()) * impactSliderStep());
+    slider.step = String(impactSliderStep());
+    slider.value = String(testDisplay);
+    slider.disabled = !rule;
+    $("apply-impact-income").disabled = !rule;
+
+    $("impact-slider-free").textContent = reductionStart == null
+      ? "Payment reduction starts: —"
+      : "Payment reduction starts: " + money(displayFromFN(reductionStart),0);
+    $("impact-slider-cutoff").textContent = cutoff == null
+      ? "Payment $0: —"
+      : "Payment $0: " + money(displayFromFN(cutoff),0);
+
+    renderIncomeImpactPreview(rule, cutoff, creditBalance);
+  }
+
+  function renderIncomeImpactPreview(rule, cutoff, creditBalance) {
+    if (!$("impact-preview-payment")) return;
+
+    const testFN = Math.max(0, Number(impactTestWorkFN || 0));
+    const pay = paymentAtWork(testFN, creditBalance);
+    const reductionStart = rule ? paymentReductionStartFN() : null;
+    const periodLabel = PERIODS[currentPeriod].label;
+
+    $("impact-test-income").textContent = money(displayFromFN(testFN),0) + " per " + periodLabel;
+    $("impact-preview-work").textContent = money(displayFromFN(testFN),0);
+    $("impact-preview-payment").textContent = money(displayFromFN(pay.paymentFN),0);
+    $("impact-preview-reduction").textContent = money(displayFromFN(pay.reduction),0);
+    $("impact-preview-total").textContent = money(displayFromFN(testFN + pay.paymentFN),0);
+
+    const status = $("impact-preview-status");
+    if (!rule) {
+      status.className = "impact-preview-status warn";
+      status.textContent = "A reliable work-income taper is not configured for this payment, so RentReady will not invent a slider estimate.";
+      return;
+    }
+
+    if (pay.paymentFN <= 0.01) {
+      status.className = "impact-preview-status bad";
+      status.textContent = "At this tested income, the modelled payment has reached $0. Work income is still higher, but the income-support payment is no longer included.";
+    } else if (reductionStart != null && testFN <= reductionStart) {
+      status.className = "impact-preview-status ok";
+      status.textContent = "This tested income is still inside the protected/free area in the current model, so the payment remains at the selected starting rate.";
+    } else if (pay.reduction > 0) {
+      status.className = "impact-preview-status warn";
+      status.textContent = "At this tested income, the estimated payment is reduced by " + money(displayFromFN(pay.reduction),0) + " per " + periodLabel + ", leaving about " + money(displayFromFN(pay.paymentFN),0) + " of payment.";
+    } else {
+      status.className = "impact-preview-status";
+      status.textContent = "Move the slider to test how earnings change the payment.";
+    }
+  }
+
+  function renderIncomeImpactChart(cutoff, creditBalance, testedWorkFN = null) {
     const svg = $("income-impact-chart");
     if (!svg) return;
 
     const current = Math.max(0, workIncomeFN);
-    const maxX = Math.max(800, current * 1.35, cutoff ? cutoff * 1.12 : 3200);
+    const tested = Math.max(0, Number(testedWorkFN == null ? current : testedWorkFN));
+    const maxX = Math.max(800, current * 1.35, tested * 1.25, cutoff ? cutoff * 1.12 : 3200);
     const points = [];
     for (let i = 0; i <= 24; i++) {
       const x = maxX * i / 24;
@@ -644,6 +725,8 @@
     const path = key => points.map((d,i) => (i ? "L" : "M") + sx(d.x).toFixed(1) + " " + sy(d[key]).toFixed(1)).join(" ");
     const currentX = sx(Math.min(current, maxX));
     const currentPay = paymentAtWork(current, creditBalance).paymentFN;
+    const testedX = sx(Math.min(tested, maxX));
+    const testedPay = paymentAtWork(tested, creditBalance).paymentFN;
     const ticks = [0, .25, .5, .75, 1];
 
     let markup = '<rect x="0" y="0" width="' + W + '" height="' + H + '" rx="10" fill="white"/>';
@@ -660,6 +743,10 @@
     markup += '<path d="' + path("total") + '" fill="none" stroke="#15803d" stroke-width="3" stroke-linecap="round"/>';
     markup += '<line x1="' + currentX + '" y1="' + T + '" x2="' + currentX + '" y2="' + (T+ph) + '" stroke="#b45309" stroke-width="1.5" stroke-dasharray="4 4"/>';
     markup += '<circle cx="' + currentX + '" cy="' + sy(currentPay) + '" r="4" fill="#b45309"/>';
+    if (Math.abs(tested-current) > 0.01) {
+      markup += '<line x1="' + testedX + '" y1="' + T + '" x2="' + testedX + '" y2="' + (T+ph) + '" stroke="#4f46e5" stroke-width="2" stroke-dasharray="3 3"/>';
+      markup += '<circle cx="' + testedX + '" cy="' + sy(testedPay) + '" r="5" fill="#4f46e5"/>';
+    }
     if (cutoff != null && cutoff <= maxX) {
       const cx = sx(cutoff);
       markup += '<line x1="' + cx + '" y1="' + T + '" x2="' + cx + '" y2="' + (T+ph) + '" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2 4"/>';
@@ -1344,10 +1431,30 @@
       paymentMaxFN = fnFromDisplay($("payment-max").value);
       recalcAll();
     });
-    $("work-income").addEventListener("input", () => { workIncomeFN = fnFromDisplay($("work-income").value); recalcAll(); });
+    $("work-income").addEventListener("input", () => {
+      workIncomeFN = fnFromDisplay($("work-income").value);
+      impactTestWorkFN = workIncomeFN;
+      recalcAll();
+    });
     $("other-income-week").addEventListener("input", () => { otherIncomeWeek = weekFromDisplay($("other-income-week").value); recalcAll(); });
     $("working-credit").addEventListener("input", recalcAll);
     $("open-income-impact").addEventListener("click", openIncomeImpactDetail);
+    $("impact-income-slider").addEventListener("input", () => {
+      impactTestWorkFN = fnFromDisplay($("impact-income-slider").value);
+      const p = selectedPayment();
+      const r = selectedRate();
+      const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+      const credit = Number($("working-credit").value || 0);
+      const cutoff = findPaymentCutoff(credit);
+      renderIncomeImpactExplorer(rule, cutoff, credit);
+      renderIncomeImpactChart(cutoff, credit, impactTestWorkFN);
+    });
+    $("apply-impact-income").addEventListener("click", () => {
+      if (impactTestWorkFN == null) return;
+      workIncomeFN = Math.max(0, Number(impactTestWorkFN || 0));
+      $("work-income").value = displayFromFN(workIncomeFN).toFixed(2);
+      recalcAll();
+    });
     $("future-ra").addEventListener("change", recalcAll);
     $("ra-situation").addEventListener("change", recalcAll);
     $("household-type").addEventListener("change", recalcAll);
