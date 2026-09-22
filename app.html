@@ -70,9 +70,16 @@
 
 <main class="shell app-shell">
   <section class="intro compact-intro app-intro-minimal">
-    <span class="eyebrow">Income support · property · affordability · rights</span>
-    <p>Start with your income, then add the property you are considering.</p>
+    <span class="eyebrow">Rental planning for people on income support</span>
+    <p>Tell RentReady about your income and the rental you are considering. The workspace will carry those details through the whole assessment.</p>
   </section>
+
+  <div class="workspace-guide" aria-label="What RentReady will help you do">
+    <div class="workspace-guide-main"><span>Your goal</span><b>Work out whether the rental is within reach</b><small>Then see what could improve the position and what rights apply when you apply.</small></div>
+    <div><span>1 · Income</span><b>What comes in?</b><small>Payment, work income and Rent Assistance.</small></div>
+    <div><span>2 · Property</span><b>What does it cost?</b><small>Weekly rent, bond and the actual property.</small></div>
+    <div><span>3–4 · Decision</span><b>What can I do next?</b><small>See the gap, test options and prepare to apply.</small></div>
+  </div>
 
   <div class="financial-period-preference" aria-label="Financial display preference">
     <span class="financial-period-label">Show amounts as</span>
@@ -97,16 +104,16 @@
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="result">
       <span class="wizard-number">3</span>
-      <span><b>Fit</b><small>Can it work?</small></span>
+      <span><b>Your result</b><small>Does it fit?</small></span>
     </button>
     <span class="wizard-line" aria-hidden="true"></span>
     <button class="wizard-step" data-step-target="optimise">
       <span class="wizard-number">4</span>
-      <span><b>Options</b><small>What could help</small></span>
+      <span><b>Improve</b><small>Test your options</small></span>
     </button>
     <button class="wizard-rights" data-step-target="application">
       <span>A</span>
-      <span><b>Rights</b><small>Application rules</small></span>
+      <span><b>Rights</b><small>Prepare to apply</small></span>
     </button>
   </nav>
 
@@ -114,10 +121,11 @@
     <div class="section-head">
       <span class="section-number">1</span>
       <div>
-        <h2>Identify your payment and income</h2>
-        <p>Choose your payment, then add any work or household income. RentReady will use the same figures throughout the assessment.</p>
+        <h2>Start with your income</h2>
+        <p>Choose your income-support payment and add any work or household income. These figures become the starting point for the rental assessment.</p>
       </div>
     </div>
+    <div class="section-purpose"><b>What this step answers:</b> what income do you have now, and how might employment income change the payment used in the rental calculation?</div>
 
     <div class="income-stack">
       <section class="card income-wide-card payment-wide-card">
@@ -463,6 +471,9 @@
       <div id="income-impact-note" class="income-impact-note"></div>
     </section>
 
+    <details class="advanced-panel">
+      <summary>Optional: check other support that may apply</summary>
+      <div class="advanced-panel-content">
     <div class="card additional-support-card">
       <div class="card-head">
         <div>
@@ -507,6 +518,8 @@
         </div>
       </div>
     </div>
+      </div>
+    </details>
 
     <div class="result-strip">
       <div><span>Work income</span><strong id="income-work-result">$0</strong></div>
@@ -523,10 +536,11 @@
     <div class="section-head">
       <span class="section-number">2</span>
       <div>
-        <h2>Add the property you are considering</h2>
-        <p>Paste the advertisement or enter the numbers manually. The selected property feeds the Rent Assistance estimate and general affordability calculation. If you choose to explore RentAssist, the same property is then checked against the separate bond-loan rules.</p>
+        <h2>Add the rental you are considering</h2>
+        <p>Use a real listing if you have one, or enter the rent and bond manually. RentReady will compare this property with the income you entered in Step 1.</p>
       </div>
     </div>
+    <div class="section-purpose"><b>What this step answers:</b> what does the specific property cost, and what happens when those costs are compared with your income?</div>
 
     <div class="grid two property-grid">
       <div class="card">
@@ -587,10 +601,11 @@
     <div class="section-head">
       <span class="section-number">3</span>
       <div>
-        <h2>Does this property fit your income?</h2>
-        <p>Start with the property's affordability against your projected income. If you have chosen to explore the RentAssist Bond Loan, its separate Housing Victoria rules appear underneath.</p>
+        <h2>Your rental result</h2>
+        <p>See how the property compares with your projected income, what is creating any shortfall, and whether optional Victorian bond assistance may be relevant.</p>
       </div>
     </div>
+    <div class="section-purpose"><b>What this step answers:</b> is the rent inside the current planning range, how large is any gap, and what is driving it?</div>
 
     <div class="result-overview" id="result-overview">
       <div class="result-overview-copy">
@@ -708,14 +723,131 @@
     </div>
   </section>
 
+<section class="step-panel" id="step-optimise">
+    <div class="section-head">
+      <span class="section-number">4</span>
+      <div>
+        <h2>Improve the numbers</h2>
+        <p>Test changes to work income or target rent and see how they affect the rental position. Use this to explore options, not as a recommendation about how much you should work.</p>
+      </div>
+    </div>
+    <div class="section-purpose"><b>What this step answers:</b> would a different rent or level of work income materially change the position?</div>
+
+    <div class="income-target-summary">
+      <div class="income-target-main">
+        <span>Planning target for this property</span>
+        <a id="ideal-work-target" class="income-target-property-link" href="#property" data-step-target="property">—</a>
+        <p id="ideal-work-target-copy">Add your income and property first.</p>
+      </div>
+      <div><span>Current work income</span><strong id="target-current-work">—</strong></div>
+      <div><span>Payment starts reducing around</span><strong id="target-reduction-start">—</strong></div>
+      <div><span>Modelled payment reaches $0 around</span><strong id="target-payment-cutoff">—</strong></div>
+      <div><span>Extra work income needed</span><strong id="target-extra-work">—</strong></div>
+    </div>
+
+    <div class="income-target-note">
+      <b>This is a planning target, not advice about how much you should work.</b>
+      It shows the minimum modelled work income that would bring the selected property inside both RentReady planning thresholds, after allowing for the configured payment reduction rules.
+    </div>
+
+    <div class="grid two">
+      <div class="card slider-card">
+        <div class="card-head"><h3>Work income</h3><strong id="optimise-work-label">$0 / fortnight</strong></div>
+        <div class="card-body">
+          <input id="optimise-work" type="range" min="0" max="3500" step="10" value="0">
+          <div class="range-scale"><span>$0</span><span>$3,500/fn</span></div>
+        </div>
+      </div>
+      <div class="card slider-card">
+        <div class="card-head"><h3>Target weekly rent</h3><strong id="optimise-rent-label">$0 / week</strong></div>
+        <div class="card-body">
+          <input id="optimise-rent" type="range" min="100" max="1200" step="5" value="350">
+          <div class="range-scale"><span>$100</span><span>$1,200/wk</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="optimise-dashboard">
+      <div class="optimise-main">
+        <span>At this combination</span>
+        <strong id="optimise-verdict">Add your income and a property first</strong>
+        <p id="optimise-copy"></p>
+      </div>
+      <div class="optimise-stat"><span>Projected weekly income</span><strong id="optimise-income">$0</strong><small class="income-ra-subline" id="optimise-income-ra">+ Rent Assistance —</small></div>
+      <div class="optimise-stat"><span>General benchmark gap</span><strong id="optimise-general-gap">$0</strong></div>
+      <div class="optimise-stat" id="optimise-rentassist-gap" hidden><span>RentAssist rent-share gap</span><strong id="optimise-bond-gap">$0</strong></div>
+    </div>
+
+    <section class="income-gap-resolver" id="income-gap-resolver" hidden>
+      <div class="income-gap-resolver-head">
+        <div>
+          <span>Close the affordability gap</span>
+          <strong>How much work income would bring this property inside the benchmark?</strong>
+          <p>Move the slider to see how extra work income changes your Centrelink payment, projected household income and the remaining affordability gap.</p>
+        </div>
+        <div class="income-gap-target">
+          <span>Modelled work-income target</span>
+          <strong id="income-gap-target-value">—</strong>
+          <small id="income-gap-extra-needed">—</small>
+        </div>
+      </div>
+
+      <div class="income-gap-slider-card">
+        <div class="income-gap-slider-top">
+          <span>Test gross work income</span>
+          <strong id="income-gap-slider-value">—</strong>
+        </div>
+        <input id="income-gap-slider" type="range" min="0" max="4000" step="10" value="0">
+        <div class="income-gap-slider-scale">
+          <span id="income-gap-current-label">Current: —</span>
+          <span id="income-gap-target-label">Target: —</span>
+        </div>
+      </div>
+
+      <div class="income-gap-live-results">
+        <div><span>Projected weekly household income</span><strong id="income-gap-projected-income">—</strong><small class="income-ra-subline" id="income-gap-projected-income-ra">+ Rent Assistance —</small></div>
+        <div><span>Affordable rent at benchmark</span><strong id="income-gap-affordable-rent">—</strong></div>
+        <div><span>Remaining gap</span><strong id="income-gap-remaining">—</strong></div>
+      </div>
+
+      <div class="income-gap-message" id="income-gap-message">
+        Move the slider to see when this property reaches the benchmark.
+      </div>
+    </section>
+
+    <div class="card">
+      <div class="card-head"><h3>Useful targets</h3></div>
+      <div class="card-body target-grid">
+        <div><span>Rent that meets the general benchmark</span><strong id="target-general-rent">$0/wk</strong></div>
+        <div id="target-rentassist-rent" hidden><span>Rent that meets the RentAssist rent-share test</span><strong id="target-bond-rent">$0/wk</strong></div>
+        <div><span>Work income needed for this rent — general benchmark</span><strong id="target-general-income">—</strong></div>
+        <div id="target-rentassist-income" hidden><span>Work income needed for this rent — RentAssist test</span><strong id="target-bond-income">—</strong></div>
+      </div>
+    </div>
+
+    <div class="notice info">
+      <b>Use this as a planning tool, not a guarantee.</b>
+      Payment rates can depend on circumstances not captured here, and a bond-loan application is decided by Housing Victoria.
+    </div>
+
+    <div class="step-actions">
+      <button class="btn" data-back="result">← Your result</button>
+      <button class="btn" data-step-target="application">Application & Rights review</button>
+      <button class="btn primary" data-step-target="income">Review income</button>
+    </div>
+  </section>
+
+
+
 <section class="step-panel" id="step-application">
     <div class="section-head">
       <span class="section-number application-number">A</span>
       <div>
-        <h2>Application & Rights</h2>
-        <p>This is a separate linked review of the application process. It reuses the information already entered to show evidence options, financial shortfalls, potential discrimination red flags and practical strategies, then explains the Victorian rental-application rules in detail.</p>
+        <h2>Prepare your application and know your rights</h2>
+        <p>Use the information already entered to prepare a stronger, more focused application. Then review the Victorian rules about what can be requested, what is limited, and what may be a red flag.</p>
       </div>
     </div>
+    <div class="section-purpose"><b>What this step answers:</b> what evidence should you prepare, what should you avoid oversharing, and which application requests should you question?</div>
 
     <div class="application-review">
       <div class="review-hero">
@@ -766,6 +898,9 @@
         </div></div>
       </div>
     </div>
+    <details class="advanced-panel application-rules-group">
+      <summary>Victorian application rules — what can and cannot be asked</summary>
+      <div class="advanced-panel-content">
     <div class="application-rules-divider"><span>Victorian rental application rules</span></div>
     <div class="notice important">
       <b>From 31 March 2026, the application itself is prescribed.</b>
@@ -966,123 +1101,12 @@
         <p>The prescribed application can request personal-referee contact details: name, phone, email and the referee's connection to you. RentReady's dedicated reference workflow can build on these permitted fields without turning the reference stage into an unrestricted personal questionnaire.</p>
       </div>
     </div>
+      </div>
+    </details>
 
     <div class="step-actions">
       <button class="btn" data-step-target="result">← Back to affordability</button>
       <button class="btn primary" data-step-target="optimise">Open optimisation sliders →</button>
-    </div>
-  </section>
-
-<section class="step-panel" id="step-optimise">
-    <div class="section-head">
-      <span class="section-number">4</span>
-      <div>
-        <h2>Work out your extra-income target</h2>
-        <p>See how much additional work income changes your payment and rental position. RentReady shows the point where payment reductions begin, the modelled payment cutoff, and the minimum work-income target needed for the selected property to fit both current planning tests.</p>
-      </div>
-    </div>
-
-    <div class="income-target-summary">
-      <div class="income-target-main">
-        <span>Planning target for this property</span>
-        <a id="ideal-work-target" class="income-target-property-link" href="#property" data-step-target="property">—</a>
-        <p id="ideal-work-target-copy">Add your income and property first.</p>
-      </div>
-      <div><span>Current work income</span><strong id="target-current-work">—</strong></div>
-      <div><span>Payment starts reducing around</span><strong id="target-reduction-start">—</strong></div>
-      <div><span>Modelled payment reaches $0 around</span><strong id="target-payment-cutoff">—</strong></div>
-      <div><span>Extra work income needed</span><strong id="target-extra-work">—</strong></div>
-    </div>
-
-    <div class="income-target-note">
-      <b>This is a planning target, not advice about how much you should work.</b>
-      It shows the minimum modelled work income that would bring the selected property inside both RentReady planning thresholds, after allowing for the configured payment reduction rules.
-    </div>
-
-    <div class="grid two">
-      <div class="card slider-card">
-        <div class="card-head"><h3>Work income</h3><strong id="optimise-work-label">$0 / fortnight</strong></div>
-        <div class="card-body">
-          <input id="optimise-work" type="range" min="0" max="3500" step="10" value="0">
-          <div class="range-scale"><span>$0</span><span>$3,500/fn</span></div>
-        </div>
-      </div>
-      <div class="card slider-card">
-        <div class="card-head"><h3>Target weekly rent</h3><strong id="optimise-rent-label">$0 / week</strong></div>
-        <div class="card-body">
-          <input id="optimise-rent" type="range" min="100" max="1200" step="5" value="350">
-          <div class="range-scale"><span>$100</span><span>$1,200/wk</span></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="optimise-dashboard">
-      <div class="optimise-main">
-        <span>At this combination</span>
-        <strong id="optimise-verdict">Add your income and a property first</strong>
-        <p id="optimise-copy"></p>
-      </div>
-      <div class="optimise-stat"><span>Projected weekly income</span><strong id="optimise-income">$0</strong><small class="income-ra-subline" id="optimise-income-ra">+ Rent Assistance —</small></div>
-      <div class="optimise-stat"><span>General benchmark gap</span><strong id="optimise-general-gap">$0</strong></div>
-      <div class="optimise-stat" id="optimise-rentassist-gap" hidden><span>RentAssist rent-share gap</span><strong id="optimise-bond-gap">$0</strong></div>
-    </div>
-
-    <section class="income-gap-resolver" id="income-gap-resolver" hidden>
-      <div class="income-gap-resolver-head">
-        <div>
-          <span>Close the affordability gap</span>
-          <strong>How much work income would bring this property inside the benchmark?</strong>
-          <p>Move the slider to see how extra work income changes your Centrelink payment, projected household income and the remaining affordability gap.</p>
-        </div>
-        <div class="income-gap-target">
-          <span>Modelled work-income target</span>
-          <strong id="income-gap-target-value">—</strong>
-          <small id="income-gap-extra-needed">—</small>
-        </div>
-      </div>
-
-      <div class="income-gap-slider-card">
-        <div class="income-gap-slider-top">
-          <span>Test gross work income</span>
-          <strong id="income-gap-slider-value">—</strong>
-        </div>
-        <input id="income-gap-slider" type="range" min="0" max="4000" step="10" value="0">
-        <div class="income-gap-slider-scale">
-          <span id="income-gap-current-label">Current: —</span>
-          <span id="income-gap-target-label">Target: —</span>
-        </div>
-      </div>
-
-      <div class="income-gap-live-results">
-        <div><span>Projected weekly household income</span><strong id="income-gap-projected-income">—</strong><small class="income-ra-subline" id="income-gap-projected-income-ra">+ Rent Assistance —</small></div>
-        <div><span>Affordable rent at benchmark</span><strong id="income-gap-affordable-rent">—</strong></div>
-        <div><span>Remaining gap</span><strong id="income-gap-remaining">—</strong></div>
-      </div>
-
-      <div class="income-gap-message" id="income-gap-message">
-        Move the slider to see when this property reaches the benchmark.
-      </div>
-    </section>
-
-    <div class="card">
-      <div class="card-head"><h3>Useful targets</h3></div>
-      <div class="card-body target-grid">
-        <div><span>Rent that meets the general benchmark</span><strong id="target-general-rent">$0/wk</strong></div>
-        <div id="target-rentassist-rent" hidden><span>Rent that meets the RentAssist rent-share test</span><strong id="target-bond-rent">$0/wk</strong></div>
-        <div><span>Work income needed for this rent — general benchmark</span><strong id="target-general-income">—</strong></div>
-        <div id="target-rentassist-income" hidden><span>Work income needed for this rent — RentAssist test</span><strong id="target-bond-income">—</strong></div>
-      </div>
-    </div>
-
-    <div class="notice info">
-      <b>Use this as a planning tool, not a guarantee.</b>
-      Payment rates can depend on circumstances not captured here, and a bond-loan application is decided by Housing Victoria.
-    </div>
-
-    <div class="step-actions">
-      <button class="btn" data-back="result">← Your result</button>
-      <button class="btn" data-step-target="application">Application & Rights review</button>
-      <button class="btn primary" data-step-target="income">Review income</button>
     </div>
   </section>
 
@@ -1094,7 +1118,7 @@
   <div class="shell footer-inner">
     <div><b>RentReady VIC</b><br><span>Independent guidance prototype for Victorian renters.</span></div>
     <div><span>Rules and thresholds should be checked against the linked official sources before you rely on them.</span></div>
-    <div class="footer-actions"><a href="about.html">About RentReady</a><span>·</span><a href="admin.html">Admin login</a><span>·</span> Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
+    <div class="footer-actions"><a href="about.html">About RentReady</a><span>·</span> Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
   </div>
 </footer>
 
@@ -1138,10 +1162,9 @@
 
       <div class="credit-simple-explainer">
         <span>In simple language</span>
-        <h3>Working Credit is like a buffer that can build while your income is low.</h3>
-        <p>If your total ordinary income is less than <b>$48 in a fortnight</b>, unused amounts can build into Working Credits. If you had no ordinary income for that fortnight, up to <b>48 credits</b> may build. If you had $20 of ordinary income, the simplified build would be about <b>28 credits</b>.</p>
-        <p>Later, when you work, each Working Credit can offset <b>$1 of employment income</b> before Centrelink applies the normal personal income test. That can delay or reduce the effect that new earnings have on your payment.</p>
-        <p>Balances are capped. The usual cap is <b>1,000 credits</b> for JobSeeker, Parenting Payment, Disability Support Pension and Carer Payment, and <b>3,500 credits</b> for Youth Allowance job seekers.</p>
+        <h3>Working Credit can act as a buffer when employment income changes.</h3>
+        <p>RentReady only calculates the Working Credit cap and accrual settings when those rules are supplied by the connected Australian social-security dataset for the payment you selected.</p>
+        <p>Your actual Centrelink balance remains the figure to rely on because RentReady cannot see your complete reporting history.</p>
       </div>
 
       <div class="credit-estimate-warning">
@@ -1151,7 +1174,7 @@
 
       <div class="credit-official-rule">
         <b>Official rule in brief</b>
-        <p id="credit-official-copy">Working Credit can build when total ordinary income is below $48 per fortnight. The unused amount can add to your balance, up to 48 credits for that fortnight and subject to the payment-specific cap. When you later have employment income, each credit can offset $1 of that employment income before the personal income test is applied.</p>
+        <p id="credit-official-copy">The estimator uses the Working Credit settings supplied for your selected payment by the connected Australian social-security dataset. If a required rule is not available, RentReady disables the estimate rather than substituting a hard-coded value.</p>
         <a href="https://www.servicesaustralia.gov.au/working-credit" target="_blank" rel="noopener">Services Australia — Working Credit ↗</a>
       </div>
 
