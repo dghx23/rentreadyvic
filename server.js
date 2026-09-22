@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const socialSecurity = require("./api/social-security.js");
 const propertyExtract = require("./api/property-extract.js");
+const addressSearch = require("./api/address-search.js");
 const addressAutocomplete = require("./api/address-autocomplete.js");
 
 const app = express();
@@ -17,6 +18,7 @@ app.get("/_health", (_req, res) => {
 app.use(express.json({ limit:"32kb" }));
 app.get("/api/social-security", socialSecurity);
 app.post("/api/property-extract", propertyExtract);
+app.get("/api/address-search", addressSearch);
 app.get("/api/address-autocomplete", addressAutocomplete);
 
 app.use(express.static(root, {
