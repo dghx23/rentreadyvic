@@ -3,48 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Map saved RentReady VIC rental properties and search Victorian addresses.">
+<meta name="description" content="Explore official Victorian rental-market data, five-year rent history, saved rentals and property context.">
 <title>Rental Map — RentReady VIC</title>
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-.map-page{width:min(1180px,calc(100% - 28px));margin:auto;padding:30px 0 60px}
-.map-hero{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;margin-bottom:14px}
-.map-hero h1{margin:5px 0 7px;font-size:30px;line-height:1.05;letter-spacing:-.04em}
-.map-hero p{margin:0;max-width:760px;color:var(--muted);font-size:11px;line-height:1.55}
-.map-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:12px}
-.map-panel,.map-canvas-wrap{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.map-panel-head{padding:13px 14px;border-bottom:1px solid var(--line);background:#fafbfc}
-.map-panel-head span{display:block;color:var(--brand);font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
-.map-panel-head h2{margin:3px 0 0;font-size:14px}
-.map-panel-body{padding:14px}
+.map-page{width:min(1480px,calc(100% - 24px));margin:auto;padding:22px 0 54px}
+.map-hero{display:flex;justify-content:space-between;gap:18px;align-items:end;margin-bottom:12px}
+.map-hero h1{margin:5px 0 7px;font-size:32px;line-height:1.02;letter-spacing:-.045em}
+.map-hero p{margin:0;max-width:860px;color:var(--muted);font-size:11px;line-height:1.55}
+.map-layout{display:grid;grid-template-columns:285px minmax(460px,1fr) 330px;gap:10px;align-items:stretch}
+.map-panel,.map-canvas-wrap,.detail-panel{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.map-panel-head,.detail-head{padding:13px 14px;border-bottom:1px solid var(--line);background:#fafbfc}
+.map-panel-head span,.detail-head span,.section-kicker{display:block;color:var(--brand);font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
+.map-panel-head h2,.detail-head h2{margin:3px 0 0;font-size:14px}.detail-head h2{font-size:17px}
+.map-panel-body,.detail-body{padding:13px}
 .map-search-row{display:grid;grid-template-columns:1fr auto;gap:7px}
 .map-status{margin-top:8px;padding:8px 9px;border-radius:8px;background:#f8fafc;color:var(--muted);font-size:9px;line-height:1.45}
-.map-status.good{background:var(--ok-soft);color:#166534}
-.map-status.warn{background:var(--warn-soft);color:#92400e}
-.map-layer-card{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
-.map-layer-card>span{display:block;color:var(--brand);font-size:8px;font-weight:850;text-transform:uppercase;letter-spacing:.06em}
-.map-layer-card>strong{display:block;margin-top:3px;font-size:12px}
-.map-layer-list{display:grid;gap:7px;margin-top:9px}
-.map-layer-option{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:9px;border:1px solid var(--line);border-radius:8px;background:#fafbfc;cursor:pointer}
-.map-layer-option input{margin-top:3px;accent-color:var(--brand)}
+.map-status.good{background:var(--ok-soft);color:#166534}.map-status.warn{background:var(--warn-soft);color:#92400e}
+.filter-block,.map-layer-card,.saved-block{margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.filter-block label{display:grid;gap:5px;font-size:9px;font-weight:800}.filter-block select{width:100%}
+.map-layer-card>strong,.saved-block>strong{display:block;margin-top:3px;font-size:11px}
+.map-layer-list{display:grid;gap:6px;margin-top:8px}
+.map-layer-option{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:start;padding:8px;border:1px solid var(--line);border-radius:8px;background:#fafbfc;cursor:pointer}
+.map-layer-option input{margin-top:2px;accent-color:var(--brand)}
 .map-layer-option b{display:block;font-size:9px}.map-layer-option small{display:block;margin-top:2px;color:var(--muted);font-size:8px;line-height:1.35}
 .map-layer-help{margin-top:7px;color:var(--muted);font-size:8px;line-height:1.45}
-.map-list{display:grid;gap:8px;margin-top:14px}
-.map-property{padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}
-.map-property b{display:block;font-size:10px}
-.map-property small{display:block;margin-top:3px;color:var(--muted);font-size:8px}
-.map-property button{margin-top:7px}
-#rental-map{height:620px;width:100%}
-.map-canvas-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--line);background:#fafbfc}
+.map-list{display:grid;gap:7px;margin-top:8px;max-height:220px;overflow:auto}
+.map-property{padding:8px;border:1px solid var(--line);border-radius:8px;background:#fff}.map-property b{display:block;font-size:9px}.map-property small{display:block;margin-top:2px;color:var(--muted);font-size:8px}.map-property button{margin-top:6px}
+#rental-map{height:680px;width:100%}
+.map-canvas-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);background:#fafbfc}
 .map-canvas-head b{font-size:11px}.map-canvas-head span{font-size:8px;color:var(--muted)}
-.map-empty{padding:12px;color:var(--muted);font-size:9px}
-.map-note{margin-top:12px;padding:11px 13px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:9px;line-height:1.5}
-.leaflet-popup-content{font:11px/1.45 var(--font)}
-.leaflet-popup-content b{display:block;font-size:11px}.leaflet-popup-content small{display:block;color:#64748b;margin:3px 0 7px}
-.leaflet-popup-content a{font-weight:800}
-@media(max-width:820px){.map-layout{grid-template-columns:1fr}#rental-map{height:500px}.map-hero{grid-template-columns:1fr}}
-@media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:430px}}
+.legend{position:absolute;right:12px;top:12px;z-index:450;background:rgba(255,255,255,.96);border:1px solid #dbe2ea;border-radius:9px;padding:9px 10px;box-shadow:0 3px 14px rgba(15,23,42,.08);min-width:145px}
+.legend b{font-size:9px}.legend-row{display:grid;grid-template-columns:18px 1fr;gap:7px;align-items:center;margin-top:5px;font-size:8px;color:#475569}.legend-swatch{height:12px;border-radius:3px}.legend-foot{margin-top:6px;font-size:7px;color:#64748b;line-height:1.3}
+.detail-panel{display:flex;flex-direction:column}.detail-body{overflow:auto;max-height:680px}
+.detail-empty{padding:26px 16px;color:var(--muted);font-size:10px;line-height:1.55}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.metric{padding:10px;border-radius:9px;background:#f8fafc;border:1px solid var(--line)}
+.metric small{display:block;color:var(--muted);font-size:7px;text-transform:uppercase;letter-spacing:.04em}.metric strong{display:block;margin-top:4px;font-size:18px;letter-spacing:-.03em}.metric em{display:block;margin-top:3px;color:var(--muted);font-size:8px;font-style:normal}
+.detail-section{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.detail-section h3{margin:4px 0 8px;font-size:11px}.detail-section p{margin:0;color:var(--muted);font-size:8px;line-height:1.5}
+.type-table,.history-table{width:100%;border-collapse:collapse;font-size:8px}.type-table td,.history-table td,.history-table th{padding:5px 3px;border-bottom:1px solid #edf1f5;text-align:left}.type-table td:last-child,.history-table td:last-child{text-align:right;font-weight:800}
+.history-chart{width:100%;height:150px;display:block;margin-top:4px}.chart-axis{stroke:#cbd5e1;stroke-width:1}.chart-line{fill:none;stroke:#1d4ed8;stroke-width:2.5}.chart-dot{fill:#1d4ed8}.chart-label{fill:#64748b;font-size:9px}
+.source-card{padding:9px;border-radius:8px;background:#f8fafc;border:1px solid var(--line);font-size:8px;line-height:1.45;color:#475569}.source-card b{color:#0f172a}
+.anglicare-card{padding:10px;border-radius:9px;background:#f5f7ff;border:1px solid #dfe5ff}.anglicare-card strong{font-size:11px}.anglicare-card p{margin-top:5px}
+.map-note{margin-top:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:8px;line-height:1.5}
+.leaflet-popup-content{font:10px/1.45 var(--font)}
+@media(max-width:1120px){.map-layout{grid-template-columns:270px minmax(0,1fr)}.detail-panel{grid-column:1/-1}.detail-body{max-height:none}.metric-grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){.map-layout{grid-template-columns:1fr}.map-hero{display:block}.map-hero .btn{margin-top:10px}#rental-map{height:520px}.detail-panel{grid-column:auto}.metric-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:440px}.metric-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -58,15 +63,6 @@
       <a class="top-resource-link" href="about.html">About</a>
       <a class="top-resource-link compass-top-link" href="https://sentrixdigital.com.au/compass/au" target="_blank" rel="noopener">Social Security Compass <span aria-hidden="true">↗</span></a>
       <a class="top-resource-link" href="rental-map.html" aria-current="page">Rental Map</a>
-      <details class="resource-menu">
-        <summary>Resources <span aria-hidden="true">▾</span></summary>
-        <div class="resource-menu-panel">
-          <div class="resource-menu-heading"><span>Official information</span><strong>Useful sources</strong></div>
-          <a href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener"><span><b>Services Australia</b><small>Payments and Rent Assistance</small></span><i>↗</i></a>
-          <a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener"><span><b>Housing Victoria</b><small>RentAssist Bond Loan</small></span><i>↗</i></a>
-          <a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener"><span><b>Consumer Affairs Victoria</b><small>Rental applications and rights</small></span><i>↗</i></a>
-        </div>
-      </details>
     </nav>
     <a class="btn primary" href="app.html?step=property">Add property →</a>
   </div>
@@ -75,48 +71,67 @@
 <main class="map-page">
   <section class="map-hero">
     <div>
-      <span class="eyebrow">Rental Map</span>
-      <h1>See your shortlisted rentals on a map.</h1>
-      <p>RentReady maps the properties saved in this browser. You can also search any Victorian address to see where it is before adding or assessing the property.</p>
+      <span class="eyebrow">Victoria · official rental data</span>
+      <h1>Explore what new rentals are costing across Victoria.</h1>
+      <p>Use Homes Victoria rental-bond statistics to compare median weekly rent by area and property type, then open a locality for five-year history. Your saved RentReady properties stay visible as a separate personal layer.</p>
     </div>
-    <a class="btn" href="app.html?step=property">← Property workspace</a>
+    <a class="btn" href="app.html?step=property">Assess a property →</a>
   </section>
 
   <div class="map-layout">
     <aside class="map-panel">
-      <div class="map-panel-head"><span>Find a location</span><h2>Search a Victorian address</h2></div>
+      <div class="map-panel-head"><span>Explore Victoria</span><h2>Rental market controls</h2></div>
       <div class="map-panel-body">
         <div class="map-search-row">
-          <input id="map-address" type="text" placeholder="Street, suburb VIC" autocomplete="off">
+          <input id="map-address" type="text" placeholder="Suburb, town or address" autocomplete="off">
           <button class="btn primary" type="button" id="map-search">Find</button>
         </div>
-        <div class="map-status" id="map-status">Search an address or use a property from your shortlist.</div>
+        <div class="map-status" id="map-status">Loading Core AU rental data…</div>
 
-        <div class="map-layer-card">
-          <span>Map layers</span>
-          <strong>Choose what to show</strong>
-          <div class="map-layer-list">
-            <label class="map-layer-option"><input type="checkbox" data-map-layer="saved" checked><span><b>Saved rentals</b><small>Your shortlisted rental properties.</small></span></label>
-            <label class="map-layer-option"><input type="checkbox" data-map-layer="rent"><span><b>Weekly rent</b><small>Shows saved rentals as rent-sized markers with the weekly amount.</small></span></label>
-            <label class="map-layer-option"><input type="checkbox" data-map-layer="bond"><span><b>Bond amount</b><small>Shows the entered bond for each saved rental.</small></span></label>
-            <label class="map-layer-option"><input type="checkbox" data-map-layer="parcels"><span><b>Property parcels</b><small>Victorian cadastral parcel boundaries from Vicmap. Best viewed when zoomed in.</small></span></label>
-            <label class="map-layer-option"><input type="checkbox" data-map-layer="planning"><span><b>Planning zones</b><small>Victorian planning scheme zones from Vicmap.</small></span></label>
-          </div>
-          <div class="map-layer-help">Rental-value layers use only properties you have saved in RentReady. Property and planning layers come from Victorian Government spatial services.</div>
+        <div class="filter-block">
+          <label>Rental property type
+            <select id="property-type"><option value="all">All properties</option></select>
+          </label>
         </div>
 
-        <div class="map-list" id="map-list"></div>
+        <div class="map-layer-card">
+          <span class="section-kicker">Map layers</span>
+          <strong>Rental and property context</strong>
+          <div class="map-layer-list">
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="market" checked><span><b>Median weekly rent</b><small>Homes Victoria / RTBA new-letting data.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="saved" checked><span><b>Saved rentals</b><small>Properties saved in this browser.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="rent"><span><b>My entered rent</b><small>Saved rentals sized by weekly rent.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="bond"><span><b>My entered bond</b><small>Saved rentals sized by bond.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="parcels"><span><b>Property parcels</b><small>Vicmap parcel boundaries; close zoom only.</small></span></label>
+            <label class="map-layer-option"><input type="checkbox" data-map-layer="planning"><span><b>Planning zones</b><small>Victorian planning scheme zones.</small></span></label>
+          </div>
+          <div class="map-layer-help">The statewide rent layer comes only from normalized Core AU data. Saved-rental values are your own entries and are not mixed into the market statistics.</div>
+        </div>
+
+        <div class="saved-block">
+          <span class="section-kicker">My RentReady</span>
+          <strong>Saved properties</strong>
+          <div class="map-list" id="map-list"></div>
+        </div>
       </div>
     </aside>
 
     <section class="map-canvas-wrap">
-      <div class="map-canvas-head"><b>Victoria rental map</b><span id="map-count">0 saved properties mapped</span></div>
-      <div id="rental-map" aria-label="Map of rental properties"></div>
-      <div class="map-empty" id="map-empty" hidden>No saved properties have an address that can be mapped yet.</div>
+      <div class="map-canvas-head"><b>Victoria rental market</b><span id="map-count">Official data loading…</span></div>
+      <div style="position:relative">
+        <div id="rental-map" aria-label="Interactive Victoria rental market map"></div>
+        <div class="legend" id="legend" hidden></div>
+      </div>
     </section>
+
+    <aside class="detail-panel" aria-live="polite">
+      <div class="detail-head"><span>Locality detail</span><h2 id="detail-title">Select a locality</h2></div>
+      <div class="detail-empty" id="detail-empty">Click a shaded locality to see its latest median weekly rent, rental-area source, property-type breakdown and five-year history.</div>
+      <div class="detail-body" id="detail-body" hidden></div>
+    </aside>
   </div>
 
-  <div class="map-note"><b>Map purpose:</b> use the rental layers to compare properties you have saved, and the Victorian spatial layers to understand parcel and planning context. The map does not provide live rental listings, safety rankings or suburb recommendations. Affordability remains in the RentReady assessment.</div>
+  <div class="map-note"><b>What this map measures:</b> Homes Victoria rental data is based on new rental lettings and RTBA bond records. It is not a live count of properties advertised today. Missing or unpublished values remain blank. Anglicare Victoria's 2026 Rental Affordability Snapshot is shown separately as affordability context.</div>
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -126,10 +141,22 @@
   const STORAGE = "rentready-properties-v3";
   const ACTIVE = "rentready-active-property-v3";
   const $ = id => document.getElementById(id);
+  const money = n => n == null ? "—" : new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",maximumFractionDigits:0}).format(Number(n));
+  const esc = v => String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
+  const periodLabel = p => !p ? "—" : ({03:"Mar",06:"Jun",09:"Sep",12:"Dec"}[String(p).slice(5,7)] || String(p).slice(5,7))+" "+String(p).slice(0,4);
+
   let properties = [];
   try { properties = JSON.parse(localStorage.getItem(STORAGE) || "[]") || []; } catch {}
 
-  const map = L.map("rental-map",{scrollWheelZoom:true}).setView([-37.2,144.8],7);
+  let market = null;
+  let marketLayer = null;
+  let selectedFeature = null;
+  let selectedLayer = null;
+  let selectedType = "all";
+  const featureByName = new Map();
+  const layerByArea = new Map();
+
+  const map = L.map("rental-map",{scrollWheelZoom:true,minZoom:6}).setView([-37.15,144.8],7);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
     maxZoom:19,
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'
@@ -139,170 +166,208 @@
   const rentLayer = L.layerGroup();
   const bondLayer = L.layerGroup();
   const searchLayer = L.layerGroup().addTo(map);
-
   const parcelLayer = L.esri.dynamicMapLayer({
     url:"https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Parcel/MapServer",
-    layers:[0],
-    opacity:0.58,
-    minZoom:14,
-    attribution:"Vicmap Parcel — State of Victoria"
+    layers:[0],opacity:.58,minZoom:14,attribution:"Vicmap Parcel — State of Victoria"
   });
-
   const planningLayer = L.esri.dynamicMapLayer({
     url:"https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Planning/MapServer",
-    layers:[3],
-    opacity:0.42,
-    attribution:"Vicmap Planning — State of Victoria"
+    layers:[3],opacity:.36,attribution:"Vicmap Planning — State of Victoria"
   });
+  const layerRegistry={saved:savedLayer,rent:rentLayer,bond:bondLayer,parcels:parcelLayer,planning:planningLayer};
+  const markers=[];
+  const geocodeCache=new Map();
 
-  const layerRegistry = {
-    saved:savedLayer,
-    rent:rentLayer,
-    bond:bondLayer,
-    parcels:parcelLayer,
-    planning:planningLayer
-  };
-
-  const markers = [];
-  const geocodeCache = new Map();
-
-  function esc(v){
-    return String(v||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
+  function rentForFeature(feature,type=selectedType){
+    const row=feature && feature.properties && feature.properties.latest && feature.properties.latest[type];
+    return row && Number.isFinite(Number(row.median)) ? Number(row.median) : null;
   }
-  function money(n){
-    return new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD",maximumFractionDigits:0}).format(Number(n||0));
+  function rentColour(v){
+    if(v==null) return "#e5e7eb";
+    if(v<350) return "#dbeafe";
+    if(v<450) return "#bfdbfe";
+    if(v<550) return "#93c5fd";
+    if(v<650) return "#60a5fa";
+    if(v<750) return "#3b82f6";
+    return "#1d4ed8";
   }
+  function marketStyle(feature){
+    const value=rentForFeature(feature);
+    return {color:"#ffffff",weight:.8,opacity:1,fillColor:rentColour(value),fillOpacity:value==null?.22:.72};
+  }
+  function updateLegend(){
+    const labels=[["#dbeafe","Under $350"],["#bfdbfe","$350–449"],["#93c5fd","$450–549"],["#60a5fa","$550–649"],["#3b82f6","$650–749"],["#1d4ed8","$750+"],["#e5e7eb","No published value"]];
+    $("legend").innerHTML='<b>Median weekly rent</b>'+labels.map(([c,l])=>'<div class="legend-row"><span class="legend-swatch" style="background:'+c+'"></span><span>'+l+'</span></div>').join("")+'<div class="legend-foot">'+esc(typeLabel(selectedType))+' · '+esc(periodLabel(market&&market.latest_period))+'<br>Homes Victoria / RTBA</div>';
+    $("legend").hidden=false;
+  }
+  function typeLabel(key){
+    const row=(market&&market.property_types||[]).find(x=>x.key===key);
+    return row?row.label:key;
+  }
+  function drawMarket(){
+    if(!market) return;
+    if(marketLayer && map.hasLayer(marketLayer)) map.removeLayer(marketLayer);
+    featureByName.clear(); layerByArea.clear();
+    marketLayer=L.geoJSON(market.geojson,{
+      style:marketStyle,
+      onEachFeature(feature,layer){
+        const props=feature.properties||{};
+        const key=String(props.locality||"").toLowerCase();
+        if(key) featureByName.set(key,{feature,layer});
+        if(props.source_area_id) layerByArea.set(props.source_area_id,{feature,layer});
+        layer.on({
+          mouseover(){layer.setStyle({weight:2,color:"#0f3b66",fillOpacity:.82});},
+          mouseout(){ if(layer!==selectedLayer) marketLayer.resetStyle(layer); },
+          click(){
+            if(selectedLayer && selectedLayer!==layer) marketLayer.resetStyle(selectedLayer);
+            selectedLayer=layer;selectedFeature=feature;
+            layer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});
+            renderDetail(feature);
+          }
+        });
+      }
+    }).addTo(map);
+    layerRegistry.market=marketLayer;
+    updateLegend();
+  }
+
+  function renderDetail(feature){
+    const p=feature.properties||{};
+    const area=market&&market.areas&&market.areas[p.source_area_id]||{};
+    const latest=area.latest||p.latest||{};
+    const primary=latest[selectedType]||{};
+    $("detail-title").textContent=p.locality||area.label||"Rental area";
+    $("detail-empty").hidden=true;$("detail-body").hidden=false;
+    const types=(market.property_types||[]).map(t=>{
+      const r=latest[t.key];
+      return '<tr><td>'+esc(t.label)+'</td><td>'+(r&&r.median!=null?money(r.median):"—")+'</td></tr>';
+    }).join("");
+    const history=((area.history_5y||{})[selectedType]||[]).filter(x=>x&&x.median!=null);
+    const lettings=primary.lettings!=null?Number(primary.lettings):null;
+    const sourceArea=p.source_area||area.label||p.locality||"—";
+    const ang=market.anglicare_2026||{};
+    const statewide=ang.statewide||{};
+    $("detail-body").innerHTML=
+      '<div class="source-card"><b>Homes Victoria rental area:</b> '+esc(sourceArea)+'<br><b>Period:</b> '+esc(periodLabel(primary.period||market.latest_period))+' · <b>Basis:</b> moving-annual median from new rental lettings / RTBA bonds.</div>'+
+      '<div class="metric-grid"><div class="metric"><small>Median weekly rent</small><strong>'+money(primary.median)+'</strong><em>'+esc(typeLabel(selectedType))+'</em></div>'+
+      '<div class="metric"><small>New lettings</small><strong>'+(lettings==null?"—":lettings.toLocaleString("en-AU"))+'</strong><em>Not current listings</em></div></div>'+
+      '<div class="detail-section"><span class="section-kicker">Rental types</span><h3>Median weekly rent by type</h3><table class="type-table"><tbody>'+types+'</tbody></table></div>'+
+      '<div class="detail-section"><span class="section-kicker">History</span><h3>Five-year moving-annual median</h3>'+historyMarkup(history)+'</div>'+
+      '<div class="detail-section"><span class="section-kicker">Advertised now</span><h3>Current rental listings</h3><p>A licensed current-listings feed is not configured, so RentReady does not estimate or fabricate a live advertised count from bond data.</p></div>'+
+      '<div class="detail-section"><div class="anglicare-card"><strong>Anglicare Victoria — affordability context</strong><p>The 2026 Rental Affordability Snapshot assessed '+esc(statewide.listings||"15,244")+' Victorian listings on a point-in-time basis. '+esc(statewide.income_support_affordable_percent||"0.8")+'% were affordable and appropriate for at least one income-support household scenario. This is research context, not the Homes Victoria rent series.</p></div></div>'+
+      '<div class="detail-section"><span class="section-kicker">Sources & methodology</span><div class="source-card">Market: <b>Homes Victoria Rental Report</b><br>Boundaries: <b>Vicmap Admin</b><br>Affordability context: <b>Anglicare Victoria RAS 2026</b><br><a href="https://sentrixdigital.com.au/core/au/property-rental/rationale" target="_blank" rel="noopener">Core AU architecture & rationale ↗</a></div></div>'+
+      '<div class="detail-section"><a class="btn primary" href="app.html?step=property">Assess a rental in this area →</a></div>';
+  }
+  function historyMarkup(history){
+    if(!history.length) return '<p>No comparable published history is available for this property type.</p>';
+    const vals=history.map(x=>Number(x.median)).filter(Number.isFinite);
+    if(!vals.length) return '<p>No comparable published history is available for this property type.</p>';
+    const min=Math.min(...vals),max=Math.max(...vals),span=Math.max(1,max-min);
+    const width=290,height=135,pad=20;
+    const pts=history.map((x,i)=>{
+      const xPos=pad+(history.length===1?0:i*(width-pad*2)/(history.length-1));
+      const yPos=height-pad-(Number(x.median)-min)*(height-pad*2)/span;
+      return {x:xPos,y:yPos,row:x};
+    });
+    const poly=pts.map(p=>p.x+","+p.y).join(" ");
+    const dots=pts.map(p=>'<circle class="chart-dot" cx="'+p.x+'" cy="'+p.y+'" r="3"><title>'+periodLabel(p.row.period)+': '+money(p.row.median)+'</title></circle>').join("");
+    const start=history[0],end=history[history.length-1];
+    const svg='<svg class="history-chart" viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Five-year median rent history"><line class="chart-axis" x1="'+pad+'" y1="'+(height-pad)+'" x2="'+(width-pad)+'" y2="'+(height-pad)+'"></line><polyline class="chart-line" points="'+poly+'"></polyline>'+dots+'<text class="chart-label" x="'+pad+'" y="'+(height-5)+'">'+esc(periodLabel(start.period))+'</text><text class="chart-label" text-anchor="end" x="'+(width-pad)+'" y="'+(height-5)+'">'+esc(periodLabel(end.period))+'</text></svg>';
+    const rows=history.map(x=>'<tr><td>'+esc(periodLabel(x.period))+'</td><td>'+money(x.median)+'</td></tr>').join("");
+    return svg+'<details><summary style="font-size:8px;font-weight:800;cursor:pointer">View values</summary><table class="history-table"><tbody>'+rows+'</tbody></table></details>';
+  }
+
+  async function loadMarket(){
+    const status=$("map-status");
+    try{
+      const r=await fetch("/api/rental-market",{headers:{"Accept":"application/json"}});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok || !data.ok || !data.geojson) throw new Error(data.error||"Rental data unavailable");
+      market=data;
+      const sel=$("property-type");
+      sel.innerHTML=(data.property_types||[]).map(t=>'<option value="'+esc(t.key)+'">'+esc(t.label)+'</option>').join("");
+      if(!sel.querySelector('option[value="all"]')) sel.insertAdjacentHTML("afterbegin",'<option value="all">All properties</option>');
+      sel.value="all";
+      drawMarket();
+      const mapped=(data.coverage&&data.coverage.mapped_locality_count)||data.geojson.features.length;
+      $("map-count").textContent=mapped.toLocaleString("en-AU")+" mapped localities · source period "+periodLabel(data.latest_period);
+      status.textContent="Showing latest available official rental data: "+periodLabel(data.latest_period)+". Click a locality for detail.";
+      status.className="map-status good";
+      if(data.geojson.features.length) map.fitBounds(marketLayer.getBounds(),{padding:[10,10]});
+    }catch(error){
+      status.textContent="Official rental-market data is temporarily unavailable. Saved properties and Victorian spatial layers still work.";
+      status.className="map-status warn";
+      $("map-count").textContent="Core AU rental data unavailable";
+      console.error(error);
+    }
+  }
+
   async function geocode(address){
     const key=String(address||"").trim().toLowerCase();
     if(!key) return null;
     if(geocodeCache.has(key)) return geocodeCache.get(key);
     const r=await fetch("/api/address-autocomplete?q="+encodeURIComponent(address));
     const data=await r.json().catch(()=>({}));
-    const row=data && Array.isArray(data.results) ? data.results.find(x=>Number.isFinite(Number(x.lat))&&Number.isFinite(Number(x.lon))) : null;
-    const result=row ? {lat:Number(row.lat),lon:Number(row.lon),label:row.label||address} : null;
-    geocodeCache.set(key,result);
-    return result;
+    const row=data&&Array.isArray(data.results)?data.results.find(x=>Number.isFinite(Number(x.lat))&&Number.isFinite(Number(x.lon))):null;
+    const result=row?{lat:Number(row.lat),lon:Number(row.lon),label:row.label||address}:null;
+    geocodeCache.set(key,result);return result;
   }
   function popupHtml(p){
-    return '<b>'+esc(p.address||"Rental property")+'</b>'+
-      '<small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+(p.bond?' · bond '+money(p.bond):'')+'</small>'+
-      '<a href="app.html?step=property" onclick="localStorage.setItem(\''+ACTIVE+'\',\''+esc(p.id)+'\')">Open in RentReady →</a>';
+    return '<b>'+esc(p.address||"Rental property")+'</b><small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+(p.bond?' · bond '+money(p.bond):'')+'</small><a href="app.html?step=property" onclick="localStorage.setItem(\''+ACTIVE+'\',\''+esc(p.id)+'\')">Open in RentReady →</a>';
   }
   function addMarker(p,geo){
-    const marker=L.marker([geo.lat,geo.lon]).addTo(savedLayer).bindPopup(popupHtml(p));
-    markers.push(marker);
-
-    const rent=Number(p.rent||0);
-    if(rent>0){
-      const radius=Math.max(7,Math.min(18,6+rent/70));
-      L.circleMarker([geo.lat,geo.lon],{
-        radius,weight:2,fillOpacity:.28
-      }).bindTooltip(money(rent)+"/wk",{direction:"top"}).bindPopup(popupHtml(p)).addTo(rentLayer);
-    }
-
-    const bond=Number(p.bond||0);
-    if(bond>0){
-      const radius=Math.max(7,Math.min(20,6+bond/350));
-      L.circleMarker([geo.lat,geo.lon],{
-        radius,weight:2,fillOpacity:.2,dashArray:"4 3"
-      }).bindTooltip("Bond "+money(bond),{direction:"bottom"}).bindPopup(popupHtml(p)).addTo(bondLayer);
-    }
-
-    return marker;
+    const marker=L.marker([geo.lat,geo.lon]).addTo(savedLayer).bindPopup(popupHtml(p));markers.push(marker);
+    const rent=Number(p.rent||0);if(rent>0)L.circleMarker([geo.lat,geo.lon],{radius:Math.max(7,Math.min(18,6+rent/70)),weight:2,fillOpacity:.28}).bindTooltip(money(rent)+"/wk").addTo(rentLayer);
+    const bond=Number(p.bond||0);if(bond>0)L.circleMarker([geo.lat,geo.lon],{radius:Math.max(7,Math.min(20,6+bond/350)),weight:2,fillOpacity:.2,dashArray:"4 3"}).bindTooltip("Bond "+money(bond)).addTo(bondLayer);
   }
   async function mapSaved(){
-    const mapped=[];
-    for(const p of properties){
-      if(!p || !p.address) continue;
-      try{
-        const geo=await geocode(p.address);
-        if(!geo) continue;
-        addMarker(p,geo);
-        mapped.push([geo.lat,geo.lon]);
-      }catch{}
-    }
-    $("map-count").textContent=mapped.length+(mapped.length===1?" saved property mapped":" saved properties mapped");
-    $("map-empty").hidden=!!mapped.length;
-    if(mapped.length===1) map.setView(mapped[0],14);
-    else if(mapped.length>1) map.fitBounds(mapped,{padding:[28,28]});
+    for(const p of properties){if(!p||!p.address)continue;try{const geo=await geocode(p.address);if(geo)addMarker(p,geo);}catch{}}
   }
   function renderList(){
     const el=$("map-list");
-    if(!properties.length){
-      el.innerHTML='<div class="map-status">No properties saved yet. Add a property in RentReady, then return here to map it.</div>';
-      return;
-    }
-    el.innerHTML=properties.map((p,i)=>
-      '<div class="map-property" data-list-index="'+i+'"><b>'+esc(p.address||"Untitled property")+'</b>'+
-      '<small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+'</small>'+
-      '<button class="btn" type="button" data-map-property="'+i+'">Show on map</button></div>'
-    ).join("");
+    if(!properties.length){el.innerHTML='<div class="map-status">No properties saved yet.</div>';return;}
+    el.innerHTML=properties.map((p,i)=>'<div class="map-property"><b>'+esc(p.address||"Untitled property")+'</b><small>'+money(p.rent)+'/wk'+(p.beds?' · '+esc(p.beds)+' bed':'')+'</small><button class="btn" type="button" data-map-property="'+i+'">Show</button></div>').join("");
     el.querySelectorAll("[data-map-property]").forEach(btn=>btn.addEventListener("click",async()=>{
-      const p=properties[Number(btn.dataset.mapProperty)];
-      const status=$("map-status");
-      status.textContent="Finding "+(p.address||"property")+"…";
-      try{
-        const geo=await geocode(p.address);
-        if(!geo) throw new Error("Address could not be mapped");
-        map.setView([geo.lat,geo.lon],15);
-        const marker=markers.find(m=>{
-          const ll=m.getLatLng();
-          return Math.abs(ll.lat-geo.lat)<0.000001 && Math.abs(ll.lng-geo.lon)<0.000001;
-        });
-        if(marker) marker.openPopup();
-        else L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup(popupHtml(p)).openPopup();
-        status.textContent="Showing "+(geo.label||p.address)+".";
-        status.className="map-status good";
-      }catch{
-        status.textContent="This saved address could not be mapped. Try searching it manually.";
-        status.className="map-status warn";
-      }
+      const p=properties[Number(btn.dataset.mapProperty)],geo=await geocode(p.address);if(!geo)return;map.setView([geo.lat,geo.lon],15);
+      const marker=markers.find(m=>{const ll=m.getLatLng();return Math.abs(ll.lat-geo.lat)<.000001&&Math.abs(ll.lng-geo.lon)<.000001;});if(marker)marker.openPopup();
     }));
   }
-  async function searchAddress(){
-    const q=$("map-address").value.trim();
-    const status=$("map-status");
-    if(!q){$("map-address").focus();return;}
-    status.textContent="Finding address…";
-    status.className="map-status";
-    try{
-      const geo=await geocode(q);
-      if(!geo) throw new Error("not found");
-      map.setView([geo.lat,geo.lon],16);
-      searchLayer.clearLayers();
-      L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small><a href="app.html?step=property">Add or assess this property →</a>').openPopup();
-      status.textContent="Showing "+geo.label+".";
-      status.className="map-status good";
-    }catch{
-      status.textContent="That address could not be found. Try including the suburb and VIC.";
-      status.className="map-status warn";
+  async function searchPlace(){
+    const q=$("map-address").value.trim();if(!q)return;
+    const lower=q.toLowerCase().replace(/,?\s+vic(?:toria)?(?:\s+\d{4})?$/i,"").trim();
+    if(market){
+      const exact=featureByName.get(lower);
+      const fuzzy=!exact?[...featureByName.entries()].find(([name])=>name.startsWith(lower)||lower.startsWith(name)):null;
+      const found=exact||(fuzzy&&fuzzy[1]);
+      if(found){
+        map.fitBounds(found.layer.getBounds(),{padding:[25,25]});found.layer.fire("click");
+        $("map-status").textContent="Showing "+(found.feature.properties.locality||q)+".";
+        $("map-status").className="map-status good";return;
+      }
     }
+    try{
+      const geo=await geocode(q);if(!geo)throw new Error();
+      searchLayer.clearLayers();L.marker([geo.lat,geo.lon]).addTo(searchLayer).bindPopup('<b>'+esc(geo.label)+'</b><small>Searched Victorian address</small>').openPopup();map.setView([geo.lat,geo.lon],15);
+      $("map-status").textContent="Address found. Click the surrounding rental locality for official market detail.";$("map-status").className="map-status good";
+    }catch{$("map-status").textContent="That place could not be found. Try a Victorian suburb, town or full address.";$("map-status").className="map-status warn";}
   }
 
-  document.querySelectorAll("[data-map-layer]").forEach(input=>{
-    input.addEventListener("change",()=>{
-      const layer=layerRegistry[input.dataset.mapLayer];
-      if(!layer) return;
-      if(input.checked){
-        if(!map.hasLayer(layer)) map.addLayer(layer);
-      }else if(map.hasLayer(layer)){
-        map.removeLayer(layer);
-      }
-    });
+  $("property-type").addEventListener("change",e=>{
+    selectedType=e.target.value||"all";
+    if(marketLayer){marketLayer.setStyle(marketStyle);if(selectedLayer)selectedLayer.setStyle({weight:3,color:"#082f49",fillOpacity:.88});}
+    updateLegend();if(selectedFeature)renderDetail(selectedFeature);
   });
-
+  document.querySelectorAll("[data-map-layer]").forEach(input=>input.addEventListener("change",()=>{
+    const layer=layerRegistry[input.dataset.mapLayer];if(!layer)return;
+    if(input.checked){if(!map.hasLayer(layer))map.addLayer(layer);}else if(map.hasLayer(layer))map.removeLayer(layer);
+  }));
   map.on("zoomend",()=>{
-    const parcelToggle=document.querySelector('[data-map-layer="parcels"]');
-    if(parcelToggle && parcelToggle.checked && map.getZoom()<14){
-      $("map-status").textContent="Zoom in further to see individual Vicmap property parcels.";
-      $("map-status").className="map-status";
-    }
+    const t=document.querySelector('[data-map-layer="parcels"]');
+    if(t&&t.checked&&map.getZoom()<14){$("map-status").textContent="Zoom in further to see individual Vicmap property parcels.";$("map-status").className="map-status";}
   });
-
-  $("map-search").addEventListener("click",searchAddress);
-  $("map-address").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchAddress();}});
-  renderList();
-  mapSaved();
+  $("map-search").addEventListener("click",searchPlace);
+  $("map-address").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchPlace();}});
+  renderList();mapSaved();loadMarket();
 })();
 </script>
 </body>
