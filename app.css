@@ -279,3 +279,98 @@ textarea{resize:vertical}
   .rate-period-slider button{font-size:10px;padding:7px 5px}
   .rate-period-slider button.quiet{font-size:9px}
 }
+
+
+.compact-intro{
+  grid-template-columns:1fr;
+  gap:16px;
+  align-items:start;
+  margin-bottom:16px;
+}
+.compact-intro .intro-copy{max-width:900px}
+.compact-intro h1{
+  font-size:clamp(28px,4vw,42px);
+  line-height:1.05;
+  margin:10px 0 8px;
+}
+.compact-intro p{
+  font-size:14px;
+  line-height:1.55;
+  max-width:900px;
+}
+.process-strip{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:7px;
+}
+.process-step{
+  min-width:0;
+  display:grid;
+  grid-template-columns:28px 1fr;
+  gap:8px;
+  align-items:start;
+  text-align:left;
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#fff;
+  color:var(--ink2);
+}
+.process-step:hover{border-color:var(--brand-line);box-shadow:0 5px 14px rgba(15,23,42,.05)}
+.process-step.active{border-color:var(--brand);background:var(--brand-soft)}
+.process-number{
+  width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  background:var(--ink);color:#fff;font-size:10px;font-weight:850
+}
+.process-step.active .process-number{background:var(--brand)}
+.process-step b{display:block;font-size:11px;line-height:1.25;color:var(--ink)}
+.process-step small{display:block;font-size:9px;line-height:1.35;color:var(--muted);margin-top:3px;font-weight:600}
+.application-review{margin-bottom:18px}
+.review-hero{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:18px;
+  padding:17px;border-radius:14px;background:linear-gradient(135deg,var(--ink),#1e293b);color:#fff
+}
+.review-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#c7d2fe;font-weight:850}
+.review-hero h3{margin:4px 0 6px;font-size:20px;letter-spacing:-.025em}
+.review-hero p{margin:0;color:#cbd5e1;font-size:11px;max-width:760px}
+.review-hero .btn{background:#fff;color:var(--ink);border-color:#fff;flex:none}
+.review-snapshot{
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:10px 0 14px
+}
+.review-snapshot>div{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.review-snapshot span{display:block;font-size:9px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.review-snapshot strong{display:block;font-size:12px;margin-top:3px;line-height:1.3}
+.application-review-grid{margin-top:10px}
+.review-badge{margin-left:auto;padding:4px 7px;border-radius:999px;background:var(--brand-soft);color:var(--brand);font-size:9px;font-weight:850}
+.review-badge.neutral{background:var(--surface2);color:var(--muted)}
+.review-list{display:grid;gap:9px}
+.review-list>div{display:grid;grid-template-columns:23px 1fr;gap:8px;align-items:start}
+.review-list p{margin:0;font-size:11px;color:var(--ink2)}
+.review-dot{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900}
+.review-dot.ok{background:var(--ok-soft);color:var(--ok)}
+.review-dot.warn{background:var(--warn-soft);color:var(--warn)}
+.review-dot.bad{background:var(--bad-soft);color:var(--bad)}
+.application-checker-card{margin-top:10px}
+.application-checker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.application-checker label{
+  display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;
+  padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--surface2);
+  font-size:11px;color:var(--ink2);font-weight:650
+}
+.application-checker input{width:16px;height:16px;margin-top:1px;accent-color:var(--brand)}
+.app-issue-results{border-top:1px solid var(--line)}
+.application-rules-divider{
+  display:flex;align-items:center;gap:10px;margin:22px 0 12px;
+  color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:850
+}
+.application-rules-divider:before,.application-rules-divider:after{content:"";height:1px;background:var(--line);flex:1}
+@media(max-width:1050px){
+  .process-strip{grid-template-columns:repeat(3,1fr)}
+  .review-snapshot{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:700px){
+  .process-strip{grid-template-columns:repeat(2,1fr)}
+  .review-snapshot{grid-template-columns:repeat(2,1fr)}
+  .application-checker{grid-template-columns:1fr}
+  .review-hero{display:grid}
+}
