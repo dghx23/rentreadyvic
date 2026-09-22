@@ -164,10 +164,18 @@
           <label>Other household gross income <span class="period-label">per week</span>
             <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
           </label>
-          <label>Working Credit balance
+          <label><span id="work-concession-label">Working Credit balance</span>
             <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
-            <small>Used only where the selected payment's configured work-income rule supports it.</small>
+            <small id="work-concession-help">Used only where the selected payment's configured work-income rule supports it.</small>
           </label>
+
+          <div class="scenario-box">
+            <div class="scenario-box-head">
+              <strong>Other circumstances that can change this payment</strong>
+              <span id="scenario-count">—</span>
+            </div>
+            <div id="scenario-prompts" class="scenario-prompts"></div>
+          </div>
 
           <div class="income-impact-explainer">
             <div class="income-impact-head">
@@ -722,7 +730,7 @@
   <div class="shell footer-inner">
     <div><b>RentReady VIC</b><br><span>Independent guidance prototype for Victorian renters.</span></div>
     <div><span>Rules and thresholds should be checked against the linked official sources before you rely on them.</span></div>
-    <div class="footer-actions"><a href="admin.html">Admin login</a><span>·</span> Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
+    <div class="footer-actions"><a href="about.html">About RentReady</a><span>·</span><a href="admin.html">Admin login</a><span>·</span> Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div>
   </div>
 </footer>
 
