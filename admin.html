@@ -26,6 +26,7 @@
     <div class="head">Payment data connector</div>
     <div class="body">
       <div class="status"><span>Social Security Compass connection</span><span id="api-status" class="pill">Checking…</span></div>
+      <div id="rule-pack-status" class="small">Checking RentReady rule-pack version and coverage…</div>
       <div class="small">This is deliberately an admin-only reference. The public renter experience only shows that payment data is current or unavailable.</div>
       <button class="secondary" id="check-api">Check connection</button>
     </div>
@@ -63,13 +64,16 @@
   </section>
 
   <section class="card">
-    <div class="head">JobSeeker work-income rule</div>
-    <div class="body row">
+    <div class="head">Legacy JobSeeker fallback rule</div>
+    <div class="body">
+      <div class="small">Used only if the backend rule pack is unavailable. Normal public calculations now use the payment-specific rules returned by the server.</div>
+      <div class="row">
       <label>Income-free area / fortnight<input id="jsFree" type="number"></label>
       <label>Second threshold / fortnight<input id="jsSecond" type="number"></label>
       <label>First taper<input id="jsTaper1" type="number" step=".01"></label>
       <label>Second taper<input id="jsTaper2" type="number" step=".01"></label>
       <label>Principal-carer taper<input id="jsCarer" type="number" step=".01"></label>
+      </div>
     </div>
   </section>
 
@@ -91,7 +95,7 @@ const defaults={generalAffordabilityPct:.30,bondRentPct:.55,bondAssetLimit:27644
 const $=id=>document.getElementById(id);
 function load(){let c={};try{c=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){};return {...defaults,...c,bondIncomeLimits:{...defaults.bondIncomeLimits,...(c.bondIncomeLimits||{})},bondCaps:{...defaults.bondCaps,...(c.bondCaps||{})},jobseeker:{...defaults.jobseeker,...(c.jobseeker||{})}}}
 function fill(){const c=load();$("generalPct").value=c.generalAffordabilityPct*100;$("bondPct").value=c.bondRentPct*100;$("assetLimit").value=c.bondAssetLimit;$("incomeSingle").value=c.bondIncomeLimits.single;$("incomeCouple").value=c.bondIncomeLimits.couple;$("incomeFamily1").value=c.bondIncomeLimits.family1;$("incomeFamily2").value=c.bondIncomeLimits.family2;$("incomeFamily3").value=c.bondIncomeLimits.family3;$("extraChild").value=c.extraChildIncomeLimit;$("capOne").value=c.bondCaps.one;$("capTwo").value=c.bondCaps.two;$("capThree").value=c.bondCaps.three;$("capFour").value=c.bondCaps.fourPlus;$("jsFree").value=c.jobseeker.freeArea;$("jsSecond").value=c.jobseeker.secondThreshold;$("jsTaper1").value=c.jobseeker.taper1;$("jsTaper2").value=c.jobseeker.taper2;$("jsCarer").value=c.jobseeker.principalCarerTaper}
-async function check(){const el=$("api-status");el.textContent="Checking…";el.className="pill";try{const r=await fetch("/api/social-security?mode=status");const d=await r.json();if(!r.ok||!d.ok)throw 0;el.textContent="Connected · "+d.paymentCount+" programmes";el.className="pill ok"}catch(e){el.textContent="Unavailable";el.className="pill bad"}}
+async function check(){const el=$("api-status"),detail=$("rule-pack-status");el.textContent="Checking…";el.className="pill";detail.textContent="Checking RentReady rule-pack version and coverage…";try{const r=await fetch("/api/social-security?mode=status");const d=await r.json();if(!r.ok||!d.ok)throw 0;el.textContent="Connected";el.className="pill ok";detail.textContent=(d.rulePackVersion?"Rule pack "+d.rulePackVersion+" · ":"")+(d.paymentCount||0)+" primary rental-relevant payments · "+(d.supportCount||0)+" additional supports · "+(d.programmeCount||0)+" programmes in the wider AU dataset."}catch(e){el.textContent="Unavailable";el.className="pill bad";detail.textContent="The public app will fall back to manual payment entry while the backend is unavailable."}}
 $("save").onclick=()=>{const c={generalAffordabilityPct:Number($("generalPct").value)/100,bondRentPct:Number($("bondPct").value)/100,bondAssetLimit:Number($("assetLimit").value),bondIncomeLimits:{single:Number($("incomeSingle").value),couple:Number($("incomeCouple").value),family1:Number($("incomeFamily1").value),family2:Number($("incomeFamily2").value),family3:Number($("incomeFamily3").value)},extraChildIncomeLimit:Number($("extraChild").value),bondCaps:{one:Number($("capOne").value),two:Number($("capTwo").value),three:Number($("capThree").value),fourPlus:Number($("capFour").value)},jobseeker:{freeArea:Number($("jsFree").value),secondThreshold:Number($("jsSecond").value),taper1:Number($("jsTaper1").value),taper2:Number($("jsTaper2").value),principalCarerTaper:Number($("jsCarer").value)}};localStorage.setItem(KEY,JSON.stringify(c));$("saved").textContent="Saved. Reload the public app to use the new configuration."};
 $("reset").onclick=()=>{localStorage.removeItem(KEY);fill();$("saved").textContent="Defaults restored."};
 $("check-api").onclick=check;fill();check();
