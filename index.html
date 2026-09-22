@@ -29,6 +29,14 @@ nav{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:10px;fon
 footer{border-top:1px solid var(--line);background:#e8ecf2;padding:24px 0;color:var(--muted);font-size:9px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.foot a{color:var(--indigo);font-weight:800}
 @media(max-width:900px){.hero-grid,.main-grid{grid-template-columns:1fr}.side-note{position:static}.organisations{grid-template-columns:1fr 1fr}.hero-panel{margin-top:10px}}
 @media(max-width:600px){.wrap{width:min(100% - 20px,1380px)}nav a:not(.launch){display:none}.hero{padding-top:30px}.hero h1{font-size:42px}.module-head{grid-template-columns:40px 1fr}.module-tag{grid-column:2}.module-body{grid-template-columns:1fr}.module-body>div+div{border-left:0;border-top:1px solid var(--line)}.organisations{grid-template-columns:1fr}.final{align-items:flex-start;flex-direction:column}}
+
+.rule-map{display:grid;gap:8px}
+.rule-row{display:grid;grid-template-columns:190px 210px 1fr;gap:14px;align-items:start;padding:13px;border:1px solid var(--line);border-radius:5px;background:#fff}
+.rule-row>div:first-child b{display:block;font-size:11px}.rule-row>div:first-child span{display:block;font-size:8px;color:var(--indigo);font-weight:850;text-transform:uppercase;margin-top:3px}
+.rule-row>div:nth-child(2){font-size:10px;font-weight:800;color:var(--ink2)}
+.rule-row>p{font-size:10px;color:var(--muted);margin:0}
+@media(max-width:760px){.rule-row{grid-template-columns:1fr}.rule-row>div:nth-child(2){padding-top:4px;border-top:1px solid var(--line)}}
+
 </style>
 </head>
 <body>
@@ -93,6 +101,21 @@ footer{border-top:1px solid var(--line);background:#e8ecf2;padding:24px 0;color:
 <section class="module rights-module" id="rights">
 <div class="module-head"><span class="module-number">A</span><div><h3>Application & Rights Review</h3><p>This is deliberately separate from the financial sequence but linked to everything already entered.</p></div><span class="module-tag">Victoria</span></div>
 <div class="module-body"><div><b>What it reviews</b><ul><li>Permitted financial and identity evidence</li><li>Prescribed rental-application requirements</li><li>Extra or prohibited questions</li><li>Protected-characteristic context</li><li>Potential discrimination red flags</li></ul></div><div><b>Why link it to the numbers?</b><p>The same income and property information can reveal application weaknesses, evidence options and strategies. The review can flag context without pretending to make a legal finding.</p></div></div>
+</section>
+
+
+<section class="module">
+<div class="module-head"><span class="module-number">R</span><div><h3>Which organisation and rule sits behind each part?</h3><p>RentReady connects these systems, but it keeps their rules separate so one test is not mistaken for another.</p></div><span class="module-tag">Rule map</span></div>
+<div class="module-body" style="display:block">
+<div class="rule-map">
+  <div class="rule-row"><div><b>Income-support payment</b><span>Federal income support</span></div><div>Services Australia + DSS</div><p>Current payment rate, circumstance, work-income test and relevant concessions such as Working Credit, Income Bank or Work Bonus. Services Australia administers the payment; DSS provides the wider social-security policy framework.</p></div>
+  <div class="rule-row"><div><b>Rent Assistance</b><span>Federal rent supplement</span></div><div>Services Australia</div><p>Rent Assistance depends on rent paid and household situation. RentReady estimates the property-specific amount once weekly rent is known.</p></div>
+  <div class="rule-row"><div><b>RentAssist Bond Loan</b><span>Victorian bond assistance</span></div><div>Housing Victoria / Homes Victoria</div><p>Separate eligibility rules cover household income and assets, residency, property ownership, the rent-share test and the bond amount. The rent-share rule is not the same as RentReady's general affordability benchmark.</p></div>
+  <div class="rule-row"><div><b>Rental application</b><span>Victorian rental law</span></div><div>Consumer Affairs Victoria</div><p>From 31 March 2026 rental providers and agents must use the prescribed application form. RentReady explains permitted evidence, information limits and questions that should not be added outside that process.</p></div>
+  <div class="rule-row"><div><b>Discrimination</b><span>Equal opportunity</span></div><div>VEOHRC</div><p>Accommodation providers must not treat applicants unfavourably because of protected characteristics. RentReady can flag context and red flags, but it does not make a legal finding.</p></div>
+  <div class="rule-row"><div><b>Tenancy disputes</b><span>Formal resolution</span></div><div>VCAT</div><p>VCAT is the formal tribunal pathway for many Victorian residential-tenancy disputes. RentReady helps organise the relevant information but does not replace the tribunal process.</p></div>
+</div>
+</div>
 </section>
 
 <section>
