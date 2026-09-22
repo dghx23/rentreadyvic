@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Import a property — RentReady VIC</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.import-shell{width:min(920px,calc(100% - 28px));margin:0 auto;padding:26px 0 60px}
+.import-hero{margin-bottom:16px}
+.import-hero .eyebrow{display:block;margin-bottom:5px}
+.import-hero h1{margin:0;font-size:30px;letter-spacing:-.035em}
+.import-hero p{max-width:760px;color:#667085;font-size:11px}
+.import-card{border:1px solid #dfe5ee;background:#fff;border-radius:9px;overflow:hidden}
+.import-card-head{padding:14px;border-bottom:1px solid #e5e9ef;background:#fafbfc}
+.import-card-head h2{margin:0;font-size:14px}
+.import-card-body{padding:14px}
+.import-url-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.import-url-row input{min-width:0}
+.import-status{margin-top:10px;padding:10px;border-radius:6px;background:#f8fafc;color:#667085;font-size:9px}
+.import-status.good{background:#f0fdf4;color:#166534}
+.import-status.warn{background:#fff7ed;color:#9a3412}
+.import-details{margin-top:14px}
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.import-grid .wide{grid-column:1/-1}
+.import-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #e5e9ef}
+.import-source{font-size:8px;color:#98a2b3;overflow-wrap:anywhere}
+@media(max-width:640px){.import-url-row,.import-grid{grid-template-columns:1fr}.import-actions{align-items:stretch;flex-direction:column-reverse}.import-actions .btn{width:100%}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">R</span><span><b>RentReady VIC</b><small>Property import</small></span></a>
+  </div>
+</header>
+
+<main class="import-shell">
+  <section class="import-hero">
+    <span class="eyebrow">Step 2 · Property</span>
+    <h1>Import the property you are considering</h1>
+    <p>Paste the rental listing URL. RentReady will try to extract the address, weekly rent, bond, bedrooms and availability. Check the details before you accept them and return to the assessment.</p>
+  </section>
+
+  <section class="import-card">
+    <div class="import-card-head"><h2>1. Enter the listing URL</h2></div>
+    <div class="import-card-body">
+      <div class="import-url-row">
+        <input id="property-url" type="url" placeholder="https://www.example.com.au/property/..." autocomplete="url">
+        <button type="button" class="btn primary" id="extract-property">Extract property details</button>
+      </div>
+      <div class="import-status" id="import-status">RentReady will fetch the public property page and look for common listing fields. Some property websites may block automated access.</div>
+
+      <div class="import-details" id="import-details" hidden>
+        <div class="divider"><span>2. Check the extracted details</span></div>
+        <div class="import-grid">
+          <label class="wide">Address
+            <input id="import-address" type="text" placeholder="Street, suburb VIC">
+          </label>
+          <label>Weekly rent
+            <div class="money-input"><span>$</span><input id="import-rent" type="number" min="0" step="5"></div>
+          </label>
+          <label>Bond
+            <div class="money-input"><span>$</span><input id="import-bond" type="number" min="0" step="50"></div>
+          </label>
+          <label>Bedrooms
+            <input id="import-beds" type="number" min="0" max="20" step="1">
+          </label>
+          <label>Available
+            <input id="import-available" type="text" placeholder="Date or listing text">
+          </label>
+        </div>
+        <div class="import-source" id="import-source"></div>
+
+        <div class="import-actions">
+          <a class="btn" href="app.html?step=property">← Back without importing</a>
+          <button type="button" class="btn primary" id="accept-property">Accept & return to RentReady →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  let sourceUrl = "";
+
+  function setStatus(text,state=""){
+    const el=$("import-status");
+    el.textContent=text;
+    el.className="import-status"+(state?" "+state:"");
+  }
+
+  $("extract-property").addEventListener("click", async () => {
+    const url=$("property-url").value.trim();
+    if(!url){ $("property-url").focus(); return; }
+    setStatus("Reading the property page…");
+    $("extract-property").disabled=true;
+    try{
+      const r=await fetch("/api/property-extract",{
+        method:"POST",
+        headers:{"content-type":"application/json"},
+        body:JSON.stringify({url})
+      });
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok || !data.ok) throw new Error(data.error || "Could not extract this listing.");
+      const p=data.property||{};
+      sourceUrl=p.url||url;
+      $("import-address").value=p.address||"";
+      $("import-rent").value=p.rent||"";
+      $("import-bond").value=p.bond||"";
+      $("import-beds").value=p.beds||"";
+      $("import-available").value=p.available||"";
+      $("import-source").textContent=(p.sourceTitle?"Source: "+p.sourceTitle+" · ":"")+sourceUrl;
+      $("import-details").hidden=false;
+      const found=[p.address,p.rent,p.bond,p.beds].filter(Boolean).length;
+      setStatus(found>=2
+        ? "RentReady extracted the main property details. Check them against the listing before accepting."
+        : "Only some details could be extracted. Complete or correct the fields before accepting.","good");
+    }catch(err){
+      sourceUrl=url;
+      $("import-details").hidden=false;
+      $("import-source").textContent="Source: "+url;
+      setStatus(err.message+" You can complete the fields manually below and still return them to RentReady.","warn");
+    }finally{
+      $("extract-property").disabled=false;
+    }
+  });
+
+  $("accept-property").addEventListener("click", () => {
+    const p={
+      url:sourceUrl||$("property-url").value.trim(),
+      address:$("import-address").value.trim(),
+      rent:Number($("import-rent").value||0),
+      bond:Number($("import-bond").value||0),
+      beds:Number($("import-beds").value||0),
+      available:$("import-available").value.trim()
+    };
+    if(!p.address && !p.rent){
+      setStatus("Add at least an address or weekly rent before returning to RentReady.","warn");
+      return;
+    }
+    sessionStorage.setItem("rentready-imported-property-v1",JSON.stringify(p));
+    location.href="app.html?step=property&imported=1";
+  });
+})();
+</script>
+</body>
+</html>
