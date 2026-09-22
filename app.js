@@ -212,9 +212,13 @@
       status.textContent = "Live data unavailable";
       $("payment-select").innerHTML = '<option value="manual">Enter payment manually</option>';
       $("payment-rate-select").innerHTML = '<option value="0">Manual amount</option>';
+      $("centrelink-rate-display").textContent = "Unavailable";
+      $("centrelink-rate-circumstance").textContent = "Manual amount";
+      $("manual-payment-toggle").checked = true;
+      $("manual-payment-wrap").hidden = false;
       $("payment-max").value = "0";
       $("ra-situation").innerHTML = '<option value="">Rent Assistance data unavailable</option>';
-      $("payment-effective").textContent = "Enter your actual payment amount";
+      $("payment-effective").textContent = "Not supplied";
       data = { payments: [], rentAssistance: { taper: .75, bands: [] } };
       recalcAll();
     }
@@ -242,26 +246,47 @@
     const numericRates = p.rates.filter(r => Number.isFinite(r.amount) && r.amount != null);
     p.rates = numericRates.length ? numericRates : p.rates;
     select.innerHTML = p.rates.map((r,i) =>
-      '<option value="' + i + '">' + esc(r.label) + (r.amount != null ? " — " + money(rateToFN(r.amount,r.unit)) + "/fn" : "") + '</option>'
+      '<option value="' + i + '">' + esc(r.label) + '</option>'
     ).join("");
     select.value = "0";
     applySelectedRate();
   }
 
-  function applySelectedRate() {
+  function selectedRateFN() {
     const r = selectedRate();
+    return r && r.amount != null ? rateToFN(r.amount, r.unit) : 0;
+  }
+
+  function renderSelectedCentrelinkRate() {
+    const r = selectedRate();
+    const rateFN = selectedRateFN();
+    $("centrelink-rate-display").textContent = r && r.amount != null ? money(displayFromFN(rateFN)) : "Unavailable";
+    $("centrelink-rate-circumstance").textContent = r ? r.label : "Manual amount";
     if (!r || r.amount == null) {
-      paymentMaxFN = 0;
-      $("payment-max").value = "0";
-      $("payment-effective").textContent = "Enter your actual payment amount";
-      recalcAll();
+      $("payment-effective").textContent = "Not supplied";
       return;
     }
-    paymentMaxFN = rateToFN(r.amount, r.unit);
-    $("payment-max").value = displayFromFN(paymentMaxFN).toFixed(2);
     const from = r.effectiveFrom || "—";
     const to = r.effectiveTo ? " to " + r.effectiveTo : "";
     $("payment-effective").textContent = from + to;
+  }
+
+  function applySelectedRate() {
+    const r = selectedRate();
+    const rateFN = selectedRateFN();
+    renderSelectedCentrelinkRate();
+
+    // A new circumstance starts from the current published rate.
+    $("manual-payment-toggle").checked = false;
+    $("manual-payment-wrap").hidden = true;
+    paymentMaxFN = rateFN;
+    $("payment-max").value = displayFromFN(paymentMaxFN).toFixed(2);
+
+    if (!r || r.amount == null) {
+      $("manual-payment-toggle").checked = true;
+      $("manual-payment-wrap").hidden = false;
+      paymentMaxFN = Number($("payment-max").value || 0);
+    }
     recalcAll();
   }
 
@@ -275,6 +300,7 @@
 
   function syncInputsToPeriod() {
     document.querySelectorAll(".period-label").forEach(el => el.textContent = "per " + PERIODS[currentPeriod].label);
+    renderSelectedCentrelinkRate();
     $("payment-max").value = displayFromFN(paymentMaxFN).toFixed(2);
     $("work-income").value = displayFromFN(workIncomeFN).toFixed(2);
     $("other-income-week").value = displayFromWeek(otherIncomeWeek).toFixed(2);
@@ -560,7 +586,23 @@
 
     $("payment-select").addEventListener("change", () => { populateRates(); recalcAll(); });
     $("payment-rate-select").addEventListener("change", applySelectedRate);
-    $("payment-max").addEventListener("change", () => { paymentMaxFN = fnFromDisplay($("payment-max").value); recalcAll(); });
+    $("manual-payment-toggle").addEventListener("change", () => {
+      const manual = $("manual-payment-toggle").checked;
+      $("manual-payment-wrap").hidden = !manual;
+      if (manual) {
+        $("payment-max").value = displayFromFN(paymentMaxFN || selectedRateFN()).toFixed(2);
+        paymentMaxFN = fnFromDisplay($("payment-max").value);
+      } else {
+        paymentMaxFN = selectedRateFN();
+        $("payment-max").value = displayFromFN(paymentMaxFN).toFixed(2);
+      }
+      recalcAll();
+    });
+    $("payment-max").addEventListener("input", () => {
+      if (!$("manual-payment-toggle").checked) return;
+      paymentMaxFN = fnFromDisplay($("payment-max").value);
+      recalcAll();
+    });
     $("work-income").addEventListener("input", () => { workIncomeFN = fnFromDisplay($("work-income").value); recalcAll(); });
     $("other-income-week").addEventListener("input", () => { otherIncomeWeek = weekFromDisplay($("other-income-week").value); recalcAll(); });
     $("working-credit").addEventListener("input", recalcAll);
