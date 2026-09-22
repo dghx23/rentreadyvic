@@ -1156,7 +1156,7 @@
   }
 
   function initialiseOptimiser() {
-    const prop = activeProperty();
+    const prop = propertyForAssessment();
     $("optimise-work").value = Math.min(Number($("optimise-work").max), workIncomeFN);
     $("optimise-rent").value = prop && prop.rent ? Math.min(Number($("optimise-rent").max), prop.rent) : 350;
     renderOptimiser();
@@ -1165,6 +1165,7 @@
   function renderOptimiser() {
     const work = Number($("optimise-work").value || 0);
     const rent = Number($("optimise-rent").value || 0);
+    renderIncomeTarget();
     const sc = scenario(work, rent);
     const generalLimit = sc.householdWeek * cfg.generalAffordabilityPct;
     const bondLimit = sc.bondIncomeWeek * cfg.bondRentPct;
@@ -1194,6 +1195,88 @@
 
     $("target-general-income").textContent = requiredWorkText(rent, cfg.generalAffordabilityPct, "general");
     $("target-bond-income").textContent = requiredWorkText(rent, cfg.bondRentPct, "bond");
+  }
+
+  function paymentReductionStartFN() {
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
+    if (!rule) return null;
+
+    const balance = Math.max(0, Number($("working-credit").value || 0));
+    const concession = rule.workConcession || (p && p.workConcession) || null;
+    let offset = 0;
+
+    if (concession === "working_credit" || concession === "income_bank" || concession === "working_credit_or_work_bonus_if_age_eligible") {
+      offset = balance;
+    } else if (concession === "work_bonus") {
+      offset = balance + 300;
+    }
+
+    return Math.max(0, Number(rule.freeArea || 0) + offset);
+  }
+
+  function workTargetForProperty(rent) {
+    rent = Number(rent || 0);
+    if (!rent) return null;
+
+    const max = 12000;
+    for (let w = 0; w <= max; w += 10) {
+      const sc = scenario(w, rent);
+      const generalPass = rent <= sc.householdWeek * cfg.generalAffordabilityPct;
+      const rentAssistPass = rent < sc.bondIncomeWeek * cfg.bondRentPct;
+      if (generalPass && rentAssistPass) return w;
+    }
+    return Infinity;
+  }
+
+  function renderIncomeTarget() {
+    if (!$("ideal-work-target")) return;
+
+    const prop = propertyForAssessment();
+    const rent = prop ? Number(prop.rent || 0) : 0;
+    const current = Math.max(0, workIncomeFN);
+    const reductionStart = paymentReductionStartFN();
+    const cutoff = findPaymentCutoff(Number($("working-credit").value || 0));
+    const target = rent > 0 ? workTargetForProperty(rent) : null;
+
+    $("target-current-work").textContent = money(displayFromFN(current),0) + " / " + PERIODS[currentPeriod].label;
+    $("target-reduction-start").textContent = reductionStart == null
+      ? "Not modelled"
+      : money(displayFromFN(reductionStart),0) + " / " + PERIODS[currentPeriod].label;
+    $("target-payment-cutoff").textContent = cutoff == null
+      ? "Not modelled"
+      : money(displayFromFN(cutoff),0) + " / " + PERIODS[currentPeriod].label;
+
+    if (!rent) {
+      $("ideal-work-target").textContent = "Add a property first";
+      $("target-extra-work").textContent = "—";
+      $("ideal-work-target-copy").textContent = "The income target depends on the weekly rent of the property you are considering.";
+      return;
+    }
+
+    if (target === Infinity) {
+      $("ideal-work-target").textContent = "Above the modelled work-income range";
+      $("target-extra-work").textContent = "Above modelled range";
+      $("ideal-work-target-copy").textContent = "Increasing work income alone does not bring this property inside both planning thresholds within the modelled range. A lower rent may be the more effective lever.";
+      return;
+    }
+
+    const extra = Math.max(0, target - current);
+    $("ideal-work-target").textContent = money(displayFromFN(target),0) + " / " + PERIODS[currentPeriod].label;
+    $("target-extra-work").textContent = extra > 0
+      ? money(displayFromFN(extra),0) + " / " + PERIODS[currentPeriod].label
+      : "$0 — current work income is already at or above the modelled target";
+
+    if (extra > 0) {
+      $("ideal-work-target-copy").textContent =
+        "For the current rent of " + money(rent,0) + " per week, the model first reaches both planning thresholds at about " +
+        money(displayFromFN(target),0) + " of gross work income per " + PERIODS[currentPeriod].label +
+        ". That is about " + money(displayFromFN(extra),0) + " more than the work income currently entered.";
+    } else {
+      $("ideal-work-target-copy").textContent =
+        "Your current work income is already at or above the minimum modelled level needed for this property to sit inside both planning thresholds.";
+    }
   }
 
   function gapText(gap) {
@@ -1279,10 +1362,10 @@
       if (p.bond) $("property-bond").value = p.bond;
       if (p.beds) $("property-beds").value = p.beds;
       if (p.available) $("property-available").value = p.available;
-      renderPropertyAssessment();
+      recalcAll();
     });
     ["property-address","property-rent","property-bond","property-beds","property-available"].forEach(id =>
-      $(id).addEventListener("input", renderPropertyAssessment)
+      $(id).addEventListener("input", recalcAll)
     );
     $("save-property").addEventListener("click", savePropertyFromForm);
     $("clear-properties").addEventListener("click", () => { properties = []; activePropertyId = null; persistProperties(); renderShortlist(); recalcAll(); });
