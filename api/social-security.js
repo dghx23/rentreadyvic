@@ -9,15 +9,18 @@ module.exports = async function handler(req, res) {
       if (!r.ok) throw new Error("Upstream returned " + r.status);
       const payload = await r.json();
       const rr = payload.rentready || null;
-      if (!rr || !Array.isArray(rr.primary_payments)) {
-        throw new Error("Social Security AU dataset is missing the RentReady rule pack");
+      const rrPayments = rr && Array.isArray(rr.primary_payments) ? rr.primary_payments : null;
+      const programmePayments = Array.isArray(payload.programmes) ? payload.programmes : [];
+      if (!rrPayments && !programmePayments.length) {
+        throw new Error("Social Security AU dataset contains no payment records");
       }
       return res.status(200).json({
         ok: true,
         source: "social-security-au",
+        sourceSchema: rrPayments ? "rentready-rule-pack" : "programmes",
         jurisdiction: "AU",
-        programmeCount: Array.isArray(payload.programmes) ? payload.programmes.length : 0,
-        paymentCount: rr && Array.isArray(rr.primary_payments) ? rr.primary_payments.length : 0,
+        programmeCount: programmePayments.length,
+        paymentCount: rrPayments ? rrPayments.length : programmePayments.length,
         supportCount: rr && Array.isArray(rr.additional_support) ? rr.additional_support.length : 0,
         rulePackVersion: rr && rr.version ? rr.version : null,
         checkedAt: new Date().toISOString()
@@ -29,9 +32,6 @@ module.exports = async function handler(req, res) {
     const payload = await r.json();
 
     const rr = payload.rentready || null;
-    if (!rr || !Array.isArray(rr.primary_payments)) {
-      throw new Error("Social Security AU dataset is missing the RentReady rule pack");
-    }
 
     const normaliseRates = rates => (rates || []).map(r => ({
       label: r.label,
@@ -53,6 +53,10 @@ module.exports = async function handler(req, res) {
     let otherTests = {};
     let rentAssistance = null;
 
+    let sourceSchema = "programmes";
+
+    if (rr && Array.isArray(rr.primary_payments)) {
+      sourceSchema = "rentready-rule-pack";
       payments = rr.primary_payments.map(p => ({
         slug: p.slug,
         name: p.name,
@@ -91,11 +95,62 @@ module.exports = async function handler(req, res) {
           maximum: Number(b.maximum || 0)
         }))
       };
+    } else {
+      const allowed = new Set([
+        "jobseeker",
+        "disability-support-pension",
+        "parenting-payment",
+        "carer-payment",
+        "youth-allowance",
+        "austudy",
+        "abstudy",
+        "age-pension",
+        "special-benefit",
+        "farm-household-allowance"
+      ]);
+
+      payments = (payload.programmes || [])
+        .filter(p => allowed.has(p.slug))
+        .map(p => ({
+          slug: p.slug,
+          name: p.name,
+          shortName: p.short_name || p.name,
+          category: p.category || "income_support",
+          administrator: p.administrator || "Services Australia",
+          rentAssistanceEligible: !!p.rent_assistance_eligible,
+          workConcession: p.work_concession || null,
+          scenarioPrompts: p.scenario_prompts || [],
+          incomeTest: p.income_test || null,
+          rates: normaliseRates(p.rates)
+        }));
+
+      const rentMethod = (payload.methodology || []).find(m => m.code === "rent_assistance");
+      const rentParams = rentMethod && rentMethod.params ? rentMethod.params : {};
+      rentAssistance = {
+        effectiveFrom: rentParams.effective_from || null,
+        effectiveTo: rentParams.effective_to || null,
+        edition: rentParams.edition || null,
+        taper: rentParams.taper == null ? null : Number(rentParams.taper),
+        bands: (rentParams.bands || []).map(b => ({
+          code: b.code,
+          label: b.label,
+          table: b.table || null,
+          threshold: Number(b.threshold || 0),
+          ceiling: Number(b.ceiling || 0),
+          maximum: Number(b.maximum || 0)
+        }))
+      };
+    }
+
+    if (!payments.length) {
+      throw new Error("Social Security AU dataset contains no supported payment records");
+    }
 
 
     return res.status(200).json({
       ok: true,
       source: "social-security-au",
+      sourceSchema,
       jurisdiction: "AU",
       generatedAt: new Date().toISOString(),
       payments,
