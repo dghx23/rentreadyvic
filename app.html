@@ -271,8 +271,29 @@
           <div class="target-rent-callout">Compare the same target against <b>two different tests</b>.</div>
         </div>
 
-        <div class="target-rent-entry">
-          <label>Target weekly rent
+        <div class="rental-arrangement-question">
+          <div class="rental-arrangement-title">
+            <div>
+              <span>Before the amount</span>
+              <strong>Are you looking for your own apartment or house, or planning to share?</strong>
+            </div>
+            <button type="button" class="inline-help-button rental-arrangement-help" id="rental-arrangement-help" aria-label="Why does sharing or renting alone matter?">?</button>
+          </div>
+          <div class="rental-arrangement-options" role="radiogroup" aria-label="Rental arrangement">
+            <label>
+              <input type="radio" name="rental-arrangement" id="rental-arrangement-own" value="own">
+              <span><b>My own apartment or house</b><small>I expect to be responsible for the rent entered below.</small></span>
+            </label>
+            <label>
+              <input type="radio" name="rental-arrangement" id="rental-arrangement-share" value="share">
+              <span><b>I am planning to share</b><small>Enter the weekly rent amount that you personally expect to pay.</small></span>
+            </label>
+          </div>
+          <div class="rental-arrangement-context" id="rental-arrangement-context">Choose an arrangement before setting the target rent.</div>
+        </div>
+
+        <div class="target-rent-entry" id="target-rent-entry" hidden>
+          <label><span id="target-rent-label">Target weekly rent</span>
             <div class="money-input target-rent-money"><span>$</span><input id="target-rent" type="number" step="5" min="0" value="0" placeholder="450"></div>
           </label>
           <div class="target-rent-slider-wrap">
@@ -1045,6 +1066,22 @@
       <div class="scenario-modal-actions">
         <a id="scenario-modal-link" class="btn" href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">Read official guidance ↗</a>
         <button type="button" class="btn primary" id="scenario-not-applicable">Not applicable to me</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rental-arrangement-modal" id="rental-arrangement-modal" hidden>
+    <div class="rental-arrangement-modal-backdrop" data-close-rental-arrangement></div>
+    <div class="rental-arrangement-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="rental-arrangement-modal-title">
+      <button type="button" class="rental-arrangement-modal-close" data-close-rental-arrangement aria-label="Close">×</button>
+      <span class="rental-arrangement-modal-kicker">Why RentReady asks this</span>
+      <h2 id="rental-arrangement-modal-title">Renting alone and sharing can use different rent settings</h2>
+      <p>If you are a single renter with no dependent children and live in shared private accommodation, Services Australia may use the <b>single sharer</b> Rent Assistance rate, which has a lower maximum than the ordinary single rate.</p>
+      <p>For the Victorian RentAssist Bond Loan, Housing Victoria looks at <b>your share of the rent</b> when applying the rent-to-income test. In a shared household, the bond loan share can also depend on the number of people paying rent.</p>
+      <p>That is why RentReady asks this before the target amount: it needs to know whether the figure you enter is the full rent you expect to pay or your own share.</p>
+      <div class="rental-arrangement-modal-links">
+        <a href="https://www.servicesaustralia.gov.au/how-much-rent-assistance-you-can-get?context=22206" target="_blank" rel="noopener">Services Australia — Rent Assistance rates ↗</a>
+        <a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Housing Victoria — RentAssist eligibility ↗</a>
       </div>
     </div>
   </div>
