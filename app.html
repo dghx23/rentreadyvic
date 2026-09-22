@@ -94,7 +94,7 @@
 
     <div class="grid two">
       <div class="card">
-        <div class="card-head"><h3>Income-support payment</h3><span id="payment-status" class="status-pill loading">Loading current data…</span></div>
+        <div class="card-head"><h3>Income-support payment</h3><div class="card-head-tools"><a class="source-link" href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener">Services Australia ↗</a><span id="payment-status" class="status-pill loading">Loading current data…</span></div></div>
         <div class="card-body fields">
           <label>Payment
             <select id="payment-select"></select>
@@ -161,7 +161,7 @@
           <div class="payment-scenario-panel">
             <div class="payment-scenario-head">
               <div><span>Scenario coverage</span><strong>What else can change this payment?</strong></div>
-              <small>RentReady flags tests that are not captured by the work-income slider.</small>
+              <small>RentReady flags tests that are not captured by the work-income slider. <a href="https://guides.dss.gov.au/social-security-guide" target="_blank" rel="noopener">DSS Social Security Guide ↗</a></small>
             </div>
             <div id="payment-scenario-prompts" class="scenario-pills"></div>
             <div id="payment-scenario-note" class="scenario-note"></div>
@@ -225,12 +225,46 @@
 
     <div class="card additional-support-card">
       <div class="card-head">
-        <h3>Other Australian Government support to consider</h3>
-        <span class="review-badge neutral">from current support catalogue</span>
+        <div>
+          <h3>Other support that may apply</h3>
+          <small>Only suggestions that match what you have told us so far</small>
+        </div>
+        <a class="source-link" href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener">Services Australia guide ↗</a>
       </div>
       <div class="card-body">
-        <p class="support-intro">These are separate payments, supplements or concessions that can affect a renter's overall budget. They are shown here so they are not mistaken for part of the main income-support rate.</p>
+        <p class="support-intro">RentReady does not show family, child, carer or student support unless your earlier answers make it relevant. Suggested items are for you to check — they are not automatically added to income.</p>
+
+        <div class="support-section-label"><span>Based on your answers</span></div>
         <div id="additional-support-list" class="additional-support-list"></div>
+
+        <div id="selected-support-wrap" class="selected-support-wrap" hidden>
+          <div class="support-section-label"><span>Added to your profile</span></div>
+          <div id="selected-support-list" class="selected-support-list"></div>
+        </div>
+
+        <button type="button" class="btn add-support-btn" id="add-support-button">+ Add another support</button>
+
+        <div id="support-picker" class="support-picker" hidden>
+          <div class="support-picker-head">
+            <div>
+              <span>Add another support</span>
+              <strong>Check whether another payment or concession may be relevant</strong>
+            </div>
+            <button type="button" class="link-btn" id="close-support-picker">Close</button>
+          </div>
+
+          <label>Support
+            <select id="support-picker-select"></select>
+          </label>
+
+          <div id="support-questions" class="support-questions"></div>
+          <div id="support-eligibility-note" class="support-eligibility-note">Choose a support to see a few screening questions.</div>
+
+          <div class="support-picker-actions">
+            <button type="button" class="btn" id="cancel-support">Cancel</button>
+            <button type="button" class="btn primary" id="confirm-support">Add to my profile</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -361,7 +395,7 @@
       </div>
 
       <div class="card">
-        <div class="card-head"><h3>RentAssist checks</h3><a href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Official eligibility ↗</a></div>
+        <div class="card-head"><h3>RentAssist checks</h3><a class="source-link" href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Housing Victoria eligibility ↗</a></div>
         <div class="card-body check-list" id="bond-checks"></div>
       </div>
     </div>
