@@ -438,3 +438,62 @@ textarea{resize:vertical}
   .income-impact-head .link-btn{justify-self:start}
   .income-impact-stats{grid-template-columns:1fr}
 }
+
+
+.account-zone{position:relative;margin-left:8px}
+.account-toggle{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:999px;
+  padding:5px 9px 5px 5px;color:var(--ink);min-width:155px
+}
+.account-toggle:hover{border-color:var(--brand-line)}
+.account-avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:900}
+.account-copy{display:grid;text-align:left;line-height:1.05;min-width:0}
+.account-copy b{font-size:11px}
+.account-copy small{font-size:8px;color:var(--muted);margin-top:3px;white-space:nowrap}
+.account-chevron{margin-left:auto;color:var(--muted);font-size:10px}
+.account-popover{
+  position:absolute;right:0;top:calc(100% + 9px);width:min(390px,calc(100vw - 24px));padding:12px;
+  background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 45px rgba(15,23,42,.16);z-index:80
+}
+.account-popover[hidden]{display:none}
+.account-login{display:grid;gap:8px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.account-login>strong{font-size:12px}
+.account-login p{font-size:9px;color:var(--muted);margin:0}
+.account-login label{display:grid;gap:4px;font-size:10px;font-weight:750;color:var(--ink2)}
+.account-signed{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.account-signed>div{display:grid}
+.account-signed span{font-size:8px;color:var(--muted);text-transform:uppercase;font-weight:800}
+.account-signed strong{font-size:11px;margin-top:2px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account-shortlist-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 1px 7px}
+.account-shortlist-head>div{display:grid}
+.account-shortlist-head strong{font-size:11px}
+.account-shortlist-head small{font-size:8px;color:var(--muted);margin-top:2px}
+.account-shortlist{max-height:260px;overflow:auto;padding-right:2px}
+.account-open-property{width:100%;margin-top:9px}
+.property-assessment-card{border-color:var(--brand-line)}
+.assessment-status{margin-left:auto;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:850}
+.assessment-status.pending{background:var(--surface2);color:var(--muted)}
+.assessment-status.good{background:var(--ok-soft);color:var(--ok)}
+.assessment-status.warn{background:var(--warn-soft);color:var(--warn)}
+.assessment-status.bad{background:var(--bad-soft);color:var(--bad)}
+.property-assessment-hero{padding:13px;border-radius:11px;background:linear-gradient(135deg,var(--ink),#1e293b);color:#fff}
+.property-assessment-hero>span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.06em;font-weight:850;color:#cbd5e1}
+.property-assessment-hero>strong{display:block;font-size:18px;margin-top:3px}
+.property-assessment-hero>p{font-size:10px;color:#cbd5e1;margin:5px 0 0}
+.property-assessment-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}
+.property-assessment-metrics>div{padding:9px;border:1px solid var(--line);border-radius:9px;background:var(--surface2)}
+.property-assessment-metrics span{display:block;font-size:8px;color:var(--muted);text-transform:uppercase;font-weight:850;letter-spacing:.04em}
+.property-assessment-metrics strong{display:block;font-size:14px;margin-top:2px}
+.property-assessment-details{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.property-assessment-details p{font-size:10px;color:var(--muted);margin:0}
+.property-assessment-details ul{margin:0;padding-left:17px;font-size:10px;color:var(--ink2)}
+.property-assessment-details li{margin:5px 0}
+.property-assessment-note{margin-top:10px!important}
+.footer-actions{display:flex;gap:5px;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:700px){
+  .account-zone{margin-left:auto}
+  .account-copy small{display:none}
+  .account-toggle{min-width:0}
+  .account-popover{position:fixed;right:10px;top:64px;width:calc(100vw - 20px)}
+  .property-assessment-metrics{grid-template-columns:1fr}
+}
