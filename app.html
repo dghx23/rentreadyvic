@@ -181,6 +181,33 @@
 
       <p id="income-impact-copy">RentReady will show how the configured income-free area and taper reduce the selected payment as earnings increase.</p>
 
+      <div class="income-impact-slider" id="income-impact-slider-wrap">
+        <div class="income-impact-slider-head">
+          <div>
+            <span>Test a different earnings amount</span>
+            <strong id="impact-test-income">$0 per fortnight</strong>
+          </div>
+          <button type="button" class="btn" id="apply-impact-income">Use this as my work income</button>
+        </div>
+
+        <input id="impact-income-slider" type="range" min="0" max="4000" step="10" value="0" aria-label="Test gross work income">
+
+        <div class="income-impact-slider-scale">
+          <span>$0</span>
+          <span id="impact-slider-free">Free area: —</span>
+          <span id="impact-slider-cutoff">Payment $0: —</span>
+        </div>
+
+        <div class="income-impact-preview">
+          <div><span>Gross work income</span><strong id="impact-preview-work">$0</strong></div>
+          <div><span>Estimated payment</span><strong id="impact-preview-payment">$0</strong></div>
+          <div><span>Payment reduction</span><strong id="impact-preview-reduction">$0</strong></div>
+          <div class="primary"><span>Work + payment</span><strong id="impact-preview-total">$0</strong></div>
+        </div>
+
+        <div class="impact-preview-status" id="impact-preview-status">Move the slider to test how earnings change the payment.</div>
+      </div>
+
       <div class="income-impact-stats">
         <div><span>Income-free area</span><strong id="impact-free-area">—</strong></div>
         <div><span>Current payment reduction</span><strong id="impact-reduction">$0</strong></div>
@@ -197,6 +224,7 @@
           <span><i class="legend-line payment"></i>Remaining payment</span>
           <span><i class="legend-line total"></i>Work + payment</span>
           <span><i class="legend-dot current"></i>Your current work income</span>
+          <span><i class="legend-dot test"></i>Slider test income</span>
         </div>
       </div>
 
