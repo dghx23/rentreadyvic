@@ -45,11 +45,11 @@
 .history-chart{width:100%;height:150px;display:block;margin-top:4px}.chart-axis{stroke:#cbd5e1;stroke-width:1}.chart-line{fill:none;stroke:#1d4ed8;stroke-width:2.5}.chart-dot{fill:#1d4ed8}.chart-label{fill:#64748b;font-size:9px}
 .source-card{padding:9px;border-radius:8px;background:#f8fafc;border:1px solid var(--line);font-size:8px;line-height:1.45;color:#475569}.source-card b{color:#0f172a}
 .anglicare-card{padding:10px;border-radius:9px;background:#f5f7ff;border:1px solid #dfe5ff}.anglicare-card strong{font-size:11px}.anglicare-card p{margin-top:5px}
-.map-note{margin-top:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:8px;line-height:1.5}
+.map-note{margin-top:10px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--line);color:var(--muted);font-size:8px;line-height:1.5}\n.source-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}\n.source-tile{padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;min-width:0}\n.source-tile span{display:block;color:var(--brand);font-size:7px;font-weight:850;text-transform:uppercase;letter-spacing:.05em}\n.source-tile strong{display:block;margin-top:3px;font-size:9px}.source-tile p{margin:4px 0 0;color:var(--muted);font-size:7px;line-height:1.4}.source-tile a{font-size:7px;font-weight:800}
 .leaflet-popup-content{font:10px/1.45 var(--font)}
 @media(max-width:1120px){.map-layout{grid-template-columns:270px minmax(0,1fr)}.detail-panel{grid-column:1/-1}.detail-body{max-height:none}.metric-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:760px){.map-layout{grid-template-columns:1fr}.map-hero{display:block}.map-hero .btn{margin-top:10px}#rental-map{height:520px}.detail-panel{grid-column:auto}.metric-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:440px}.metric-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.map-layout{grid-template-columns:1fr}.map-hero{display:block}.map-hero .btn{margin-top:10px}#rental-map{height:520px}.detail-panel{grid-column:auto}.metric-grid{grid-template-columns:1fr 1fr}.source-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:440px}.metric-grid{grid-template-columns:1fr 1fr}.source-strip{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -131,7 +131,13 @@
     </aside>
   </div>
 
-  <div class="map-note"><b>What this map measures:</b> Homes Victoria rental data is based on new rental lettings and RTBA bond records. It is not a live count of properties advertised today. Missing or unpublished values remain blank. Anglicare Victoria's 2026 Rental Affordability Snapshot is shown separately as affordability context.</div>
+  <div class="map-note"><b>What this map measures:</b> Homes Victoria rental data is based on new rental lettings and RTBA bond records. It is not a live count of properties advertised today. Missing or unpublished values remain blank. A Homes Victoria rental area can cover more than one named locality; the source-area name is always shown in the detail panel. Anglicare Victoria's 2026 Rental Affordability Snapshot is shown separately as affordability context.</div>
+  <section class="source-strip" aria-label="Rental map data sources">
+    <article class="source-tile"><span>Rental market</span><strong>Homes Victoria / RTBA</strong><p>Median weekly rent and new lettings by rental area and property type. Quarterly source series.</p><a href="https://discover.data.vic.gov.au/dataset/rental-report-quarterly-moving-annual-rents-by-suburb" target="_blank" rel="noopener">Official DataVic source ↗</a></article>
+    <article class="source-tile"><span>Map geography</span><strong>Vicmap Admin</strong><p>Authoritative Victorian locality boundaries; parcels and planning are separate optional map layers.</p><a href="https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Admin/MapServer/11" target="_blank" rel="noopener">Vicmap layer ↗</a></article>
+    <article class="source-tile"><span>Affordability research</span><strong>Anglicare Victoria RAS 2026</strong><p>Point-in-time advertised-rental affordability context. Kept separate from the Homes Victoria rent series.</p><a href="https://www.anglicarevic.org.au/research/victorian-rental-affordability-snapshot-2026/" target="_blank" rel="noopener">Research source ↗</a></article>
+    <article class="source-tile"><span>Governance</span><strong>Sentrix Digital Core AU</strong><p>Normalises market data, records provenance and exposes the map contract consumed by RentReady.</p><a href="https://sentrixdigital.com.au/core/au/property-rental/rationale" target="_blank" rel="noopener">Architecture & rationale ↗</a></article>
+  </section>
 </main>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
