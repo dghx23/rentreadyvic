@@ -3,32 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="About RentReady VIC, a rental-planning tool for Victorians on income support.">
 <title>About RentReady VIC</title>
 <link rel="stylesheet" href="app.css">
 <style>
-.about-simple{width:min(900px,calc(100% - 28px));margin:auto;padding:44px 0 64px}
-.about-simple-hero{max-width:720px;margin-bottom:28px}
-.about-simple-hero h1{font-size:clamp(34px,5vw,52px);line-height:1.02;letter-spacing:-.045em;margin:8px 0 14px}
-.about-simple-hero p{color:#667085;font-size:13px;line-height:1.7;margin:0}
-.about-simple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.about-simple-card{background:#fff;border:1px solid #dfe5ed;border-radius:10px;padding:18px}
-.about-simple-card h2{font-size:14px;margin:0 0 8px}
-.about-simple-card p,.about-simple-card li{color:#667085;font-size:10px;line-height:1.55}
-.about-simple-card ul{margin:0;padding-left:18px}
-.about-simple-wide{margin-top:10px;background:#f8fafc;border:1px solid #dfe5ed;border-radius:10px;padding:18px}
-.about-simple-wide h2{margin:0 0 8px;font-size:14px}
-.about-simple-wide p{margin:0;color:#667085;font-size:10px;line-height:1.6}
-.about-simple-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-@media(max-width:700px){.about-simple-grid{grid-template-columns:1fr}.top-resource-nav{display:none}}
+.about{width:min(980px,calc(100% - 28px));margin:auto;padding:46px 0 64px}
+.about-hero{max-width:760px;margin-bottom:26px}.about-hero h1{font-size:clamp(32px,4.3vw,48px);line-height:1.06;letter-spacing:-.045em;margin:9px 0 12px}.about-hero p{margin:0;color:var(--ink2);font-size:14px;line-height:1.7}
+.about-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.about-section{margin-top:20px}.about-heading{max-width:760px;margin-bottom:11px}.about-heading span{font-size:9px;color:var(--brand);font-weight:900;text-transform:uppercase;letter-spacing:.08em}.about-heading h2{font-size:21px;margin:4px 0 5px;letter-spacing:-.03em}.about-heading p{margin:0;color:var(--muted);font-size:11px}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.about-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:17px}.about-card h3{margin:0 0 6px;font-size:13px}.about-card p,.about-card li{color:var(--muted);font-size:10px;line-height:1.58}.about-card ul{padding-left:18px;margin:0}
+.about-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.flow-card{padding:16px;background:#fff;border:1px solid var(--line);border-radius:11px}.flow-card span{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:900}.flow-card b{display:block;margin-top:10px;font-size:12px}.flow-card p{margin:4px 0 0;color:var(--muted);font-size:9px;line-height:1.55}
+.about-important{padding:18px;border-radius:12px;background:#111827;color:#fff}.about-important h2{margin:0 0 8px;font-size:18px}.about-important p{margin:0;color:#cbd5e1;font-size:10px;line-height:1.65}.about-important p+p{margin-top:8px}
+@media(max-width:850px){.about-grid,.about-flow{grid-template-columns:1fr 1fr}}@media(max-width:620px){.about{padding-top:30px}.about-grid,.about-flow{grid-template-columns:1fr}.top-resource-nav{display:none}}
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="shell topbar-inner">
-    <a class="brand" href="index.html" aria-label="RentReady VIC home">
-      <span class="brand-mark">R</span>
-      <span><b>RentReady VIC</b><small>Work · Rent · Support</small></span>
-    </a>
+    <a class="brand" href="index.html" aria-label="RentReady VIC home"><span class="brand-mark">R</span><span><b>RentReady VIC</b><small>Work · Rent · Support</small></span></a>
     <nav class="top-resource-nav" aria-label="RentReady navigation">
       <a class="top-resource-link" href="about.html">About</a>
       <details class="resource-menu">
@@ -41,48 +33,50 @@
         </div>
       </details>
     </nav>
-    <a class="btn primary" href="app.html">Start →</a>
+    <a class="btn primary" href="app.html">Start assessment →</a>
   </div>
 </header>
 
-<main class="about-simple">
-  <section class="about-simple-hero">
+<main class="about">
+  <section class="about-hero">
     <span class="eyebrow">About RentReady VIC</span>
-    <h1>A simpler way to test a rental against your income.</h1>
-    <p>RentReady brings the main numbers into one place so you can compare your income with a property before you apply.</p>
-    <div class="about-simple-actions"><a class="btn primary" href="app.html">Start my assessment →</a><a class="btn" href="index.html">Home</a></div>
+    <h1>Rental planning built around the situation of people on income support.</h1>
+    <p>RentReady is designed to answer one practical question: if you receive income support and are considering a rental property, what do the numbers look like, what support may be relevant, what can improve the position, and what rights apply when you apply?</p>
+    <div class="about-actions"><a class="btn primary" href="app.html">Start my assessment →</a><a class="btn" href="index.html">Back to home</a></div>
   </section>
 
-  <div class="about-simple-grid">
-    <section class="about-simple-card">
-      <h2>What you enter</h2>
-      <ul>
-        <li>Your payment and income</li>
-        <li>The rent and bond</li>
-        <li>Relevant household details</li>
-      </ul>
-    </section>
-    <section class="about-simple-card">
-      <h2>What you see</h2>
-      <ul>
-        <li>Projected household income</li>
-        <li>How the rent compares</li>
-        <li>Possible support and income targets</li>
-      </ul>
-    </section>
-    <section class="about-simple-card">
-      <h2>What stays separate</h2>
-      <ul>
-        <li>RentReady planning estimates</li>
-        <li>Government eligibility rules</li>
-        <li>Rental application and rights information</li>
-      </ul>
-    </section>
-  </div>
+  <section class="about-section">
+    <div class="about-heading"><span>The purpose</span><h2>What RentReady is trying to solve</h2><p>Rental decisions often require information from several systems at once.</p></div>
+    <div class="about-grid">
+      <article class="about-card"><h3>Income-support payments</h3><p>Your payment can change as employment income changes, so the amount available for rent is not always fixed.</p></article>
+      <article class="about-card"><h3>A specific rental</h3><p>A property decision depends on the actual weekly rent, bond and household situation—not just a generic affordability percentage.</p></article>
+      <article class="about-card"><h3>Application rules</h3><p>Rental applications involve evidence, personal information and legal limits that are separate from the financial calculation.</p></article>
+    </div>
+  </section>
 
-  <section class="about-simple-wide">
-    <h2>Important</h2>
-    <p>RentReady is an independent planning tool. It does not replace Services Australia, Housing Victoria, Consumer Affairs Victoria, legal advice or an official eligibility decision. Use the linked sources to confirm important rules and amounts.</p>
+  <section class="about-section">
+    <div class="about-heading"><span>The workflow</span><h2>How the tool is organised</h2></div>
+    <div class="about-flow">
+      <article class="flow-card"><span>1</span><b>Income</b><p>Select your income-support payment and add employment or household income.</p></article>
+      <article class="flow-card"><span>2</span><b>Property</b><p>Add the rental you are considering, including weekly rent and bond.</p></article>
+      <article class="flow-card"><span>3</span><b>Your result</b><p>See projected income, rent share, affordability gap, Rent Assistance and optional RentAssist checks.</p></article>
+      <article class="flow-card"><span>4</span><b>Improve & prepare</b><p>Test alternative income or rent scenarios and review the application and your rights.</p></article>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="about-heading"><span>What it uses</span><h2>Different rules stay separate</h2><p>RentReady connects information without pretending that every test is the same.</p></div>
+    <div class="about-grid">
+      <article class="about-card"><h3>Australian social-security data</h3><p>Payment rates, income-test rules, Rent Assistance and work-income concessions are only modelled from the connected Australian social-security dataset. If a required rule is not supplied, RentReady does not substitute a hard-coded social-security rule.</p></article>
+      <article class="about-card"><h3>Victorian RentAssist rules</h3><p>RentAssist Bond Loan checks are shown separately because Housing Victoria applies its own household, asset, residency, property-ownership, rent-share and bond rules.</p></article>
+      <article class="about-card"><h3>Victorian rental rights</h3><p>Application information and rights are kept separate from affordability and are linked to Consumer Affairs Victoria and other relevant Victorian sources.</p></article>
+    </div>
+  </section>
+
+  <section class="about-section about-important">
+    <h2>What RentReady does not decide</h2>
+    <p>RentReady does not make a Centrelink entitlement decision, Housing Victoria eligibility decision, legal finding or financial recommendation. It is a planning tool intended to make the interactions between income, a rental property and the application process easier to understand.</p>
+    <p>Where your actual payment amount, Centrelink record or an official agency decision is available, that official information takes priority over a RentReady estimate.</p>
   </section>
 </main>
 </body>
