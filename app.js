@@ -44,6 +44,8 @@
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
   let accountEmail = localStorage.getItem(STORAGE.account) || "";
+  let dismissedScenarios = loadJSON("rentready-dismissed-scenarios-v1", {});
+  let activeScenarioCode = null;
 
   function loadConfig() {
     const custom = loadJSON(STORAGE.config, {});
@@ -164,6 +166,63 @@
       description: "A payment-specific work-income concession may apply depending on your circumstances."
     };
   }
+
+  const SCENARIO_INFO = {
+    assets: {
+      title: "Assets test",
+      summary: "Some payments have asset limits as well as an income test.",
+      body: "<p>Centrelink can apply an assets test separately from the work-income test. A person can be under the earnings limit but still have their payment reduced or stopped because of assessable assets.</p><p>RentReady does not infer your Centrelink asset position from the rental form. If you know the assets test does not apply to your situation, you can mark this check not applicable for this assessment.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide/4/2"
+    },
+    deeming: {
+      title: "Deeming of financial assets",
+      summary: "Some financial assets are converted to deemed income for the income test.",
+      body: "<p>For some pension and allowance assessments, financial investments can be treated as producing a set amount of income under deeming rules, regardless of the actual return.</p><p>This can change the payment even when employment income is unchanged.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide/4/4"
+    },
+    partner_income: {
+      title: "Partner income",
+      summary: "A partner's income can independently reduce or stop some payments.",
+      body: "<p>If you are partnered, Centrelink may use your partner's income in addition to your own income. The thresholds and effect depend on the payment and circumstance selected.</p><p>RentReady removes this check automatically when you have selected a Single circumstance.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide"
+    },
+    parental_income_if_dependent: {
+      title: "Parental income if you are dependent",
+      summary: "Dependent Youth Allowance and ABSTUDY claims can be affected by parental income.",
+      body: "<p>For some dependent young people, parental means testing can change entitlement even when the person's own work income is under the personal income limit.</p><p>If Centrelink treats you as independent, mark this check not applicable.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide"
+    },
+    maintenance_income: {
+      title: "Maintenance income",
+      summary: "Child support or maintenance income can affect some family and student assessments.",
+      body: "<p>Some family-assistance and ABSTUDY assessments include maintenance income tests. This is separate from the personal work-income taper shown in the earnings chart.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide"
+    },
+    residence: {
+      title: "Residence and waiting-period rules",
+      summary: "Residence status and waiting periods can affect eligibility.",
+      body: "<p>Some payments require Australian residence conditions or waiting periods. These rules affect whether a payment is payable at all and are separate from the work-income calculation.</p>",
+      link: "https://guides.dss.gov.au/social-security-guide"
+    },
+    working_credit: {
+      title: "Working Credit",
+      summary: "Credits can offset employment income before the personal income test is applied.",
+      body: "<p>Working Credits can reduce the amount of employment income counted by the personal income test. The balance can therefore delay when earnings begin reducing your payment.</p><p>Use the ? beside Working Credit balance for the separate balance estimator.</p>",
+      link: "https://www.servicesaustralia.gov.au/working-credit"
+    },
+    income_bank: {
+      title: "Income Bank",
+      summary: "Student Income Bank credits can offset employment income before the student income test.",
+      body: "<p>For eligible student payments, Income Bank credits can build when income is low and can later offset employment income before the personal income test is applied.</p>",
+      link: "https://www.servicesaustralia.gov.au/income-bank"
+    },
+    work_bonus: {
+      title: "Work Bonus",
+      summary: "Eligible pensioners may have employment income disregarded before the pension income test.",
+      body: "<p>The Work Bonus can reduce the amount of eligible work income counted under the pension income test and can include an income-bank balance.</p>",
+      link: "https://www.servicesaustralia.gov.au/work-bonus"
+    }
+  };
 
   const NO_WORK_INFO = {
     looking: {
@@ -416,13 +475,69 @@
     $("reason-modal").hidden = true;
   }
 
+  function scenarioContextKey() {
+    const p = selectedPayment();
+    const r = selectedRate();
+    return (p ? p.slug : "none") + "|" + (r ? String(r.label || "") : "none");
+  }
+
+  function dismissScenario(code) {
+    const key = scenarioContextKey();
+    const existing = Array.isArray(dismissedScenarios[key]) ? dismissedScenarios[key] : [];
+    if (!existing.includes(code)) existing.push(code);
+    dismissedScenarios[key] = existing;
+    saveJSON("rentready-dismissed-scenarios-v1",dismissedScenarios);
+    renderPaymentScenarioGuidance();
+  }
+
+  function relevantScenarioCodes() {
+    const p = selectedPayment();
+    const r = selectedRate();
+    const rule = p && r ? currentWorkRule(p.slug,r.label) : null;
+    if (!p) return [];
+
+    const codes = new Set();
+    const baseTests = p.incomeTest && Array.isArray(p.incomeTest.other_tests) ? p.incomeTest.other_tests : [];
+    baseTests.forEach(x => codes.add(x));
+    if (rule && Array.isArray(rule.otherTests)) rule.otherTests.forEach(x => codes.add(x));
+
+    if (selectedCircumstanceIsSingle()) codes.delete("partner_income");
+    const label = String(r && r.label || "").toLowerCase();
+    if (label.includes("independent")) codes.delete("parental_income_if_dependent");
+
+    const concession = selectedWorkConcession();
+    if (concession && SCENARIO_INFO[concession.code]) codes.add(concession.code);
+
+    const dismissed = new Set(dismissedScenarios[scenarioContextKey()] || []);
+    return [...codes].filter(code => SCENARIO_INFO[code] && !dismissed.has(code));
+  }
+
+  function openScenarioModal(code) {
+    const info = SCENARIO_INFO[code];
+    if (!info) return;
+    activeScenarioCode = code;
+    $("scenario-modal-title").textContent = info.title;
+    $("scenario-modal-body").innerHTML = info.body;
+    $("scenario-modal-link").href = info.link;
+    $("scenario-modal").hidden = false;
+  }
+
+  function closeScenarioModal() {
+    $("scenario-modal").hidden = true;
+    activeScenarioCode = null;
+  }
+
   function renderPaymentScenarioGuidance() {
     if (!$("scenario-prompts")) return;
     const p = selectedPayment();
-    if (!p) return;
+    const input = $("working-credit");
+    if (!p) {
+      $("scenario-prompts").innerHTML = '<div class="empty-state">Select a payment to see any remaining eligibility checks.</div>';
+      $("scenario-count").textContent = "No payment selected";
+      return;
+    }
 
     const concession = selectedWorkConcession();
-    const input = $("working-credit");
     if ($("working-credit-help")) {
       $("working-credit-help").hidden = !(concession && (concession.code === "working_credit" || concession.code === "working_credit_or_work_bonus_if_age_eligible"));
     }
@@ -433,13 +548,13 @@
     } else if (concession && concession.code === "work_bonus") {
       $("work-concession-label").textContent = "Work Bonus income bank balance";
       input.max = String(concession.balance_max || 11800);
-      $("work-concession-help").textContent = "For eligible pensioners, the Work Bonus can disregard $300 of work income per fortnight plus available income-bank credits.";
-    } else if (concession && concession.code === "working_credit") {
+      $("work-concession-help").textContent = "For eligible pensioners, the Work Bonus can disregard work income before the pension income test.";
+    } else if (concession && (concession.code === "working_credit" || concession.code === "working_credit_or_work_bonus_if_age_eligible")) {
       $("work-concession-label").textContent = "Working Credit balance";
       input.max = String(p.slug === "youth-allowance-jobseeker"
         ? (concession.youth_jobseeker_balance_max || 3500)
         : (concession.balance_max || 1000));
-      $("work-concession-help").textContent = "Working Credits offset employment income before the allowance income test is applied.";
+      $("work-concession-help").textContent = "Working Credits can offset employment income before the personal income test is applied.";
     } else if (concession) {
       $("work-concession-label").textContent = "Work concession balance, if applicable";
       input.max = "11800";
@@ -451,17 +566,21 @@
       if (Number(input.value || 0) > 0) input.value = "0";
     }
 
-    const prompts = [...(p.scenarioPrompts || [])];
-    const tests = p.incomeTest && Array.isArray(p.incomeTest.other_tests) ? p.incomeTest.other_tests : [];
-    tests.forEach(code => {
-      const desc = data.otherTests && data.otherTests[code];
-      if (desc && !prompts.includes(desc)) prompts.push(desc);
-    });
-    $("scenario-count").textContent = prompts.length ? prompts.length + " checks" : "No extra checks";
-    $("scenario-prompts").innerHTML = prompts.length
-      ? prompts.map(x => "<span>" + esc(x) + "</span>").join("")
-      : "<span>No additional scenario prompts are configured for this payment.</span>";
+    const codes = relevantScenarioCodes();
+    $("scenario-count").textContent = codes.length
+      ? codes.length + (codes.length === 1 ? " relevant check" : " relevant checks")
+      : "No other checks showing";
+
+    $("scenario-prompts").innerHTML = codes.length
+      ? codes.map(code => {
+          const info = SCENARIO_INFO[code];
+          return '<button type="button" class="relevant-check" data-scenario-code="' + esc(code) + '">' +
+            '<span><b>' + esc(info.title) + '</b><small>' + esc(info.summary) + '</small></span>' +
+            '<i>?</i></button>';
+        }).join("")
+      : '<div class="empty-state">Nothing else is currently flagged from the payment and circumstance you selected.</div>';
   }
+
 
   function paymentAtWork(workFN, creditBalance, maxFN = paymentMaxFN) {
     const p = selectedPayment();
@@ -687,7 +806,10 @@
   }
 
   function recalcAll() {
+    updateWorkStatusUI();
+    updateRentalArrangementUI();
     updateOtherHouseholdIncomeVisibility();
+    renderPaymentScenarioGuidance();
     const prop = propertyForAssessment();
     const rent = prop ? Number(prop.rent || 0) : 0;
     const sc = scenario(workIncomeFN, rent);
@@ -702,39 +824,7 @@
   }
 
   function renderPaymentCoverage() {
-    if (!$("payment-scenario-prompts") || !$("additional-support-list")) return;
-    const p = selectedPayment();
-    const r = selectedRate();
-    const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
-    const prompts = [];
-
-    if (p && Array.isArray(p.scenarioPrompts)) prompts.push(...p.scenarioPrompts);
-    if (rule && Array.isArray(rule.otherTests)) {
-      rule.otherTests.forEach(key => {
-        const text = data && data.otherTests ? data.otherTests[key] : null;
-        prompts.push(text || String(key).replaceAll("_"," "));
-      });
-    }
-    if (p && p.workConcession) {
-      const wc = data && data.workConcessions ? data.workConcessions[p.workConcession] : null;
-      prompts.push(wc ? (wc.name + ": " + wc.description) : String(p.workConcession).replaceAll("_"," "));
-    }
-
-    const unique = [...new Set(prompts.filter(Boolean))];
-    $("payment-scenario-prompts").innerHTML = unique.length
-      ? unique.map(x => '<span>' + esc(x) + '</span>').join("")
-      : '<span>No additional scenario prompts supplied for this payment.</span>';
-
-    if (!p) {
-      $("payment-scenario-note").textContent = "Select a payment to see the tests that can affect it.";
-    } else if (!rule && p.incomeTest) {
-      $("payment-scenario-note").textContent = "This payment has a complex or non-linear assessment. RentReady shows the relevant scenario prompts but does not flatten the test into a misleading earnings slider; use your actual awarded payment amount where necessary.";
-    } else if (rule && rule.incomeBasis && rule.incomeBasis !== "personal_employment_income") {
-      $("payment-scenario-note").textContent = "The work-income chart covers your personal earnings component. This circumstance also needs " + rule.incomeBasis.replaceAll("_"," ") + ", so the actual Centrelink outcome can differ.";
-    } else {
-      $("payment-scenario-note").textContent = "The earnings chart covers the configured personal work-income test. Other listed tests can still change eligibility or the final payment.";
-    }
-
+    if (!$("additional-support-list")) return;
     const support = (data && Array.isArray(data.additionalSupport)) ? data.additionalSupport : [];
     $("additional-support-list").innerHTML = support.length ? support.map(item => {
       const rates = Array.isArray(item.rates) ? item.rates.filter(x => x && x.amount != null) : [];
@@ -747,6 +837,7 @@
         '</div>';
     }).join("") : '<div class="empty-state">Additional support catalogue is unavailable from the current data feed.</div>';
   }
+
 
   function renderResultOverview(sc, prop) {
     if (!$("result-overall-status")) return;
@@ -791,6 +882,99 @@
     $("result-overall-copy").textContent = copy;
   }
 
+
+  function currentWorkStatus() {
+    if ($("work-status-yes") && $("work-status-yes").checked) return "yes";
+    if ($("work-status-no") && $("work-status-no").checked) return "no";
+    return "";
+  }
+
+  function updateWorkStatusUI() {
+    if (!$("current-work-income-wrap") || !$("no-work-panel")) return;
+    const status = currentWorkStatus();
+    $("current-work-income-wrap").hidden = status !== "yes";
+    $("no-work-panel").hidden = status !== "no";
+    $("work-income").disabled = status !== "yes";
+    $("impact-income-slider").disabled = status !== "yes";
+
+    if (status === "no" && workIncomeFN !== 0) {
+      workIncomeFN = 0;
+      impactTestWorkFN = 0;
+      $("work-income").value = "0";
+      $("impact-income-slider").value = "0";
+    }
+  }
+
+  function renderIncomeFreeWarning(sc,rule) {
+    if (!$("income-free-warning")) return;
+    const status = currentWorkStatus();
+    const freeArea = rule ? Number(rule.freeArea || 0) : 0;
+    const above = status === "yes" && rule && workIncomeFN > freeArea;
+    $("income-free-warning").hidden = !above;
+    if (!above) return;
+
+    const freeDisplay = money(displayFromFN(freeArea),0);
+    if (sc && sc.pay && sc.pay.reduction > 0.01) {
+      $("income-free-warning-title").textContent = "Your work income may already be reducing your Centrelink payment";
+      $("income-free-warning-copy").textContent =
+        "Your gross work income is above the configured income-free area of about " + freeDisplay +
+        " per " + PERIODS[currentPeriod].label + ". This model estimates a current payment reduction of about " +
+        money(displayFromFN(sc.pay.reduction),0) + " per " + PERIODS[currentPeriod].label +
+        ". Other Centrelink tests can also change the result.";
+    } else {
+      $("income-free-warning-title").textContent = "Your earnings are above the base income-free area";
+      $("income-free-warning-copy").textContent =
+        "This may have Centrelink implications. Your gross work income is above about " + freeDisplay +
+        " per " + PERIODS[currentPeriod].label +
+        ", but available work-income credits may currently be delaying a payment reduction. See the detailed impact section below.";
+    }
+  }
+
+  function rentalArrangement() {
+    if ($("rental-arrangement-share") && $("rental-arrangement-share").checked) return "share";
+    if ($("rental-arrangement-own") && $("rental-arrangement-own").checked) return "own";
+    return "";
+  }
+
+  function selectedCircumstanceHasChildren() {
+    const r = selectedRate();
+    return !!(r && /(dependent child|with child|children|principal carer)/i.test(String(r.label || "")));
+  }
+
+  function syncRentAssistanceToArrangement() {
+    const arrangement = rentalArrangement();
+    if (!$("ra-situation") || !arrangement) return;
+    if (!selectedCircumstanceIsSingle() || selectedCircumstanceHasChildren()) return;
+
+    const options = [...$("ra-situation").options].map(o => o.value);
+    if (arrangement === "share" && options.includes("isp_single_sharer")) {
+      $("ra-situation").value = "isp_single_sharer";
+    }
+    if (arrangement === "own" && options.includes("isp_single") && $("ra-situation").value === "isp_single_sharer") {
+      $("ra-situation").value = "isp_single";
+    }
+  }
+
+  function updateRentalArrangementUI() {
+    if (!$("target-rent-entry")) return;
+    const arrangement = rentalArrangement();
+    $("target-rent-entry").hidden = !arrangement;
+    if ($("target-rent-label")) {
+      $("target-rent-label").textContent = arrangement === "share" ? "Your target weekly rent share" : "Target weekly rent";
+    }
+    if ($("rental-arrangement-context")) {
+      if (!arrangement) {
+        $("rental-arrangement-context").textContent = "Choose an arrangement before setting the target rent.";
+      } else if (arrangement === "share") {
+        $("rental-arrangement-context").textContent =
+          "Enter the amount you personally expect to pay each week. For an eligible single renter with no dependent children, RentReady also uses the single-sharer Rent Assistance context.";
+      } else {
+        $("rental-arrangement-context").textContent =
+          "Enter the weekly rent you expect to be responsible for in your own apartment or house.";
+      }
+    }
+    syncRentAssistanceToArrangement();
+  }
 
   function selectedCircumstanceIsSingle() {
     const rate = selectedRate();
@@ -864,6 +1048,7 @@
     const rule = p && r ? currentWorkRule(p.slug, r.label) : null;
     const credit = Number($("working-credit").value || 0);
     const cutoff = findPaymentCutoff(credit);
+    renderIncomeFreeWarning(sc, rule);
 
     $("impact-reduction").textContent = money(displayFromFN(sc.pay.reduction));
     $("impact-free-area").textContent = rule ? money(displayFromFN(Number(rule.freeArea || 0))) : "Not modelled";
@@ -1837,24 +2022,42 @@
       recalcAll();
     });
 
-    $("no-work-toggle").addEventListener("change", () => {
-      const noWork = $("no-work-toggle").checked;
-      $("no-work-reason-wrap").hidden = !noWork;
-      $("work-income").disabled = noWork;
-      $("impact-income-slider").disabled = noWork;
-      if (noWork) {
-        workIncomeFN = 0;
-        impactTestWorkFN = 0;
-        $("work-income").value = "0";
-        $("impact-income-slider").value = "0";
-      }
-      recalcAll();
-    });
+    ["work-status-yes","work-status-no"].forEach(id =>
+      $(id).addEventListener("change", recalcAll)
+    );
     $("no-work-reason").addEventListener("change", renderNoWorkReason);
     $("no-work-info-button").addEventListener("click", openNoWorkInfo);
     document.querySelectorAll("[data-close-reason-modal]").forEach(el =>
       el.addEventListener("click", closeNoWorkInfo)
     );
+
+    $("scenario-prompts").addEventListener("click", e => {
+      const item = e.target.closest("[data-scenario-code]");
+      if (item) openScenarioModal(item.dataset.scenarioCode);
+    });
+    document.querySelectorAll("[data-close-scenario-modal]").forEach(el =>
+      el.addEventListener("click", closeScenarioModal)
+    );
+    $("scenario-not-applicable").addEventListener("click", () => {
+      if (!activeScenarioCode) return;
+      const code = activeScenarioCode;
+      closeScenarioModal();
+      dismissScenario(code);
+    });
+
+    ["rental-arrangement-own","rental-arrangement-share"].forEach(id =>
+      $(id).addEventListener("change", () => { updateRentalArrangementUI(); recalcAll(); })
+    );
+    $("rental-arrangement-help").addEventListener("click", () => {
+      $("rental-arrangement-modal").hidden = false;
+    });
+    document.querySelectorAll("[data-close-rental-arrangement]").forEach(el =>
+      el.addEventListener("click", () => { $("rental-arrangement-modal").hidden = true; })
+    );
+
+    $("income-free-warning-detail").addEventListener("click", () => {
+      $("income-impact-chart").scrollIntoView({behavior:"smooth",block:"center"});
+    });
 
     $("open-income-impact").addEventListener("click", openIncomeImpactDetail);
     $("impact-income-slider").addEventListener("input", () => {
