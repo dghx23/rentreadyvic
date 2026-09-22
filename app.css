@@ -1358,3 +1358,60 @@ body{background:#f5f7fb}
   .income-impact-full .income-impact-stats{grid-template-columns:1fr!important}
   .income-impact-full #income-impact-chart{min-height:220px}
 }
+
+
+.income-impact-slider{
+  margin:10px 0;padding:12px;border:1px solid #d9dfeb;border-radius:7px;background:#fff
+}
+.income-impact-slider-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px
+}
+.income-impact-slider-head>div{display:grid}
+.income-impact-slider-head span{
+  font-size:8px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:850
+}
+.income-impact-slider-head strong{
+  font-size:16px;line-height:1.2;color:var(--ink);margin-top:2px
+}
+.income-impact-slider-head .btn{white-space:nowrap}
+#impact-income-slider{
+  width:100%;accent-color:var(--brand);cursor:pointer
+}
+#impact-income-slider:disabled{opacity:.4;cursor:not-allowed}
+.income-impact-slider-scale{
+  display:flex;justify-content:space-between;gap:10px;margin-top:3px;
+  font-size:8px;color:var(--muted)
+}
+.income-impact-preview{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px
+}
+.income-impact-preview>div{
+  padding:9px;border:1px solid var(--line);border-radius:5px;background:#f8fafc
+}
+.income-impact-preview>div.primary{
+  background:#f1f0ff;border-color:#d8d5ff
+}
+.income-impact-preview span{
+  display:block;font-size:7px;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--muted);font-weight:850
+}
+.income-impact-preview strong{
+  display:block;font-size:13px;margin-top:3px;color:var(--ink)
+}
+.impact-preview-status{
+  margin-top:8px;padding:8px 9px;border-radius:5px;
+  background:#f8fafc;color:var(--ink2);font-size:9px
+}
+.impact-preview-status.ok{background:var(--ok-soft);color:#166534}
+.impact-preview-status.warn{background:var(--warn-soft);color:#78350f}
+.impact-preview-status.bad{background:var(--bad-soft);color:#991b1b}
+.legend-dot.test{background:var(--brand)}
+@media(max-width:760px){
+  .income-impact-slider-head{display:grid}
+  .income-impact-slider-head .btn{justify-self:start}
+  .income-impact-preview{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .income-impact-preview{grid-template-columns:1fr}
+  .income-impact-slider-scale{display:grid;grid-template-columns:1fr;text-align:left}
+}
