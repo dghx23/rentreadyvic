@@ -1233,3 +1233,41 @@ body{background:#f5f7fb}
 .wizard-step.completed .wizard-number{background:#dcfce7!important;color:#15803d!important}
 .wizard-step.completed b{color:#475467!important}
 .wizard-step.completed:after{content:"✓";font-size:9px;color:#15803d;font-weight:900;margin-left:auto}
+
+
+.income-target-summary{
+  display:grid;
+  grid-template-columns:1.45fr repeat(4,minmax(0,1fr));
+  gap:7px;margin:0 0 10px
+}
+.income-target-summary>div{
+  padding:11px;border:1px solid #dfe5ee;border-radius:6px;background:#fff
+}
+.income-target-summary .income-target-main{
+  background:linear-gradient(135deg,#111827,#1d2940);color:#fff;border-color:#111827
+}
+.income-target-summary span{
+  display:block;font-size:8px;text-transform:uppercase;letter-spacing:.055em;
+  color:#7f8ba0;font-weight:850
+}
+.income-target-summary .income-target-main span{color:#a5b4fc}
+.income-target-summary strong{
+  display:block;font-size:14px;line-height:1.25;margin-top:4px
+}
+.income-target-summary .income-target-main strong{font-size:20px}
+.income-target-summary p{
+  font-size:9px;line-height:1.4;color:#cbd5e1;margin:5px 0 0
+}
+.income-target-note{
+  padding:9px 11px;margin-bottom:12px;border-left:3px solid var(--brand);
+  background:#f5f4ff;border-radius:4px;font-size:9px;color:#5b6280
+}
+.income-target-note b{color:#383f65}
+@media(max-width:900px){
+  .income-target-summary{grid-template-columns:1fr 1fr}
+  .income-target-summary .income-target-main{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .income-target-summary{grid-template-columns:1fr}
+  .income-target-summary .income-target-main{grid-column:auto}
+}
