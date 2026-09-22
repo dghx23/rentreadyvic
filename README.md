@@ -17,14 +17,15 @@ The project is designed as one connected workflow rather than a set of disconnec
 
 ## Current user journey
 
-RentReady now follows an income-first sequence:
+RentReady now has a five-step financial/property workflow plus a separate linked application review:
 
-1. **Income** — assume the renter receives an income-support payment, select the payment/circumstance, add work and household income, and optionally include future Rent Assistance.
-2. **RentAssist bond rules** — test the pre-property income, asset, residency and property-ownership requirements.
-3. **Property** — paste or enter the rental listing, extract rent/bond/bedrooms, and save it to a shortlist.
-4. **Application rules** — explain the prescribed Victorian rental application, what may be requested, what cannot be requested, and unlawful discrimination.
-5. **Affordability** — compare the selected property against a general planning benchmark and the RentAssist bond-loan rent-share rule, with explicit shortfall explanations.
-6. **Optimise** — adjust work income and target rent with sliders to find a workable range.
+1. **Income** — assume the renter receives an income-support payment, select the payment/circumstance, show the current Centrelink rate in its own box, add work and household income, and optionally include future Rent Assistance.
+2. **Property** — paste or enter the rental listing, extract rent/bond/bedrooms, and save properties to a shortlist.
+3. **RentAssist** — assess the selected property against Housing Victoria RentAssist Bond Loan settings, including income, assets, residency, property ownership, rent share and bond amount.
+4. **Affordability** — compare the property against a general planning benchmark and the RentAssist rent-share test, with explicit dollar shortfalls.
+5. **Optimise** — adjust work income and target rent with sliders and recalculate payment, Rent Assistance and affordability together.
+
+**Application & Rights Review** is deliberately separate from the numbered financial workflow. It reuses the payment, income, household and selected-property information already entered to suggest permitted evidence, identify application shortfalls, surface contextual protected-characteristic cautions, check user-reported application red flags, and recommend practical optimisation strategies.
 
 Public pages deliberately do not expose the internal payment-data system. The public application calls the RentReady endpoint at `/api/social-security`; upstream connector configuration is admin/backend-only.
 
