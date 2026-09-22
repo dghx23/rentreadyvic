@@ -3,83 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="RentReady VIC helps Victorian renters work from income to affordability, RentAssist bond-loan eligibility and rental applications.">
-<title>RentReady VIC — Start with your income</title>
+<meta name="description" content="RentReady VIC connects Centrelink income, Rent Assistance, rental property costs, RentAssist Bond Loans, affordability and Victorian application rights.">
+<title>RentReady VIC — Rental decision workspace</title>
 <style>
-:root{--brand:#4f46e5;--brand2:#7c3aed;--bg:#f4f6fa;--surface:#fff;--ink:#0f172a;--ink2:#334155;--muted:#64748b;--line:#e2e8f0;--soft:#eef2ff;--ok:#15803d;--font:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 var(--font);-webkit-font-smoothing:antialiased}a{text-decoration:none;color:inherit}.shell{width:min(1160px,calc(100% - 32px));margin:auto}
-header{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}.head{height:66px;display:flex;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center}.brand span:last-child{display:grid;line-height:1.08}.brand small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}.nav{margin-left:auto;display:flex;gap:20px;align-items:center;font-size:13px;color:var(--ink2)}.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:999px;background:var(--ink);color:#fff;font-weight:800}.btn:hover{background:var(--brand)}
-.hero{padding:76px 0 48px;background:radial-gradient(circle at 15% 0%,rgba(79,70,229,.12),transparent 35%),radial-gradient(circle at 90% 20%,rgba(124,58,237,.1),transparent 28%)}.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}.eyebrow{display:inline-flex;background:var(--soft);color:var(--brand);border:1px solid #c7d2fe;padding:5px 10px;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}.hero h1{font-size:clamp(34px,4.4vw,52px);line-height:1.03;letter-spacing:-.045em;margin:14px 0 14px}.hero h1.compact-title{max-width:760px}.gradient{background:linear-gradient(135deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:18px;color:var(--ink2);max-width:720px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:25px}.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}.note{font-size:12px;color:var(--muted);margin-top:15px}
-.flow{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 32px rgba(15,23,42,.07)}.flow h2{font-size:14px;margin:0 0 11px}.step{display:grid;grid-template-columns:32px 1fr;gap:10px;padding:9px 0;position:relative}.step:not(:last-child):after{content:"";position:absolute;left:15px;top:40px;bottom:-4px;width:2px;background:var(--line)}.n{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:850;z-index:1}.step b{display:block;font-size:13px}.step p{margin:2px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
-.section{padding:66px 0}.section.white{background:#fff}.section-head{max-width:760px;margin-bottom:28px}.kicker{font-size:11px;color:var(--brand);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.section h2{font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.035em;margin:8px 0 11px}.section-head p{margin:0;color:var(--muted);font-size:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}.white .card{background:#f8fafc}.num{width:38px;height:38px;border-radius:11px;background:var(--soft);color:var(--brand);display:grid;place-items:center;font-weight:850;margin-bottom:13px}.card h3{font-size:17px;margin:0 0 7px}.card p{font-size:13px;color:var(--muted);margin:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel{border-radius:18px;padding:25px;background:#111827;color:#fff}.panel.light{background:#fff;border:1px solid var(--line);color:var(--ink)}.panel h3{font-size:23px;margin:0 0 9px;letter-spacing:-.03em}.panel p{color:#cbd5e1;margin:0}.panel.light p{color:var(--muted)}.panel ul{padding-left:18px;color:#e2e8f0;font-size:13px}.panel.light ul{color:var(--ink2)}.panel li{margin:8px 0}.cta{display:flex;align-items:center;justify-content:space-between;gap:25px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-radius:20px;padding:28px}.cta h2{color:#fff;margin:0 0 7px;font-size:30px}.cta p{margin:0;color:rgba(255,255,255,.85)}.cta .btn{background:#fff;color:var(--brand);flex:none}
-footer{background:#fff;border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:11px}.foot{display:grid;grid-template-columns:1fr 1fr auto;gap:25px}.foot b{color:var(--ink)}.foot a{color:var(--brand);font-weight:800}
-@media(max-width:900px){.hero-grid,.cards,.split,.foot{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.cta{flex-direction:column;align-items:flex-start}}@media(max-width:620px){.nav a:not(.btn){display:none}.hero{padding-top:50px}.cards{grid-template-columns:1fr}.hero h1{font-size:40px}}
+:root{
+  --navy:#111827;--navy2:#192337;--indigo:#635bff;--indigo2:#7c3aed;--paper:#f2f4f8;
+  --white:#fff;--ink:#111827;--ink2:#3d4a5f;--muted:#6f7d91;--line:#dce1e9;
+  --green:#0f9f6e;--amber:#c47a12;--soft:#eeedff;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}a{text-decoration:none;color:inherit}
+.wrap{width:min(1380px,calc(100% - 38px));margin:auto}
+header{position:sticky;top:0;z-index:40;background:var(--navy);color:#fff;border-bottom:1px solid #263148}
+.head{height:60px;display:flex;align-items:center;gap:15px}.brand{display:flex;align-items:center;gap:9px}.mark{width:32px;height:32px;border-radius:6px;background:#fff;color:var(--navy);display:grid;place-items:center;font-weight:900}.brand-copy{display:grid;line-height:1.05}.brand-copy b{font-size:13px}.brand-copy small{margin-top:3px;font-size:8px;color:#94a3b8;text-transform:uppercase;letter-spacing:.08em}
+nav{margin-left:auto;display:flex;align-items:center;gap:18px;font-size:10px;font-weight:750;color:#bac5d5}.launch{padding:8px 12px;background:#fff;color:var(--navy);border-radius:4px;font-size:10px;font-weight:850}
+.hero{background:var(--navy);color:#fff;padding:42px 0 36px}.hero-grid{display:grid;grid-template-columns:minmax(0,1.2fr) 430px;gap:38px;align-items:end}.eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#a5b4fc;font-weight:850}.hero h1{font-size:clamp(38px,5vw,68px);line-height:.98;letter-spacing:-.055em;margin:8px 0 14px;max-width:850px}.hero h1 span{color:#a5b4fc}.hero p{margin:0;max-width:770px;color:#c1cad8;font-size:15px}
+.hero-actions{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:4px;font-size:10px;font-weight:850}.btn.primary{background:var(--indigo);color:#fff}.btn.ghost{border:1px solid #39465d;color:#dce4ef;background:#182236}
+.hero-panel{border:1px solid #33415a;background:#182236;border-radius:7px;padding:15px}.hero-panel>span{font-size:8px;color:#8fa0b8;text-transform:uppercase;letter-spacing:.08em;font-weight:850}.hero-panel h2{font-size:15px;margin:4px 0 12px}.journey{display:grid;gap:5px}.journey div{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;padding:8px;border:1px solid #2c3950;border-radius:4px;background:#151f31}.journey i{font-style:normal;width:24px;height:24px;border-radius:3px;background:#253149;color:#aab7ca;display:grid;place-items:center;font-size:9px;font-weight:850}.journey b{font-size:10px}.journey small{font-size:8px;color:#8595ab}.journey em{font-style:normal;font-size:8px;color:#7d8da3}
+.rights-entry{margin-top:8px;padding:9px;border:1px solid #4b4b78;background:#211f42;border-radius:4px}.rights-entry b{display:block;font-size:10px;color:#d8d5ff}.rights-entry small{font-size:8px;color:#aaa9cb}
+.main-grid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:22px;padding:30px 0 50px}.side-note{position:sticky;top:82px;align-self:start;border-left:3px solid var(--indigo);padding:5px 0 5px 13px}.side-note span{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--indigo);font-weight:850}.side-note h2{font-size:19px;line-height:1.15;margin:5px 0 8px;letter-spacing:-.025em}.side-note p{font-size:10px;color:var(--muted);margin:0 0 10px}.side-note a{font-size:9px;color:var(--indigo);font-weight:850}
+.content{display:grid;gap:16px}.module{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden}.module-head{display:grid;grid-template-columns:55px 1fr auto;gap:13px;align-items:start;padding:16px;border-bottom:1px solid #e7eaf0}.module-number{font-size:28px;font-weight:900;letter-spacing:-.05em;color:#d1d7e1;line-height:1}.module-head h3{font-size:17px;margin:0 0 3px}.module-head p{font-size:10px;color:var(--muted);margin:0;max-width:680px}.module-tag{font-size:8px;text-transform:uppercase;letter-spacing:.07em;color:var(--indigo);font-weight:850;padding:5px 7px;background:var(--soft);border-radius:3px}.module-body{display:grid;grid-template-columns:1fr 1fr;gap:0}.module-body>div{padding:15px}.module-body>div+div{border-left:1px solid var(--line)}.module-body b{display:block;font-size:10px;margin-bottom:5px}.module-body p{font-size:10px;color:var(--muted);margin:0}.module-body ul{margin:0;padding-left:16px;font-size:10px;color:var(--ink2)}.module-body li{margin:4px 0}
+.rights-module{background:linear-gradient(135deg,#f9f9ff,#fff);border-color:#cbc9ff}.rights-module .module-number{color:#b8b5ff}
+.organisations{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.org{padding:12px;border:1px solid var(--line);border-radius:5px;background:#fff}.org b{font-size:10px}.org p{font-size:9px;color:var(--muted);margin:3px 0 0}
+.final{margin:28px 0 60px;background:var(--indigo);color:#fff;border-radius:7px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:20px}.final h2{font-size:20px;margin:0 0 4px}.final p{margin:0;font-size:10px;color:#dedcff}.final .btn{background:#fff;color:var(--indigo)}
+footer{border-top:1px solid var(--line);background:#e8ecf2;padding:24px 0;color:var(--muted);font-size:9px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.foot a{color:var(--indigo);font-weight:800}
+@media(max-width:900px){.hero-grid,.main-grid{grid-template-columns:1fr}.side-note{position:static}.organisations{grid-template-columns:1fr 1fr}.hero-panel{margin-top:10px}}
+@media(max-width:600px){.wrap{width:min(100% - 20px,1380px)}nav a:not(.launch){display:none}.hero{padding-top:30px}.hero h1{font-size:42px}.module-head{grid-template-columns:40px 1fr}.module-tag{grid-column:2}.module-body{grid-template-columns:1fr}.module-body>div+div{border-left:0;border-top:1px solid var(--line)}.organisations{grid-template-columns:1fr}.final{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
-<header><div class="shell head">
-<a class="brand" href="index.html"><span class="mark">R</span><span>RentReady VIC<small>Work · Rent · Support</small></span></a>
-<nav class="nav"><a href="#how">How it works</a><a href="#rules">Application rules</a><a href="#about">About</a><a class="btn" href="app.html">Start with my income</a></nav>
+<header><div class="wrap head">
+<a class="brand" href="index.html"><span class="mark">R</span><span class="brand-copy"><b>RentReady VIC</b><small>Rental decision workspace</small></span></a>
+<nav><a href="#process">Process</a><a href="#rights">Application & rights</a><a href="about.html">About</a><a class="launch" href="app.html">Open workspace →</a></nav>
 </div></header>
 
-<main>
-<section class="hero">
-<div class="shell hero-grid">
+<section class="hero"><div class="wrap hero-grid">
 <div>
-<span class="eyebrow">One connected Victorian rental-planning tool</span>
-<h1 class="compact-title">Plan the rental before you apply.</h1>
-<p class="lead">RentReady connects Services Australia income support and Rent Assistance, the rental property, Housing Victoria's RentAssist Bond Loan, affordability planning and Victorian application rights. Enter the information once and reuse it across the process.</p>
-<div class="actions"><a class="btn" href="app.html">Start with my income →</a><a class="btn ghost" href="#how">See the full journey</a></div>
-<p class="note">Enter the important information once. The same income and property figures flow through every later step.</p>
+<span class="eyebrow">Income · Property · Assistance · Rights</span>
+<h1>Make the rental decision <span>before the application does.</span></h1>
+<p>RentReady brings Centrelink income, work, Rent Assistance, the actual property, Housing Victoria's RentAssist Bond Loan, affordability and Victorian application rights into one connected decision process.</p>
+<div class="hero-actions"><a class="btn primary" href="app.html">Start with my income →</a><a class="btn ghost" href="about.html">Why this tool exists</a></div>
 </div>
-<aside class="flow">
-<h2>Your main RentReady process</h2>
-<div class="step"><span class="n">1</span><div><b>Income</b><p>Services Australia / Centrelink payment, work income and future Rent Assistance.</p></div></div>
-<div class="step"><span class="n">2</span><div><b>Property</b><p>Rental listing, weekly rent, bond, bedrooms and shortlist.</p></div></div>
-<div class="step"><span class="n">3</span><div><b>RentAssist</b><p>Housing Victoria Bond Loan eligibility, rent-share test and bond cap.</p></div></div>
-<div class="step"><span class="n">4</span><div><b>Affordability</b><p>Income-versus-rent position, shortfalls and target range.</p></div></div>
-<div class="step"><span class="n">5</span><div><b>Optimise</b><p>Work-income, Rent Assistance and target-rent scenarios.</p></div></div>
-<div style="margin-top:10px;padding:11px;border-radius:11px;background:var(--soft);border:1px solid #c7d2fe">
-  <b style="font-size:12px">Separate: Application & Rights Review</b>
-  <p style="margin:3px 0 0;font-size:11px;color:var(--muted)">Consumer Affairs Victoria application rules, evidence limits, references, discrimination checks and a review linked to the income and property already entered.</p>
+<aside class="hero-panel">
+<span>Decision path</span><h2>One profile, five financial stages</h2>
+<div class="journey">
+<div><i>1</i><b>Income</b><small>Centrelink + work + Rent Assistance</small><em>Services Australia</em></div>
+<div><i>2</i><b>Property</b><small>Rent + bond + bedrooms</small><em>Rental market</em></div>
+<div><i>3</i><b>RentAssist</b><small>Bond Loan eligibility</small><em>Housing Victoria</em></div>
+<div><i>4</i><b>Affordability</b><small>Shortfalls + thresholds</small><em>RentReady</em></div>
+<div><i>5</i><b>Optimise</b><small>Work + rent scenarios</small><em>RentReady</em></div>
 </div>
+<div class="rights-entry"><b>Separate Application & Rights Review</b><small>Consumer Affairs Victoria · VEOHRC · application evidence · discrimination checks</small></div>
 </aside>
-</div>
+</div></section>
+
+<main class="wrap main-grid" id="process">
+<aside class="side-note">
+<span>What the workspace does</span>
+<h2>It follows the decision, not the agency boundaries.</h2>
+<p>Each organisation explains one part. RentReady carries the same renter and property information across all of them.</p>
+<a href="about.html">Read about the gap RentReady fills →</a>
+</aside>
+
+<div class="content">
+<section class="module">
+<div class="module-head"><span class="module-number">01</span><div><h3>Build the income position</h3><p>Choose the income-support payment and circumstance, see the current rate, add employment income and show how work changes the payment.</p></div><span class="module-tag">Services Australia</span></div>
+<div class="module-body"><div><b>Inputs</b><ul><li>Payment + circumstance</li><li>Work and household income</li><li>Working Credit / Income Bank / Work Bonus</li><li>Future Rent Assistance assumption</li></ul></div><div><b>Outputs</b><p>Projected payment, combined income, work-income reduction, break-even chart and flags for partner, parental, asset, deeming or other tests not captured by a simple earnings slider.</p></div></div>
 </section>
 
-<section class="section" id="how"><div class="shell">
-<div class="section-head"><span class="kicker">What the tool actually does</span><h2>It works forward from the money you have.</h2><p>Instead of asking you to choose a property first and discover later that the numbers do not work, RentReady builds your rental range from your income and eligibility position.</p></div>
-<div class="cards">
-<div class="card"><span class="num">01</span><h3>Income + Rent Assistance</h3><p>Select the Centrelink payment and circumstance, see the current rate in its own box, switch weekly / fortnightly / monthly / yearly, and add work and household income.</p></div>
-<div class="card"><span class="num">02</span><h3>Property + shortlist</h3><p>Paste the rental listing or enter it manually. Weekly rent, bond and bedroom count then flow into the support and affordability calculations.</p></div>
-<div class="card"><span class="num">03</span><h3>RentAssist Bond Loan</h3><p>Check the selected property against Housing Victoria eligibility settings, including income, assets, residency, property ownership, rent share and bond amount.</p></div>
-<div class="card"><span class="num">04</span><h3>Affordability + shortfalls</h3><p>Compare the property with projected income and the RentAssist rent-share threshold, then show the shortfall in dollars rather than only a pass/fail result.</p></div>
-<div class="card"><span class="num">05</span><h3>Optimisation sliders</h3><p>Move work income and target rent to see payment changes, Rent Assistance and both affordability thresholds move together.</p></div>
-<div class="card" style="border-color:#c7d2fe;background:#f8f7ff"><span class="num">A</span><h3>Application & Rights Review</h3><p>A separate linked section uses the income and property already entered to suggest permitted evidence, flag possible discrimination issues and show application strategies.</p></div>
-</div>
-</div></section>
+<section class="module">
+<div class="module-head"><span class="module-number">02</span><div><h3>Assess the actual property immediately</h3><p>Paste the advertisement or enter the property manually. The workspace calculates the rent share and bond position before the property is even saved.</p></div><span class="module-tag">Rental market</span></div>
+<div class="module-body"><div><b>Property information</b><ul><li>Weekly rent</li><li>Bond</li><li>Bedrooms</li><li>Address + shortlist</li></ul></div><div><b>Immediate indication</b><p>Rent as a percentage of projected household income, estimated Rent Assistance, general affordability position and bond amount against the RentAssist bedroom cap.</p></div></div>
+</section>
 
-<section class="section white" id="rules"><div class="shell">
-<div class="section-head"><span class="kicker">Application rights</span><h2>Then it explains what the agent can and cannot ask you for.</h2><p>RentReady turns the Victorian application rules into a practical checklist once you have worked out whether the property is financially viable.</p></div>
-<div class="split">
-<div class="panel light"><h3>What may be requested</h3><ul><li>Personal and employment details from the prescribed application.</li><li>Limited financial evidence to show capacity to pay.</li><li>Limited identity documents.</li><li>Rental or residential history.</li><li>Personal-referee contact details if requested.</li></ul></div>
-<div class="panel"><h3>What is off limits</h3><ul><li>Questions about previous rental disputes or legal action.</li><li>Bond-history questions.</li><li>Daily bank transaction details.</li><li>Extra questions outside the prescribed application form.</li><li>Protected-attribute questions without the required written reason.</li></ul></div>
-</div>
-</div></section>
+<section class="module">
+<div class="module-head"><span class="module-number">03</span><div><h3>Run the RentAssist Bond Loan checks</h3><p>Keep the Victorian assistance scheme separate from the general affordability benchmark.</p></div><span class="module-tag">Housing Victoria</span></div>
+<div class="module-body"><div><b>Eligibility dimensions</b><ul><li>Household income</li><li>Assets</li><li>Residency</li><li>Property ownership</li><li>Rent-share rule</li><li>Bond amount</li></ul></div><div><b>Why it matters</b><p>A property can be financially tight even if the RentAssist rent-share test passes, or fail RentAssist even when a renter can otherwise budget for it. RentReady shows both.</p></div></div>
+</section>
 
-<section class="section white" id="about"><div class="shell">
-<div class="section-head"><span class="kicker">Why RentReady exists</span><h2>One rental decision crosses several different systems.</h2><p>RentReady is designed to connect information that is normally split across Centrelink payments, social-security rules, Victorian bond assistance, rental application law and discrimination protections.</p></div>
-<div class="cards">
-<div class="card"><h3>The gap</h3><p>A payment rate by itself does not answer whether a particular rent is workable. A bond-loan eligibility test by itself does not explain how work could change the payment. Rental application rules sit somewhere else again. RentReady joins those decisions together.</p></div>
-<div class="card"><h3>The organisations involved</h3><p>Services Australia administers Centrelink payments; DSS maintains the Social Security Guide; Housing Victoria runs RentAssist Bond Loans; Consumer Affairs Victoria explains rental application rules; VEOHRC covers discrimination protections; VCAT is a formal tenancy-dispute pathway.</p></div>
-<div class="card"><h3>The objective</h3><p>Enter circumstances once, reuse them across the journey, show the rule as well as the result, and make shortfalls visible early enough to change the target rent, work-income scenario, property choice or application strategy.</p></div>
-</div>
-<div class="actions" style="margin-top:18px"><a class="btn ghost" href="about.html">Read more about RentReady →</a></div>
-</div></section>
+<section class="module">
+<div class="module-head"><span class="module-number">04</span><div><h3>Explain the affordability shortfall</h3><p>Do more than show green or red. Show exactly how far the current property sits from each threshold.</p></div><span class="module-tag">Decision support</span></div>
+<div class="module-body"><div><b>General planning view</b><p>Shows the selected rent against a configurable household-income benchmark and expresses the gap in dollars per week.</p></div><div><b>RentAssist view</b><p>Shows the separate RentAssist rent-share ceiling, bond cap and any shortfall against the selected property.</p></div></div>
+</section>
 
-<section class="section"><div class="shell"><div class="cta"><div><h2>Start with the number that matters first: your income.</h2><p>Build the income profile, add the property, check RentAssist, see the shortfall and then optimise the combination before reviewing the application.</p></div><a class="btn" href="app.html">Open RentReady VIC →</a></div></div></section>
+<section class="module">
+<div class="module-head"><span class="module-number">05</span><div><h3>Optimise the situation</h3><p>Turn the result into options rather than leaving the renter with a dead end.</p></div><span class="module-tag">Scenario modelling</span></div>
+<div class="module-body"><div><b>Move the variables</b><ul><li>Target weekly rent</li><li>Employment income</li><li>Payment reduction</li><li>Rent Assistance</li></ul></div><div><b>Find the workable zone</b><p>The sliders show how a cheaper property, additional work income or a different shortlist option changes both the general affordability and RentAssist position.</p></div></div>
+</section>
+
+<section class="module rights-module" id="rights">
+<div class="module-head"><span class="module-number">A</span><div><h3>Application & Rights Review</h3><p>This is deliberately separate from the financial sequence but linked to everything already entered.</p></div><span class="module-tag">Victoria</span></div>
+<div class="module-body"><div><b>What it reviews</b><ul><li>Permitted financial and identity evidence</li><li>Prescribed rental-application requirements</li><li>Extra or prohibited questions</li><li>Protected-characteristic context</li><li>Potential discrimination red flags</li></ul></div><div><b>Why link it to the numbers?</b><p>The same income and property information can reveal application weaknesses, evidence options and strategies. The review can flag context without pretending to make a legal finding.</p></div></div>
+</section>
+
+<section>
+<div class="organisations">
+<div class="org"><b>Services Australia</b><p>Administers Centrelink payments, Rent Assistance and individual entitlement decisions.</p></div>
+<div class="org"><b>Department of Social Services</b><p>Maintains the Social Security Guide and policy framework behind many payment rules.</p></div>
+<div class="org"><b>Housing Victoria</b><p>Runs RentAssist Bond Loans for eligible Victorian private renters.</p></div>
+<div class="org"><b>Consumer Affairs Victoria</b><p>Explains Victorian renting rules and the prescribed application process.</p></div>
+<div class="org"><b>VEOHRC</b><p>Explains equal-opportunity and discrimination protections in accommodation.</p></div>
+<div class="org"><b>VCAT</b><p>Formal tribunal pathway for many residential tenancy disputes.</p></div>
+</div>
+</section>
+</div>
 </main>
 
-<footer><div class="shell foot"><div><b>RentReady VIC</b><br>Independent guidance prototype for Victorian renters.</div><div>Check important decisions against the official sources linked inside the tool.</div><div><a href="about.html" style="color:var(--brand);font-weight:800">About RentReady</a> · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></div></div></footer>
+<div class="wrap final"><div><h2>Start with the income profile.</h2><p>The workspace carries the same information forward so you do not keep starting again at each stage.</p></div><a class="btn" href="app.html">Open RentReady VIC →</a></div>
+
+<footer><div class="wrap foot"><span><b>RentReady VIC</b> · Victorian rental decision workspace</span><span><a href="about.html">About RentReady</a> · Tool by <a href="https://sentrixdigital.com.au" target="_blank" rel="noopener">sentrixdigital.com.au</a></span></div></footer>
 </body>
 </html>
