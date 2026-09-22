@@ -37,7 +37,7 @@
       state.timer = setTimeout(async () => {
         state.controller = new AbortController();
         try {
-          const r = await fetch("/api/address-search?q=" + encodeURIComponent(q), { signal:state.controller.signal });
+          const r = await fetch("/api/address-autocomplete?q=" + encodeURIComponent(q), { signal:state.controller.signal });
           const data = await r.json();
           const rows = data && Array.isArray(data.results) ? data.results : [];
           if (!rows.length) {
