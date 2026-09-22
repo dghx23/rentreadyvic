@@ -131,21 +131,38 @@
             </div>
           </div>
 
-          <div class="centrelink-rate-box payment-wide-rate" aria-live="polite">
-            <div class="centrelink-rate-label">Current Centrelink rate</div>
-            <div class="centrelink-rate-value">
-              <strong id="centrelink-rate-display">$0.00</strong>
-              <span class="period-label">per fortnight</span>
+          <div class="payment-rate-pair">
+            <div class="centrelink-rate-box payment-wide-rate" aria-live="polite">
+              <div class="centrelink-rate-label">Current Centrelink rate</div>
+              <div class="centrelink-rate-value">
+                <strong id="centrelink-rate-display">$0.00</strong>
+                <span class="period-label">per fortnight</span>
+              </div>
+              <div class="rate-period-slider" aria-label="Centrelink rate display period">
+                <button type="button" data-rate-period="week">Weekly</button>
+                <button type="button" data-rate-period="fortnight" class="active">Fortnightly</button>
+                <button type="button" data-rate-period="month">Monthly</button>
+                <button type="button" data-rate-period="year" class="quiet">Yearly</button>
+              </div>
+              <div class="centrelink-rate-meta">
+                <span>For <b id="centrelink-rate-circumstance">—</b></span>
+                <span>Effective <b id="payment-effective">—</b></span>
+              </div>
             </div>
-            <div class="rate-period-slider" aria-label="Centrelink rate display period">
-              <button type="button" data-rate-period="week">Weekly</button>
-              <button type="button" data-rate-period="fortnight" class="active">Fortnightly</button>
-              <button type="button" data-rate-period="month">Monthly</button>
-              <button type="button" data-rate-period="year" class="quiet">Yearly</button>
-            </div>
-            <div class="centrelink-rate-meta">
-              <span>For <b id="centrelink-rate-circumstance">—</b></span>
-              <span>Effective <b id="payment-effective">—</b></span>
+
+            <div class="centrelink-rate-box maximum-support-box" aria-live="polite">
+              <div class="centrelink-rate-label">Maximum possible income support</div>
+              <div class="centrelink-rate-value maximum-support-value">
+                <strong id="maximum-support-display">$0.00</strong>
+                <span class="period-label">per fortnight</span>
+              </div>
+              <div class="maximum-support-breakdown">
+                <span>Current payment <b id="maximum-support-payment">$0</b></span>
+                <span>+ maximum Rent Assistance <b id="maximum-support-ra">$0</b></span>
+              </div>
+              <div class="centrelink-rate-meta">
+                <span id="maximum-support-context">Assumes the maximum Rent Assistance for the selected rental situation.</span>
+              </div>
             </div>
           </div>
         </div>
