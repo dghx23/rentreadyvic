@@ -2003,6 +2003,9 @@
 
   function initialiseOptimiser() {
     const prop = propertyForAssessment();
+    if ($("income-gap-slider")) {
+      delete $("income-gap-slider").dataset.touched;
+    }
     $("optimise-work").value = Math.min(Number($("optimise-work").max), workIncomeFN);
     $("optimise-rent").value = prop && prop.rent ? Math.min(Number($("optimise-rent").max), prop.rent) : 350;
     renderOptimiser();
@@ -2025,6 +2028,7 @@
     $("optimise-general-gap").textContent = gapText(generalGap);
     $("target-general-rent").textContent = money(generalLimit,0) + "/wk";
     $("target-general-income").textContent = requiredWorkText(rent, cfg.generalAffordabilityPct, "general");
+    renderIncomeGapResolver(rent,work,generalGap);
 
     if (!rentAssistActive()) {
       $("optimise-verdict").textContent = generalPass
@@ -2074,6 +2078,87 @@
     }
 
     return Math.max(0, Number(rule.freeArea || 0) + offset);
+  }
+
+  function workTargetForGeneralBenchmark(rent) {
+    rent = Number(rent || 0);
+    if (!rent) return null;
+
+    const max = 12000;
+    for (let w = 0; w <= max; w += 10) {
+      const sc = scenario(w, rent);
+      if (rent <= sc.householdWeek * cfg.generalAffordabilityPct) return w;
+    }
+    return Infinity;
+  }
+
+  function renderIncomeGapResolver(rent, currentWorkFN, currentGap) {
+    const panel = $("income-gap-resolver");
+    if (!panel) return;
+
+    const needsHelp = rent > 0 && currentGap > 0;
+    panel.hidden = !needsHelp;
+    if (!needsHelp) return;
+
+    const target = workTargetForGeneralBenchmark(rent);
+    const current = Math.max(0, Number(currentWorkFN || 0));
+    const slider = $("income-gap-slider");
+
+    if (target === Infinity) {
+      $("income-gap-target-value").textContent = "Above modelled range";
+      $("income-gap-extra-needed").textContent = "A lower rent may be needed.";
+      slider.min = "0";
+      slider.max = String(Math.max(4000, current * 1.5));
+      slider.value = String(Math.min(Number(slider.max), Math.max(current, Number(slider.value || current))));
+      $("income-gap-target-label").textContent = "Target: above modelled range";
+    } else {
+      const max = Math.max(target * 1.25, current * 1.25, 1000);
+      slider.min = "0";
+      slider.max = String(Math.ceil(max / 50) * 50);
+      slider.step = "10";
+      if (!slider.dataset.touched) slider.value = String(Math.min(Number(slider.max), current));
+      $("income-gap-target-value").textContent = money(displayFromFN(target),0) + " / " + PERIODS[currentPeriod].label;
+      const extra = Math.max(0,target-current);
+      $("income-gap-extra-needed").textContent = extra > 0
+        ? "About " + money(displayFromFN(extra),0) + " more per " + PERIODS[currentPeriod].label
+        : "Current work income is already at the modelled target";
+      $("income-gap-target-label").textContent = "Target: " + money(displayFromFN(target),0) + " / " + PERIODS[currentPeriod].label;
+    }
+
+    $("income-gap-current-label").textContent =
+      "Current: " + money(displayFromFN(current),0) + " / " + PERIODS[currentPeriod].label;
+
+    renderIncomeGapSliderState(rent,target);
+  }
+
+  function renderIncomeGapSliderState(rent,target) {
+    if (!$("income-gap-slider")) return;
+    const testedFN = Math.max(0, Number($("income-gap-slider").value || 0));
+    const sc = scenario(testedFN,rent);
+    const affordableRent = sc.householdWeek * cfg.generalAffordabilityPct;
+    const gap = rent - affordableRent;
+
+    $("income-gap-slider-value").textContent =
+      money(displayFromFN(testedFN),0) + " / " + PERIODS[currentPeriod].label;
+    $("income-gap-projected-income").textContent = money(sc.householdWeek,0) + "/wk";
+    $("income-gap-affordable-rent").textContent = money(affordableRent,0) + "/wk";
+    $("income-gap-remaining").textContent = gap <= 0
+      ? money(Math.abs(gap),0) + "/wk headroom"
+      : money(gap,0) + "/wk short";
+
+    if (gap <= 0) {
+      $("income-gap-message").className = "income-gap-message success";
+      $("income-gap-message").textContent =
+        "At this work-income level, the selected rent is inside the general planning benchmark. This is a planning estimate, not a guarantee of rental approval.";
+    } else if (target !== Infinity && testedFN < target) {
+      $("income-gap-message").className = "income-gap-message";
+      $("income-gap-message").textContent =
+        "The property is still about " + money(gap,0) + "/wk above the benchmark. Move the slider toward the marked target to see where it crosses into range.";
+    } else {
+      $("income-gap-message").className = "income-gap-message";
+      $("income-gap-message").textContent =
+        "The property remains above the benchmark at this tested income. A lower rent may be the more effective lever.";
+    }
   }
 
   function workTargetForProperty(rent) {
@@ -2357,6 +2442,14 @@
 
     $("optimise-work").addEventListener("input", renderOptimiser);
     $("optimise-rent").addEventListener("input", renderOptimiser);
+    $("income-gap-slider").addEventListener("input", () => {
+      $("income-gap-slider").dataset.touched = "1";
+      const rent = Number($("optimise-rent").value || 0);
+      const target = workTargetForGeneralBenchmark(rent);
+      renderIncomeGapSliderState(rent,target);
+      $("optimise-work").value = $("income-gap-slider").value;
+      renderOptimiser();
+    });
 
     function renderAccount() {
       const signed = !!accountEmail;
