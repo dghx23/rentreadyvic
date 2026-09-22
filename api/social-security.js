@@ -8,10 +8,14 @@ module.exports = async function handler(req, res) {
       const r = await fetch(base + "/api/compass/au", { headers: { Accept: "application/json" } });
       if (!r.ok) throw new Error("Upstream returned " + r.status);
       const payload = await r.json();
+      const rr = payload.rentready || null;
       return res.status(200).json({
         ok: true,
         jurisdiction: "AU",
-        paymentCount: Array.isArray(payload.programmes) ? payload.programmes.length : 0,
+        programmeCount: Array.isArray(payload.programmes) ? payload.programmes.length : 0,
+        paymentCount: rr && Array.isArray(rr.primary_payments) ? rr.primary_payments.length : 0,
+        supportCount: rr && Array.isArray(rr.additional_support) ? rr.additional_support.length : 0,
+        rulePackVersion: rr && rr.version ? rr.version : null,
         checkedAt: new Date().toISOString()
       });
     }
