@@ -770,11 +770,29 @@
     return r && r.amount != null ? rateToFN(r.amount, r.unit) : 0;
   }
 
+  function renderMaximumSupport() {
+    if (!$("maximum-support-display")) return;
+
+    const paymentFN = selectedRateFN();
+    const band = selectedRABand();
+    const maxRAFN = band ? Number(band.maximum || 0) : 0;
+    const totalFN = paymentFN + maxRAFN;
+
+    $("maximum-support-display").textContent = money(displayFromFN(totalFN));
+    $("maximum-support-payment").textContent = money(displayFromFN(paymentFN));
+    $("maximum-support-ra").textContent = money(displayFromFN(maxRAFN));
+
+    const situation = band ? (band.label || "selected rental situation") : "selected rental situation";
+    $("maximum-support-context").textContent =
+      "Assumes maximum Rent Assistance for " + situation + ".";
+  }
+
   function renderSelectedCentrelinkRate() {
     const r = selectedRate();
     const rateFN = selectedRateFN();
     $("centrelink-rate-display").textContent = r && r.amount != null ? money(displayFromFN(rateFN)) : "Unavailable";
     $("centrelink-rate-circumstance").textContent = r ? r.label : "Manual amount";
+    renderMaximumSupport();
     if (!r || r.amount == null) {
       $("payment-effective").textContent = "Not supplied";
       renderMaximumSupportBox();
@@ -861,6 +879,8 @@
     select.innerHTML = bands.map(b => '<option value="' + esc(b.code) + '">' + esc(b.label) + '</option>').join("");
     const single = bands.find(b => b.code === "isp_single");
     if (single) select.value = single.code;
+    syncRentAssistanceToArrangement();
+    renderMaximumSupport();
     syncRABandFromPaymentCircumstance();
     renderMaximumSupportBox();
   }
@@ -2604,7 +2624,10 @@
     $("rentassist-explore-button").addEventListener("click", () => {
       saveRentAssistContext();
     });
-    $("ra-situation").addEventListener("change", recalcAll);
+    $("ra-situation").addEventListener("change", () => {
+      renderMaximumSupport();
+      recalcAll();
+    });
     $("household-type").addEventListener("change", recalcAll);
     $("assets").addEventListener("input", recalcAll);
     $("permanent-resident").addEventListener("change", recalcAll);
