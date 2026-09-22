@@ -214,7 +214,11 @@
                 <div class="money-input"><span>$</span><input id="other-income-week" type="number" step="10" min="0" value="0"></div>
                 <small>Shown only when the selected circumstance is not Single.</small>
               </label>
-              <label><span id="work-concession-label">Working Credit balance</span>
+              <label class="work-credit-field">
+                <span class="work-credit-label-row">
+                  <span id="work-concession-label">Working Credit balance</span>
+                  <button type="button" class="inline-help-button" id="working-credit-help" aria-label="Explain and estimate Working Credit">?</button>
+                </span>
                 <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
                 <small id="work-concession-help">Used only where the selected payment's configured work-income rule supports it.</small>
               </label>
@@ -948,6 +952,71 @@
       <h2 id="reason-modal-title">Centrelink information</h2>
       <div id="reason-modal-body"></div>
       <a id="reason-modal-link" class="btn primary" href="https://www.servicesaustralia.gov.au/mutual-obligation-requirements" target="_blank" rel="noopener">Read official information ↗</a>
+    </div>
+  </div>
+
+  <div class="credit-modal" id="credit-modal" hidden>
+    <div class="credit-modal-backdrop" data-close-credit-modal></div>
+    <div class="credit-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="credit-modal-title">
+      <button type="button" class="credit-modal-close" data-close-credit-modal aria-label="Close">×</button>
+      <span class="credit-modal-kicker">Working Credit estimator</span>
+      <h2 id="credit-modal-title">How might your Working Credit balance have built up?</h2>
+      <p class="credit-modal-intro">Services Australia calculates your actual balance when you report income. This estimator uses the dates and income pattern you provide to give a rough planning estimate only.</p>
+
+      <div class="credit-official-rule">
+        <b>Official rule in brief</b>
+        <p id="credit-official-copy">Working Credits can build when total income is below $48 per fortnight. Up to 48 credits can build each fortnight, subject to the payment-specific balance cap. Each credit can offset $1 of employment income before the payment income test is applied.</p>
+        <a href="https://www.servicesaustralia.gov.au/working-credit" target="_blank" rel="noopener">Services Australia Working Credit ↗</a>
+      </div>
+
+      <div class="credit-estimator-fields">
+        <label>When did this payment start?
+          <input type="date" id="credit-payment-start">
+        </label>
+
+        <label>Have you reported employment income since the payment started?
+          <select id="credit-ever-income">
+            <option value="no">No — I have not reported employment income</option>
+            <option value="yes">Yes — I have reported employment income</option>
+            <option value="unsure">I am not sure</option>
+          </select>
+        </label>
+
+        <div id="credit-income-history-fields" class="credit-income-history-fields" hidden>
+          <label>About when did you first start reporting employment income?
+            <input type="date" id="credit-income-start">
+          </label>
+          <label>Typical gross employment income since then <span>per fortnight</span>
+            <div class="money-input"><span>$</span><input type="number" id="credit-typical-income" min="0" step="10" value="0"></div>
+          </label>
+        </div>
+
+        <button type="button" class="btn primary" id="estimate-working-credit">Estimate my Working Credit</button>
+      </div>
+
+      <div class="credit-estimate-results" id="credit-estimate-results" hidden>
+        <div class="credit-estimate-hero">
+          <span>Estimated Working Credit balance</span>
+          <strong id="credit-estimated-balance">—</strong>
+          <p id="credit-estimated-confidence">—</p>
+        </div>
+        <div class="credit-estimate-grid">
+          <div><span>Payment-specific cap</span><strong id="credit-estimate-cap">—</strong></div>
+          <div><span>Estimated credits accumulated</span><strong id="credit-estimate-built">—</strong></div>
+          <div><span>Current work income</span><strong id="credit-estimate-work">—</strong></div>
+          <div><span>Income counted this fortnight</span><strong id="credit-estimate-assessable">—</strong></div>
+        </div>
+
+        <div class="credit-until-box">
+          <span>How long could the credits affect your payment?</span>
+          <strong id="credit-estimate-until">—</strong>
+          <p id="credit-estimate-until-copy">—</p>
+        </div>
+
+        <button type="button" class="btn" id="use-credit-estimate">Use this estimate in RentReady</button>
+      </div>
+
+      <p class="credit-modal-disclaimer">Your real balance can differ because Working Credit accrual uses total ordinary income, including some non-employment income, and because actual reported income can vary from fortnight to fortnight. Check your Centrelink online account linked to myGov for the official balance and history.</p>
     </div>
   </div>
 
