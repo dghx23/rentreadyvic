@@ -2205,3 +2205,50 @@ body{background:#f5f7fb}
 @media(max-width:640px){
   .payment-rate-pair{grid-template-columns:1fr}
 }
+
+
+/* Paired current + maximum support rate cards */
+.payment-rate-pair{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:10px;
+  min-width:0
+}
+.payment-rate-pair .payment-wide-rate{
+  min-height:0!important;
+  padding:14px!important
+}
+.payment-rate-pair .centrelink-rate-value strong{
+  font-size:24px!important
+}
+.maximum-support-box{
+  border-color:#d9def0!important;
+  background:linear-gradient(180deg,#fbfbff 0%,#f5f4ff 100%)!important
+}
+.maximum-support-box .centrelink-rate-label{
+  color:#5b55c8!important
+}
+.maximum-support-breakdown{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin:10px 0 8px
+}
+.maximum-support-breakdown span{
+  padding:7px 8px;
+  border:1px solid #e2e5ee;
+  border-radius:5px;
+  background:#fff;
+  color:#7a8595;
+  font-size:8px;
+  line-height:1.3
+}
+.maximum-support-breakdown b{
+  display:block;
+  margin-top:2px;
+  color:#344054;
+  font-size:10px
+}
+@media(max-width:760px){
+  .payment-rate-pair{grid-template-columns:1fr}
+}
