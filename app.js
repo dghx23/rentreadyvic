@@ -526,6 +526,48 @@
     $("app-review-rent").textContent = prop ? money(rent) + "/wk" : "—";
     $("app-review-rent-share").textContent = rentShare == null ? "—" : pct(rentShare);
 
+    const contextFlags = [];
+    const paymentSlug = payment ? payment.slug : "";
+    const householdType = $("household-type").value;
+
+    if (paymentSlug === "disability-support-pension") {
+      contextFlags.push({
+        state:"warn",
+        text:"DSP can involve disability information. If an agent asks why you receive DSP, asks for medical details, or treats you differently because of disability, that may involve a protected characteristic. Ask why the information is required and request the reason in writing."
+      });
+    }
+    if (paymentSlug === "parenting-payment" || /^family/.test(householdType)) {
+      contextFlags.push({
+        state:"warn",
+        text:"Parent or carer status is a protected characteristic. If children or parenting status appear to be affecting how the application is handled, keep the written communication and review the discrimination guidance below."
+      });
+    }
+    if (paymentSlug === "carer-payment") {
+      contextFlags.push({
+        state:"warn",
+        text:"Carer status can be relevant to protected-attribute rules. A provider may assess capacity to pay, but should not treat you unfavourably because you are a carer."
+      });
+    }
+    if (paymentSlug === "age-pension") {
+      contextFlags.push({
+        state:"warn",
+        text:"Age is a protected characteristic. The provider can assess capacity to pay, but age itself should not be used to treat an applicant unfavourably."
+      });
+    }
+    if (payment) {
+      contextFlags.push({
+        state:"ok",
+        text:"Receiving a Centrelink payment is not, by itself, a finding of discrimination. A current payment statement or letter is recognised financial evidence, and the review below focuses on whether the process asks for prohibited information or treats a protected characteristic differently."
+      });
+    }
+    if (!contextFlags.length) {
+      contextFlags.push({
+        state:"ok",
+        text:"No profile-based protected-characteristic prompt is triggered by the information entered so far. Use the red-flag checklist below for anything that actually happened during the application."
+      });
+    }
+    $("app-context-flags").innerHTML = reviewList(contextFlags);
+
     const evidence = [];
     if (payment) {
       evidence.push({
@@ -598,7 +640,10 @@
         strategies.push({state:"ok",text:"Use the optimisation sliders to test whether additional work income improves the rent position after any payment reduction is taken into account."});
       }
       if (bondAmountGap > 0) {
-        strategies.push({state:"ok",text:"Compare properties with a lower bond or check the final eligible loan amount before relying on the bond loan to cover the full bond."});
+        strategies.push({state:"ok",text:"Compare properties with a lower bond or check the final eligible RentAssist Bond Loan amount before relying on the loan to cover the full bond."});
+      }
+      if (properties.length > 1 && (generalGap > 0 || bondGap >= 0 || bondAmountGap > 0)) {
+        strategies.push({state:"ok",text:"Compare the other properties in your shortlist. A lower weekly rent or lower bond can improve both affordability and the RentAssist position without changing your income."});
       }
     }
     if (payment) {
@@ -686,10 +731,10 @@
       $("optimise-verdict").textContent = "This combination is inside both rent thresholds";
       $("optimise-copy").textContent = "At this work income and target rent, both the general planning benchmark and the bond-loan rent-share test are within range.";
     } else if (bondPass) {
-      $("optimise-verdict").textContent = "Bond-loan rent test passes; general affordability is tighter";
+      $("optimise-verdict").textContent = "RentAssist rent test passes; general affordability is tighter";
       $("optimise-copy").textContent = "The property is inside the bond-loan rent-share threshold, but above the general planning benchmark.";
     } else {
-      $("optimise-verdict").textContent = "The bond-loan rent test is still the immediate constraint";
+      $("optimise-verdict").textContent = "The RentAssist rent-share test is still the immediate constraint";
       $("optimise-copy").textContent = "Move rent down or work income up to see where the test crosses into range.";
     }
 
