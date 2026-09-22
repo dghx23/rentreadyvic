@@ -52,62 +52,72 @@
 
 <main class="shell app-shell">
   <section class="intro compact-intro">
-    <div class="intro-copy">
-      <span class="eyebrow">Plan the numbers · understand the application</span>
-      <h1>Plan the rental before you apply.</h1>
-      <p>RentReady connects your income-support payment and Rent Assistance, the actual rental property, Housing Victoria's RentAssist Bond Loan, affordability and optimisation. Enter the information once and reuse it across the process.</p>
-    </div>
-
-    <div class="process-strip" aria-label="Main RentReady process">
-      <button type="button" class="process-step active" data-step-target="income">
-        <span class="process-number">1</span>
-        <span><b>Income</b><small>Services Australia · Centrelink payment · work income · Rent Assistance</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="property">
-        <span class="process-number">2</span>
-        <span><b>Property</b><small>Rental listing · weekly rent · bond · bedrooms · shortlist</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="bond">
-        <span class="process-number">3</span>
-        <span><b>RentAssist</b><small>Housing Victoria · Bond Loan eligibility · rent-share test · bond cap</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="affordability">
-        <span class="process-number">4</span>
-        <span><b>Affordability</b><small>Income vs rent · shortfalls · general benchmark · RentAssist threshold</small></span>
-      </button>
-      <button type="button" class="process-step" data-step-target="optimise">
-        <span class="process-number">5</span>
-        <span><b>Optimise</b><small>Work-income scenarios · Rent Assistance · target-rent sliders</small></span>
-      </button>
-    </div>
-
-    <div class="application-access">
-      <div>
-        <span class="application-access-kicker">Separate linked section</span>
-        <b>Application & Rights Review</b>
-        <small>Victorian prescribed application · evidence limits · references · discrimination checks · application shortfalls</small>
-      </div>
-      <p>Uses the income, payment, property, rent and RentAssist information you have already entered to highlight risks and practical strategies.</p>
-      <button type="button" class="btn" data-step-target="application">Open Application & Rights →</button>
-    </div>
+    <span class="eyebrow">Five simple steps</span>
+    <h1>Work through one thing at a time.</h1>
+    <p>Start with your income. Then add the property. RentReady carries those details forward into RentAssist, affordability and optimisation automatically.</p>
   </section>
 
-  <nav class="stepnav" aria-label="RentReady main steps and application review">
-    <button class="step-tab active" data-step-target="income"><span>1</span>Income</button>
-    <button class="step-tab" data-step-target="property"><span>2</span>Property</button>
-    <button class="step-tab" data-step-target="bond"><span>3</span>RentAssist</button>
-    <button class="step-tab" data-step-target="affordability"><span>4</span>Affordability</button>
-    <button class="step-tab" data-step-target="optimise"><span>5</span>Optimise</button>
-    <span class="stepnav-divider" aria-hidden="true"></span>
-    <button class="step-tab application-tab" data-step-target="application"><span>A</span>Application & Rights</button>
-  </nav>
+  <div class="journey-rail">
+    <div class="rail-heading">
+      <span>Your journey</span>
+      <b>Start at step 1</b>
+    </div>
+
+    <nav class="stepnav" aria-label="RentReady steps">
+      <button class="step-tab active" data-step-target="income">
+        <span>1</span><b>Income</b><small>Payment, work and Rent Assistance</small>
+      </button>
+      <button class="step-tab" data-step-target="property">
+        <span>2</span><b>Property</b><small>Paste the listing, rent and bond</small>
+      </button>
+      <button class="step-tab" data-step-target="bond">
+        <span>3</span><b>RentAssist</b><small>Check the Bond Loan requirements</small>
+      </button>
+      <button class="step-tab" data-step-target="affordability">
+        <span>4</span><b>Affordability</b><small>See the gaps and shortfalls</small>
+      </button>
+      <button class="step-tab" data-step-target="optimise">
+        <span>5</span><b>Optimise</b><small>Try different rent and work income</small>
+      </button>
+
+      <div class="rail-separator"><span>Also available</span></div>
+
+      <button class="step-tab application-tab" data-step-target="application">
+        <span>A</span><b>Application & Rights</b><small>Evidence, questions and discrimination</small>
+      </button>
+    </nav>
+
+  <aside class="position-dock" aria-label="Your current RentReady position">
+    <div class="dock-title">
+      <span>Your position</span>
+      <strong>Live summary</strong>
+    </div>
+    <div class="dock-status" id="dock-status">
+      <span class="dock-status-dot"></span>
+      <b id="dock-status-copy">Add your income to begin</b>
+    </div>
+    <div class="dock-metrics">
+      <div><span>Payment</span><strong id="dock-payment">—</strong></div>
+      <div><span>Projected income</span><strong id="dock-income">—</strong></div>
+      <div><span>Property</span><strong id="dock-property">Not selected</strong></div>
+      <div><span>Weekly rent</span><strong id="dock-rent">—</strong></div>
+      <div><span>Rent share</span><strong id="dock-ratio">—</strong></div>
+      <div><span>RentAssist</span><strong id="dock-rentassist">Not tested</strong></div>
+    </div>
+    <button type="button" class="dock-review" data-step-target="application">
+      <span>Application & rights</span>
+      <b>Review this profile →</b>
+    </button>
+    <p class="dock-note">This summary follows the same information through every stage. It is a planning view, not an entitlement or legal determination.</p>
+  </aside>
+  </div>
 
   <section class="step-panel active" id="step-income">
     <div class="section-head">
       <span class="section-number">01</span>
       <div>
-        <h2>Your income first</h2>
-        <p>We assume you are receiving an income-support payment. Choose the payment and your circumstances, then add work and household income. Payment figures are loaded from the current configured payment feed.</p>
+        <h2>1. Tell us about your income</h2>
+        <p>Choose the payment and circumstance that best match you, then add any work or other household income. We will use this same income profile in every later step.</p>
       </div>
     </div>
 
@@ -332,7 +342,7 @@
     <div class="section-head">
       <span class="section-number">03</span>
       <div>
-        <h2>RentAssist Bond Loan</h2>
+        <h2>3. Check the RentAssist Bond Loan</h2>
         <p>With the property selected, RentReady checks the RentAssist Bond Loan requirements against household income, assets, residency, property ownership, weekly rent and the entered bond.</p>
       </div>
     </div>
@@ -377,7 +387,7 @@
     <div class="section-head">
       <span class="section-number">04</span>
       <div>
-        <h2>Affordability and shortfalls</h2>
+        <h2>4. See whether the property fits</h2>
         <p>RentReady shows two different views: a general budget benchmark and the specific RentAssist bond-loan rent-share test. They are not the same rule.</p>
       </div>
     </div>
@@ -424,7 +434,7 @@
     <div class="section-head">
       <span class="section-number application-number">A</span>
       <div>
-        <h2>Application & Rights Review</h2>
+        <h2>Application & Rights</h2>
         <p>This is a separate linked review of the application process. It reuses the information already entered to show evidence options, financial shortfalls, potential discrimination red flags and practical strategies, then explains the Victorian rental-application rules in detail.</p>
       </div>
     </div>
@@ -689,7 +699,7 @@
     <div class="section-head">
       <span class="section-number">05</span>
       <div>
-        <h2>Move the sliders and find the workable zone</h2>
+        <h2>5. Try ways to improve the position</h2>
         <p>Test the two levers you can usually change: work income and target rent. RentReady recalculates the payment estimate, projected Rent Assistance and both affordability thresholds as you move them.</p>
       </div>
     </div>
@@ -744,29 +754,7 @@
     </div>
   </section>
 
-  <aside class="position-dock" aria-label="Your current RentReady position">
-    <div class="dock-title">
-      <span>Your position</span>
-      <strong>Live summary</strong>
-    </div>
-    <div class="dock-status" id="dock-status">
-      <span class="dock-status-dot"></span>
-      <b id="dock-status-copy">Add your income to begin</b>
-    </div>
-    <div class="dock-metrics">
-      <div><span>Payment</span><strong id="dock-payment">—</strong></div>
-      <div><span>Projected income</span><strong id="dock-income">—</strong></div>
-      <div><span>Property</span><strong id="dock-property">Not selected</strong></div>
-      <div><span>Weekly rent</span><strong id="dock-rent">—</strong></div>
-      <div><span>Rent share</span><strong id="dock-ratio">—</strong></div>
-      <div><span>RentAssist</span><strong id="dock-rentassist">Not tested</strong></div>
-    </div>
-    <button type="button" class="dock-review" data-step-target="application">
-      <span>Application & rights</span>
-      <b>Review this profile →</b>
-    </button>
-    <p class="dock-note">This summary follows the same information through every stage. It is a planning view, not an entitlement or legal determination.</p>
-  </aside>
+
 
 </main>
 
