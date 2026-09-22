@@ -142,6 +142,39 @@
             <div class="money-input"><span>$</span><input id="working-credit" type="number" step="10" min="0" max="3500" value="0"></div>
             <small>Used only where the selected payment's configured work-income rule supports it.</small>
           </label>
+
+          <div class="income-impact-explainer">
+            <div class="income-impact-head">
+              <div>
+                <span class="income-impact-kicker">How work affects your payment</span>
+                <strong id="income-impact-title">Enter work income to see the effect</strong>
+              </div>
+              <button type="button" class="link-btn" id="open-income-impact">Explain this in detail ↗</button>
+            </div>
+
+            <p id="income-impact-copy">RentReady will show how the configured income-free area and taper reduce the selected payment as earnings increase.</p>
+
+            <div class="income-impact-stats">
+              <div><span>Income-free area</span><strong id="impact-free-area">—</strong></div>
+              <div><span>Current payment reduction</span><strong id="impact-reduction">$0</strong></div>
+              <div><span>Payment reaches $0 at</span><strong id="impact-cutoff">—</strong></div>
+            </div>
+
+            <div class="income-impact-chart-card">
+              <div class="income-impact-chart-head">
+                <strong>Work income vs payment</strong>
+                <span>Break-even / payment-cutoff view</span>
+              </div>
+              <svg id="income-impact-chart" viewBox="0 0 620 230" role="img" aria-label="Graph showing work income, remaining payment and combined income"></svg>
+              <div class="income-impact-legend">
+                <span><i class="legend-line payment"></i>Remaining payment</span>
+                <span><i class="legend-line total"></i>Work + payment</span>
+                <span><i class="legend-dot current"></i>Your current work income</span>
+              </div>
+            </div>
+
+            <div id="income-impact-note" class="income-impact-note"></div>
+          </div>
         </div>
       </div>
     </div>
