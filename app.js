@@ -358,9 +358,24 @@
     }
 
     const totalFNs = wholeFortnightsBetween(start,today);
+    if ($("credit-estimate-periods")) {
+      $("credit-estimate-periods").textContent = totalFNs + " fortnight" + (totalFNs === 1 ? "" : "s");
+    }
     let balance = 0;
     let grossBuilt = 0;
     let confidence = "";
+
+    if (!ever) {
+      $("credit-estimate-results").hidden = false;
+      $("credit-estimated-balance").textContent = "Choose an income-history answer";
+      $("credit-estimated-confidence").textContent = "The payment start date has been counted, but RentReady also needs to know whether employment income has been reported since then.";
+      $("credit-estimate-built").textContent = "—";
+      $("credit-estimate-assessable").textContent = "—";
+      $("credit-estimate-until").textContent = "More information needed";
+      $("credit-estimate-until-copy").textContent = "Choose whether you have reported employment income since the payment started.";
+      $("use-credit-estimate").disabled = true;
+      return;
+    }
 
     if (ever === "no") {
       grossBuilt = totalFNs * 48;
