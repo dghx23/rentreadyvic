@@ -40,6 +40,7 @@
   let workIncomeFN = 0;
   let impactTestWorkFN = null;
   let otherIncomeWeek = 0;
+  let workingCreditEstimateFN = null;
   let properties = loadJSON(STORAGE.props, []);
   let activePropertyId = localStorage.getItem(STORAGE.active) || null;
   let accountEmail = localStorage.getItem(STORAGE.account) || "";
@@ -164,6 +165,257 @@
     };
   }
 
+  const NO_WORK_INFO = {
+    looking: {
+      title: "Looking for work",
+      copy: "Not currently working does not by itself create an exemption. Looking for suitable work and taking part in required activities can form part of mutual obligation requirements.",
+      body: "<p>If you have mutual obligation requirements, looking for work and taking part in agreed activities can be part of those requirements. Your exact requirements depend on your payment and circumstances.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    illness: {
+      title: "Temporary illness or injury",
+      copy: "You may be able to get a temporary exemption or reduced requirements if Services Australia assesses medical evidence showing that illness or injury temporarily limits your capacity.",
+      body: "<p>If you cannot work or study for a short time because of sickness or injury, Services Australia may ask for an approved medical certificate. They assess the certificate and decide whether to grant an exemption or reduce/change your requirements.</p><p>Giving a certificate does not automatically create an exemption. Until Services Australia assesses it, you generally need to keep meeting your existing requirements.</p>",
+      link: "https://www.servicesaustralia.gov.au/getting-medical-certificate-for-jobseeker-payment?context=51411"
+    },
+    reduced_capacity: {
+      title: "Ongoing condition or reduced capacity",
+      copy: "An ongoing condition can lead to an assessment of your work capacity and different requirements; it is not automatically treated the same as a temporary medical exemption.",
+      body: "<p>Services Australia may assess reduced capacity to work, including through an Employment Services Assessment. Ongoing conditions can affect the type and level of requirements that apply.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    principal_carer: {
+      title: "Principal carer or parenting responsibilities",
+      copy: "Principal carers can have different mutual obligation settings and may receive temporary exemptions in particular family circumstances.",
+      body: "<p>Principal carers have additional ways to meet mutual obligation requirements because of parenting or guardianship responsibilities. Services Australia can grant temporary exemptions in specified family or special circumstances.</p>",
+      link: "https://www.servicesaustralia.gov.au/exemptions-from-mutual-obligation-requirements-for-principal-carers?context=60097"
+    },
+    short_caring: {
+      title: "Short-term caring duties",
+      copy: "Short-term caring duties are one of the circumstances Services Australia lists as potentially supporting a temporary exemption.",
+      body: "<p>Services Australia lists short-term caring duties among circumstances that may support a temporary exemption. You may need to provide evidence and should keep meeting requirements while an exemption request is being assessed.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    crisis: {
+      title: "Major personal crisis",
+      copy: "Family and domestic violence, homelessness, bereavement and other major crises can be relevant to temporary exemption decisions.",
+      body: "<p>Services Australia recognises major personal crises as circumstances that may justify a temporary exemption. Examples include family and domestic violence, homelessness and the death of an immediate family member.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    cultural: {
+      title: "Cultural or Sorry Business commitments",
+      copy: "Cultural or Sorry Business commitments can be relevant to temporary exemption arrangements in some job-seeker settings.",
+      body: "<p>Services Australia lists cultural or Sorry Business commitments among circumstances that may support an exemption in relevant employment-services settings.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements-remote-australia-employment-service?context=51411"
+    },
+    disaster: {
+      title: "Fire, flood or other disaster",
+      copy: "A disaster affecting you at home can be a recognised temporary-exemption circumstance.",
+      body: "<p>Services Australia lists disasters such as fire or flood among circumstances that may support a temporary exemption from mutual obligation requirements.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    study: {
+      title: "Study or training",
+      copy: "Approved study or training can sometimes form part of your requirements rather than being an exemption from them.",
+      body: "<p>Study and training can be recognised activities in some employment-services arrangements. Whether it satisfies your requirements depends on your payment, plan and circumstances.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    },
+    other: {
+      title: "Another reason",
+      copy: "There may be other temporary exemption or participation arrangements depending on your circumstances.",
+      body: "<p>Services Australia considers a range of individual circumstances. Contact them or your employment-services provider if none of the listed situations describes why you are not currently working.</p>",
+      link: "https://www.servicesaustralia.gov.au/mutual-obligation-requirements"
+    }
+  };
+
+  function workingCreditApplicable() {
+    const concession = selectedWorkConcession();
+    return !!(concession && (concession.code === "working_credit" || concession.code === "working_credit_or_work_bonus_if_age_eligible"));
+  }
+
+  function workingCreditCap() {
+    const p = selectedPayment();
+    if (!p || !workingCreditApplicable()) return 0;
+    if (p.slug === "youth-allowance-jobseeker") return 3500;
+    return 1000;
+  }
+
+  function wholeFortnightsBetween(start, end) {
+    if (!(start instanceof Date) || isNaN(start) || !(end instanceof Date) || isNaN(end) || end < start) return 0;
+    return Math.max(0, Math.floor((end.getTime() - start.getTime()) / (14 * 86400000)));
+  }
+
+  function parseLocalDate(value) {
+    if (!value) return null;
+    const parts = String(value).split("-").map(Number);
+    if (parts.length !== 3 || parts.some(x => !Number.isFinite(x))) return null;
+    return new Date(parts[0], parts[1]-1, parts[2], 12, 0, 0);
+  }
+
+  function formatLocalDate(date) {
+    return new Intl.DateTimeFormat("en-AU",{day:"numeric",month:"short",year:"numeric"}).format(date);
+  }
+
+  function estimateWorkingCreditBalance() {
+    const cap = workingCreditCap();
+    const start = parseLocalDate($("credit-payment-start").value);
+    const ever = $("credit-ever-income").value;
+    const today = new Date();
+    workingCreditEstimateFN = null;
+
+    if (!cap) {
+      $("credit-estimate-results").hidden = false;
+      $("credit-estimated-balance").textContent = "Not a Working Credit payment";
+      $("credit-estimated-confidence").textContent = "The selected payment currently uses a different work-income concession.";
+      $("use-credit-estimate").disabled = true;
+      return;
+    }
+
+    $("credit-estimate-cap").textContent = money(cap,0);
+    $("credit-estimate-work").textContent = money(workIncomeFN,0) + "/fn";
+
+    if (!start) {
+      const fortnightsToCap = Math.ceil(cap / 48);
+      $("credit-estimate-results").hidden = false;
+      $("credit-estimated-balance").textContent = "Up to " + money(cap,0);
+      $("credit-estimated-confidence").textContent =
+        "No payment start date was entered. If your total ordinary income stayed below $48/fortnight, the maximum could build after about " +
+        fortnightsToCap + " fortnights. Check myGov for the actual balance.";
+      $("credit-estimate-built").textContent = "Possible range: $0–" + cap.toLocaleString("en-AU");
+      $("credit-estimate-assessable").textContent = "Cannot estimate without a balance";
+      $("credit-estimate-until").textContent = "Start date needed";
+      $("credit-estimate-until-copy").textContent = "Add the payment start date for a more useful estimate of accumulation and how long credits may affect your income test.";
+      $("use-credit-estimate").disabled = true;
+      return;
+    }
+
+    if (start > today) {
+      $("credit-estimate-results").hidden = false;
+      $("credit-estimated-balance").textContent = "Check the start date";
+      $("credit-estimated-confidence").textContent = "The payment start date is in the future.";
+      $("use-credit-estimate").disabled = true;
+      return;
+    }
+
+    const totalFNs = wholeFortnightsBetween(start,today);
+    let balance = 0;
+    let grossBuilt = 0;
+    let confidence = "";
+
+    if (ever === "no") {
+      grossBuilt = totalFNs * 48;
+      balance = Math.min(cap,grossBuilt);
+      confidence = "Upper estimate based on no reported employment income and assuming other ordinary income also stayed below $48/fortnight.";
+    } else if (ever === "yes") {
+      const incomeStart = parseLocalDate($("credit-income-start").value);
+      const typical = Math.max(0,Number($("credit-typical-income").value || 0));
+      if (!incomeStart || incomeStart < start || incomeStart > today) {
+        $("credit-estimate-results").hidden = false;
+        $("credit-estimated-balance").textContent = "Add a valid income start date";
+        $("credit-estimated-confidence").textContent = "To estimate a history with reported employment income, enter approximately when that income began.";
+        $("use-credit-estimate").disabled = true;
+        return;
+      }
+
+      const beforeIncomeFNs = wholeFortnightsBetween(start,incomeStart);
+      balance = Math.min(cap,beforeIncomeFNs * 48);
+      grossBuilt = beforeIncomeFNs * 48;
+      const afterIncomeFNs = wholeFortnightsBetween(incomeStart,today);
+
+      for (let i=0;i<afterIncomeFNs;i++) {
+        if (typical < 48) {
+          const earned = 48 - typical;
+          grossBuilt += earned;
+          balance = Math.min(cap,balance + earned);
+        } else {
+          balance = Math.max(0,balance - Math.min(balance,typical));
+        }
+      }
+      confidence = "Rough estimate assuming the typical employment income you entered was the same every fortnight and there was no other ordinary income changing accrual.";
+    } else {
+      grossBuilt = totalFNs * 48;
+      balance = Math.min(cap,grossBuilt);
+      confidence = "Upper estimate because you are unsure about reported income history. The actual balance may be lower.";
+    }
+
+    workingCreditEstimateFN = Math.max(0,Math.min(cap,balance));
+    const nowResult = paymentAtWork(workIncomeFN,workingCreditEstimateFN);
+    $("credit-estimate-results").hidden = false;
+    $("credit-estimated-balance").textContent = money(workingCreditEstimateFN,0);
+    $("credit-estimated-confidence").textContent = confidence;
+    $("credit-estimate-built").textContent = money(Math.min(cap,grossBuilt),0);
+    $("credit-estimate-assessable").textContent = money(nowResult.assessableIncome,0) + "/fn";
+    $("use-credit-estimate").disabled = false;
+
+    const rule = nowResult.rule;
+    if (!workIncomeFN) {
+      $("credit-estimate-until").textContent = "Credits are not being used by work income";
+      $("credit-estimate-until-copy").textContent =
+        "With $0 employment income entered, Working Credits would not be needed to offset work income. If total ordinary income remains below $48/fortnight, the balance may continue to build up to the cap.";
+      return;
+    }
+
+    if (!rule) {
+      $("credit-estimate-until").textContent = "Payment taper not modelled";
+      $("credit-estimate-until-copy").textContent = "RentReady can estimate the credit balance, but not when this payment would begin reducing.";
+      return;
+    }
+
+    if (workIncomeFN <= Number(rule.freeArea || 0)) {
+      $("credit-estimate-until").textContent = "Current work income is within the income-free area";
+      $("credit-estimate-until-copy").textContent =
+        "At the current work income, the personal income test would not reduce the payment even after Working Credits were exhausted, based on the configured rule.";
+      return;
+    }
+
+    let remaining = workingCreditEstimateFN;
+    let firstReduction = null;
+    for (let fn=0;fn<=260;fn++) {
+      const result = paymentAtWork(workIncomeFN,remaining);
+      if (result.reduction > 0.01) { firstReduction = fn; break; }
+      if (workIncomeFN < 48) remaining = Math.min(cap,remaining + (48-workIncomeFN));
+      else remaining = Math.max(0,remaining - Math.min(remaining,workIncomeFN));
+    }
+
+    if (firstReduction === 0) {
+      $("credit-estimate-until").textContent = "The payment may already be reducing";
+      $("credit-estimate-until-copy").textContent =
+        "At the current work income and estimated balance, the configured income test already produces a payment reduction this fortnight.";
+    } else if (firstReduction != null) {
+      const date = new Date(today.getTime() + firstReduction * 14 * 86400000);
+      $("credit-estimate-until").textContent = "About " + firstReduction + " fortnight" + (firstReduction===1?"":"s") + " · around " + formatLocalDate(date);
+      $("credit-estimate-until-copy").textContent =
+        "If your employment income stayed at about " + money(workIncomeFN,0) + "/fortnight and no other factors changed, the model first shows a payment reduction around this point. Your actual reporting cycle and income history can shift the date.";
+    } else {
+      $("credit-estimate-until").textContent = "No reduction within the modelled period";
+      $("credit-estimate-until-copy").textContent = "At the current earnings and configured rule, RentReady did not reach a payment reduction within the modelled period.";
+    }
+  }
+
+  function renderNoWorkReason() {
+    const value = $("no-work-reason") ? $("no-work-reason").value : "";
+    const card = $("no-work-reason-card");
+    if (!card) return;
+    const info = NO_WORK_INFO[value];
+    card.hidden = !info;
+    if (!info) return;
+    $("no-work-reason-title").textContent = info.title;
+    $("no-work-reason-copy").textContent = info.copy;
+  }
+
+  function openNoWorkInfo() {
+    const info = NO_WORK_INFO[$("no-work-reason").value];
+    if (!info) return;
+    $("reason-modal-title").textContent = info.title;
+    $("reason-modal-body").innerHTML = info.body;
+    $("reason-modal-link").href = info.link;
+    $("reason-modal").hidden = false;
+  }
+
+  function closeNoWorkInfo() {
+    $("reason-modal").hidden = true;
+  }
+
   function renderPaymentScenarioGuidance() {
     if (!$("scenario-prompts")) return;
     const p = selectedPayment();
@@ -171,6 +423,9 @@
 
     const concession = selectedWorkConcession();
     const input = $("working-credit");
+    if ($("working-credit-help")) {
+      $("working-credit-help").hidden = !(concession && (concession.code === "working_credit" || concession.code === "working_credit_or_work_bonus_if_age_eligible"));
+    }
     if (concession && concession.code === "income_bank") {
       $("work-concession-label").textContent = "Income Bank balance";
       input.max = String(concession.student_balance_max || 13500);
@@ -1539,6 +1794,43 @@
     });
     $("other-income-week").addEventListener("input", () => { otherIncomeWeek = weekFromDisplay($("other-income-week").value); recalcAll(); });
     $("working-credit").addEventListener("input", recalcAll);
+    $("working-credit-help").addEventListener("click", () => {
+      if (!workingCreditApplicable()) return;
+      $("credit-modal").hidden = false;
+    });
+    document.querySelectorAll("[data-close-credit-modal]").forEach(el =>
+      el.addEventListener("click", () => { $("credit-modal").hidden = true; })
+    );
+    $("credit-ever-income").addEventListener("change", () => {
+      $("credit-income-history-fields").hidden = $("credit-ever-income").value !== "yes";
+    });
+    $("estimate-working-credit").addEventListener("click", estimateWorkingCreditBalance);
+    $("use-credit-estimate").addEventListener("click", () => {
+      if (workingCreditEstimateFN == null) return;
+      $("working-credit").value = String(Math.round(workingCreditEstimateFN * 100) / 100);
+      $("credit-modal").hidden = true;
+      recalcAll();
+    });
+
+    $("no-work-toggle").addEventListener("change", () => {
+      const noWork = $("no-work-toggle").checked;
+      $("no-work-reason-wrap").hidden = !noWork;
+      $("work-income").disabled = noWork;
+      $("impact-income-slider").disabled = noWork;
+      if (noWork) {
+        workIncomeFN = 0;
+        impactTestWorkFN = 0;
+        $("work-income").value = "0";
+        $("impact-income-slider").value = "0";
+      }
+      recalcAll();
+    });
+    $("no-work-reason").addEventListener("change", renderNoWorkReason);
+    $("no-work-info-button").addEventListener("click", openNoWorkInfo);
+    document.querySelectorAll("[data-close-reason-modal]").forEach(el =>
+      el.addEventListener("click", closeNoWorkInfo)
+    );
+
     $("open-income-impact").addEventListener("click", openIncomeImpactDetail);
     $("impact-income-slider").addEventListener("input", () => {
       workIncomeFN = fnFromDisplay($("impact-income-slider").value);
