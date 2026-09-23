@@ -14,6 +14,14 @@
 .about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.about-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:17px}.about-card h3{margin:0 0 6px;font-size:13px}.about-card p,.about-card li{color:var(--muted);font-size:10px;line-height:1.58}.about-card ul{padding-left:18px;margin:0}
 .about-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.flow-card{padding:16px;background:#fff;border:1px solid var(--line);border-radius:11px}.flow-card span{display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:900}.flow-card b{display:block;margin-top:10px;font-size:12px}.flow-card p{margin:4px 0 0;color:var(--muted);font-size:9px;line-height:1.55}
 .about-important{padding:18px;border-radius:12px;background:#111827;color:#fff}.about-important h2{margin:0 0 8px;font-size:18px}.about-important p{margin:0;color:#cbd5e1;font-size:10px;line-height:1.65}.about-important p+p{margin-top:8px}
+.rule-card{display:flex;flex-direction:column}.rule-card .rule-explainer{margin-top:auto;align-self:flex-start;border:0;background:transparent;color:var(--brand);font:inherit;font-size:9px;font-weight:850;padding:7px 0 0;cursor:pointer}
+.rule-card .rule-explainer:hover{text-decoration:underline}
+.rule-dialog{width:min(620px,calc(100% - 28px));border:0;border-radius:15px;padding:0;box-shadow:0 24px 80px rgba(15,23,42,.28)}
+.rule-dialog::backdrop{background:rgba(15,23,42,.62)}
+.rule-dialog-inner{padding:22px}.rule-dialog-head{display:flex;justify-content:space-between;gap:15px;align-items:start}.rule-dialog-head span{display:block;color:var(--brand);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}.rule-dialog-head h2{margin:4px 0 0;font-size:21px;letter-spacing:-.03em}
+.rule-dialog-close{border:1px solid var(--line);background:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer;font-size:20px;line-height:1}
+.rule-dialog p,.rule-dialog li{font-size:10px;line-height:1.6;color:var(--ink2)}.rule-dialog ul{padding-left:19px}.rule-dialog .rule-note{padding:11px 12px;border-radius:9px;background:#f8fafc;border:1px solid var(--line)}
+.rule-dialog-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
 @media(max-width:850px){.about-grid,.about-flow{grid-template-columns:1fr 1fr}}@media(max-width:620px){.about{padding-top:30px}.about-grid,.about-flow{grid-template-columns:1fr}.top-resource-nav{display:none}}
 </style>
 </head>
@@ -69,9 +77,9 @@
   <section class="about-section">
     <div class="about-heading"><span>What it uses</span><h2>Different rules stay separate</h2><p>RentReady connects information without pretending that every test is the same.</p></div>
     <div class="about-grid">
-      <article class="about-card"><h3>Australian social-security data</h3><p>Payment rates, income-test rules, Rent Assistance and work-income concessions are only modelled from the connected Australian social-security dataset. If a required rule is not supplied, RentReady does not substitute a hard-coded social-security rule.</p></article>
-      <article class="about-card"><h3>Victorian RentAssist rules</h3><p>RentAssist Bond Loan checks are shown separately because Housing Victoria applies its own household, asset, residency, property-ownership, rent-share and bond rules.</p></article>
-      <article class="about-card"><h3>Victorian rental rights</h3><p>Application information and rights are kept separate from affordability and are linked to Consumer Affairs Victoria and other relevant Victorian sources.</p></article>
+      <article class="about-card rule-card"><h3>Australian social-security data</h3><p>Payment rates, income-test rules, Rent Assistance and work-income concessions are only modelled from the connected Australian social-security dataset. If a required rule is not supplied, RentReady does not substitute a hard-coded social-security rule.</p><button class="rule-explainer" type="button" data-rule-dialog="social-security-rules">Explain these rules →</button></article>
+      <article class="about-card rule-card"><h3>Victorian RentAssist rules</h3><p>RentAssist Bond Loan checks are shown separately because Housing Victoria applies its own household, asset, residency, property-ownership, rent-share and bond rules.</p><button class="rule-explainer" type="button" data-rule-dialog="rentassist-rules">Explain these rules →</button></article>
+      <article class="about-card rule-card"><h3>Victorian rental rights</h3><p>Application information and rights are kept separate from affordability and are linked to Consumer Affairs Victoria and other relevant Victorian sources.</p><button class="rule-explainer" type="button" data-rule-dialog="rental-rights-rules">Explain these rules →</button></article>
     </div>
   </section>
 
@@ -81,5 +89,63 @@
     <p>Where your actual payment amount, Centrelink record or an official agency decision is available, that official information takes priority over a RentReady estimate.</p>
   </section>
 </main>
+
+<dialog class="rule-dialog" id="social-security-rules">
+  <div class="rule-dialog-inner">
+    <div class="rule-dialog-head"><div><span>Australian social security</span><h2>What rules does RentReady actually model?</h2></div><button class="rule-dialog-close" type="button" data-close-rule-dialog aria-label="Close">×</button></div>
+    <p>RentReady only uses payment rules that are supplied by the connected Australian social-security dataset. That includes a payment rate, income-test settings, Rent Assistance settings and work-income concessions such as Working Credit where the dataset provides them for the selected payment.</p>
+    <ul>
+      <li>RentReady does not invent a payment rate or substitute a hard-coded social-security rule when a required rule is missing.</li>
+      <li>A calculation can therefore be unavailable or partial when the connected source does not contain enough rule data.</li>
+      <li>Your actual Centrelink record, reporting history and official Services Australia decision always take priority over a planning estimate.</li>
+    </ul>
+    <p class="rule-note"><strong>Why this matters:</strong> social-security rules change. Keeping them in the connected Australian dataset means the product has one controlled source rather than hidden values scattered through the website.</p>
+    <div class="rule-dialog-links"><a class="btn primary" href="https://sentrixdigital.com.au/compass/au" target="_blank" rel="noopener">Social Security Compass ↗</a><a class="btn" href="https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22" target="_blank" rel="noopener">Services Australia guide ↗</a></div>
+  </div>
+</dialog>
+
+<dialog class="rule-dialog" id="rentassist-rules">
+  <div class="rule-dialog-inner">
+    <div class="rule-dialog-head"><div><span>Victoria · RentAssist</span><h2>Why is the Bond Loan check separate?</h2></div><button class="rule-dialog-close" type="button" data-close-rule-dialog aria-label="Close">×</button></div>
+    <p>The RentAssist Bond Loan is a Victorian housing program, so its tests are separate from Centrelink payment rules and from RentReady's general affordability calculation.</p>
+    <ul>
+      <li>Checks may involve household income and assets, Victorian residency, property ownership, the applicant's share of rent and the amount of bond requested.</li>
+      <li>RentReady presents these as a separate eligibility screen rather than treating them as social-security rules.</li>
+      <li>The result is a planning check only. Housing Victoria makes the actual eligibility decision.</li>
+    </ul>
+    <p class="rule-note"><strong>Why this matters:</strong> passing an affordability check does not automatically mean a person qualifies for a Bond Loan, and a Bond Loan test does not determine whether a rental is affordable.</p>
+    <div class="rule-dialog-links"><a class="btn primary" href="rentassist.html">Open RentAssist checker →</a><a class="btn" href="https://www.housing.vic.gov.au/rentassist-bond-loan-eligibility" target="_blank" rel="noopener">Housing Victoria rules ↗</a></div>
+  </div>
+</dialog>
+
+<dialog class="rule-dialog" id="rental-rights-rules">
+  <div class="rule-dialog-inner">
+    <div class="rule-dialog-head"><div><span>Victoria · renting</span><h2>Why are rental rights kept outside the affordability score?</h2></div><button class="rule-dialog-close" type="button" data-close-rule-dialog aria-label="Close">×</button></div>
+    <p>Rental application rights are legal and procedural rules. They should not be converted into an affordability score or mixed into a person's income-support calculation.</p>
+    <ul>
+      <li>RentReady links application information and rights to Consumer Affairs Victoria and other relevant Victorian sources.</li>
+      <li>Financial affordability, application evidence, privacy and legal rights are shown as different parts of the rental decision.</li>
+      <li>RentReady does not make a legal finding and does not replace advice from an appropriate authority or adviser.</li>
+    </ul>
+    <p class="rule-note"><strong>Why this matters:</strong> a property can be financially workable while an application issue still needs attention, and a person's legal rights do not depend on RentReady's affordability result.</p>
+    <div class="rule-dialog-links"><a class="btn primary" href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener">Consumer Affairs Victoria ↗</a></div>
+  </div>
+</dialog>
+
+<script>
+document.querySelectorAll("[data-rule-dialog]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const dialog=document.getElementById(button.dataset.ruleDialog);
+    if(dialog&&dialog.showModal) dialog.showModal();
+  });
+});
+document.querySelectorAll("[data-close-rule-dialog]").forEach(button=>{
+  button.addEventListener("click",()=>button.closest("dialog")?.close());
+});
+document.querySelectorAll(".rule-dialog").forEach(dialog=>{
+  dialog.addEventListener("click",event=>{if(event.target===dialog)dialog.close();});
+});
+</script>
+
 </body>
 </html>
