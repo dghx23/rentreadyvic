@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="ARights — prepare for a Victorian rental application, understand what can be requested, protect your privacy and recognise potential rental-rights red flags.">
+<title>ARights · Prepare to apply</title>
+<link rel="stylesheet" href="app.css">
+<style>
+.arights{width:min(1160px,calc(100% - 28px));margin:auto;padding:42px 0 70px}
+.arights-hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.7fr);gap:20px;align-items:stretch}
+.arights-hero-main,.arights-side,.arights-section{background:#fff;border:1px solid var(--line);border-radius:14px}
+.arights-hero-main{padding:28px}.arights-brand{display:inline-flex;align-items:center;gap:9px;font-size:10px;font-weight:900;color:var(--brand);text-transform:uppercase;letter-spacing:.08em}
+.arights-brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--brand);color:white;font-style:normal}
+.arights-hero h1{font-size:clamp(34px,5vw,58px);line-height:1;letter-spacing:-.05em;margin:14px 0 12px}.arights-hero p{color:var(--ink2);line-height:1.65;max-width:760px}
+.arights-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.arights-side{padding:22px;background:#f7fafc}.arights-side span,.arights-kicker{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--brand)}.arights-side strong{display:block;font-size:18px;margin:6px 0 8px}.arights-side p{font-size:10px;color:var(--muted);line-height:1.55}
+.arights-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 20px}.arights-nav a{background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px;text-decoration:none;color:var(--ink)}.arights-nav b{display:block;font-size:11px}.arights-nav small{display:block;margin-top:3px;color:var(--muted);font-size:9px;line-height:1.4}
+.arights-section{padding:22px;margin-top:14px}.arights-section-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}.arights-section-head h2{font-size:22px;letter-spacing:-.03em;margin:4px 0}.arights-section-head p{margin:0;color:var(--muted);font-size:10px;line-height:1.55;max-width:720px}
+.rule-dialog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.rule-dialog{border:1px solid var(--line);border-radius:11px;background:#fafbfc;overflow:hidden}.rule-dialog summary{cursor:pointer;padding:15px;font-weight:850;font-size:11px;list-style:none}.rule-dialog summary::-webkit-details-marker{display:none}.rule-dialog summary::after{content:"+";float:right;color:var(--brand);font-size:17px;line-height:1}.rule-dialog[open] summary::after{content:"–"}.rule-dialog-body{border-top:1px solid var(--line);padding:14px;font-size:10px;color:var(--muted);line-height:1.6}.rule-dialog-body b{color:var(--ink)}.rule-dialog-body a{display:inline-block;margin-top:8px}
+.rights-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rights-card{border:1px solid var(--line);border-radius:11px;overflow:hidden}.rights-card h3{font-size:13px;margin:0;padding:14px;border-bottom:1px solid var(--line)}.rights-card.allowed h3{background:#f0fdf4}.rights-card.not-allowed h3{background:#fff7ed}.rights-card details{border-bottom:1px solid var(--line)}.rights-card details:last-child{border-bottom:0}.rights-card summary{cursor:pointer;padding:12px 14px;font-size:10px;font-weight:800}.rights-card p{margin:0;padding:0 14px 13px;color:var(--muted);font-size:10px;line-height:1.55}
+.issue-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.issue-option{display:grid;grid-template-columns:auto 1fr;gap:9px;padding:12px;border:1px solid var(--line);border-radius:9px;background:#fafbfc;cursor:pointer;font-size:10px;line-height:1.45}.issue-option input{margin-top:2px;accent-color:var(--brand)}.issue-results{margin-top:12px}.issue-result{padding:12px;border-left:3px solid #d97706;background:#fff7ed;border-radius:8px;margin-top:7px;font-size:10px;line-height:1.55}.issue-result b{display:block;margin-bottom:3px}
+.prepare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.prepare-card{border:1px solid var(--line);border-radius:11px;padding:16px}.prepare-card span{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-size:10px;font-weight:900}.prepare-card b{display:block;margin:10px 0 5px;font-size:11px}.prepare-card p{margin:0;color:var(--muted);font-size:9px;line-height:1.55}
+.source-row{display:flex;gap:8px;flex-wrap:wrap}.source-row a{border:1px solid var(--line);border-radius:9px;padding:10px 12px;text-decoration:none;font-size:9px;font-weight:800;background:#fff}
+.arights-note{margin-top:14px;padding:15px;border-radius:10px;background:#111827;color:#fff;font-size:10px;line-height:1.6}.arights-note b{display:block;margin-bottom:3px}
+@media(max-width:850px){.arights-hero{grid-template-columns:1fr}.arights-nav,.rule-dialog-grid,.prepare-grid{grid-template-columns:1fr 1fr}.rights-columns{grid-template-columns:1fr}}
+@media(max-width:620px){.arights{padding-top:28px}.arights-nav,.rule-dialog-grid,.prepare-grid,.issue-grid{grid-template-columns:1fr}.top-resource-nav{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="RentReady VIC home"><span class="brand-mark">R</span><span><b>RentReady VIC</b><small>Work · Rent · Support</small></span></a>
+    <nav class="top-resource-nav" aria-label="RentReady navigation">
+      <a class="top-resource-link" href="about.html">About</a>
+      <a class="top-resource-link" href="rental-map.html">Rental Map</a>
+      <a class="top-resource-link active" href="arights.html">ARights</a>
+      <a class="top-resource-link compass-top-link" href="https://sentrixdigital.com.au/compass/au" target="_blank" rel="noopener">Social Security Compass <span aria-hidden="true">↗</span></a>
+    </nav>
+    <a class="btn primary" href="app.html">RentReady assessment →</a>
+  </div>
+</header>
+
+<main class="arights">
+  <section class="arights-hero">
+    <div class="arights-hero-main">
+      <div class="arights-brand"><i>A</i> ARights · Victoria</div>
+      <h1>Prepare to apply.</h1>
+      <p>ARights is the application-and-rights companion to RentReady VIC. It helps you prepare the evidence a rental application may legitimately require, avoid unnecessary oversharing, and recognise requests or treatment that may need to be questioned.</p>
+      <div class="arights-actions">
+        <a class="btn primary" href="#prepare">Prepare my application ↓</a>
+        <a class="btn" href="#rules">Know the application rules</a>
+        <a class="btn" href="app.html?step=result">Back to RentReady result →</a>
+      </div>
+    </div>
+    <aside class="arights-side">
+      <span>Separate from affordability</span>
+      <strong>ARights does not decide whether you can afford the property.</strong>
+      <p>RentReady handles income, rent, bond and affordability. ARights handles the application process, privacy, evidence and Victorian rental-rights context.</p>
+    </aside>
+  </section>
+
+  <nav class="arights-nav" aria-label="ARights sections">
+    <a href="#prepare"><b>1 · Prepare</b><small>Build a focused evidence pack.</small></a>
+    <a href="#rules"><b>2 · Application rules</b><small>What may and may not be requested.</small></a>
+    <a href="#red-flags"><b>3 · Red flags</b><small>Click what happened and see why it matters.</small></a>
+    <a href="#discrimination"><b>4 · Fair treatment</b><small>Understand protected-characteristic issues.</small></a>
+  </nav>
+
+  <section class="arights-section" id="prepare">
+    <div class="arights-section-head">
+      <div><span class="arights-kicker">Prepare to apply</span><h2>Keep the application strong and focused.</h2><p>More personal information is not automatically a stronger application. Start with the permitted evidence that directly supports identity, rental history and capacity to pay.</p></div>
+    </div>
+    <div class="prepare-grid">
+      <article class="prepare-card"><span>1</span><b>Choose your financial evidence</b><p>Use current evidence that shows capacity to pay. A Centrelink payment statement or letter can be relevant where income support forms part of your income.</p></article>
+      <article class="prepare-card"><span>2</span><b>Choose identity evidence</b><p>Provide documents from the prescribed options rather than sending extra identity material “just in case”.</p></article>
+      <article class="prepare-card"><span>3</span><b>Prepare rental history and referees</b><p>Have previous-address information and permitted referee contact details ready where requested.</p></article>
+      <article class="prepare-card"><span>4</span><b>Protect bank privacy</b><p>If a bank statement is used, detailed day-to-day transactions do not need to become an open-ended view of your spending.</p></article>
+      <article class="prepare-card"><span>5</span><b>Keep a copy of the application</b><p>Save the listing, form, screenshots, emails and messages in case you later need to show exactly what was requested.</p></article>
+      <article class="prepare-card"><span>6</span><b>Keep RentReady and ARights separate</b><p>Your affordability result can help you decide whether to apply; it does not change what an agent is lawfully permitted to request.</p></article>
+    </div>
+  </section>
+
+  <section class="arights-section" id="rules">
+    <div class="arights-section-head">
+      <div><span class="arights-kicker">Victorian application rules</span><h2>Click a rule to understand it.</h2><p>These explainers keep the legal/application layer separate from RentReady's financial calculations.</p></div>
+    </div>
+    <div class="rule-dialog-grid">
+      <details class="rule-dialog">
+        <summary>Prescribed application form</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> Victoria restricts the information that can be requested in a rental application. Extra questions should not be treated as automatically acceptable just because an agent or platform displays them.<br><a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener">Consumer Affairs Victoria ↗</a></div>
+      </details>
+      <details class="rule-dialog">
+        <summary>Financial evidence</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> Financial evidence is for assessing capacity to pay, not for unrestricted access to private financial behaviour. Use the permitted evidence that proves the point without oversharing.</div>
+      </details>
+      <details class="rule-dialog">
+        <summary>Identity evidence</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> Identity checking should remain tied to the prescribed application process. Sending additional identity documents can increase privacy and security exposure without strengthening the application.</div>
+      </details>
+      <details class="rule-dialog">
+        <summary>Bank statements</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> A bank statement can be financial evidence, but that does not make detailed day-to-day transactions an unrestricted application requirement. Keep unrelated transaction information private where permitted.</div>
+      </details>
+      <details class="rule-dialog">
+        <summary>Tenancy-database checks</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> If a tenancy database is being used, the applicant should be told which database is being checked. Keep a record of what you were told.</div>
+      </details>
+      <details class="rule-dialog">
+        <summary>Protected personal characteristics</summary>
+        <div class="rule-dialog-body"><b>Why it matters:</b> Questions or treatment connected with a protected characteristic may engage Victorian discrimination law. A request for protected-characteristic information should not be treated as routine without understanding why it is being sought.<br><a href="https://www.consumer.vic.gov.au/housing/renting/legal-and-dispute-support/unlawful-discrimination" target="_blank" rel="noopener">Consumer Affairs Victoria ↗</a></div>
+      </details>
+    </div>
+
+    <div class="rights-columns" style="margin-top:12px">
+      <article class="rights-card allowed">
+        <h3>Common application information that may be requested</h3>
+        <details open><summary>Personal and contact details</summary><p>Name, contact details and other information contained in the prescribed application process.</p></details>
+        <details><summary>Employment and income information</summary><p>Information relevant to capacity to pay rent, including permitted evidence of employment or other income.</p></details>
+        <details><summary>Rental or residential history</summary><p>Previous addresses and rental-provider contact information may be relevant to rental history.</p></details>
+        <details><summary>Personal referees</summary><p>Permitted referee details can include name, contact details and their connection to you.</p></details>
+        <details><summary>Preferred lease term and move-in date</summary><p>The application can include the rental term sought and the date you would like the tenancy to begin.</p></details>
+      </article>
+
+      <article class="rights-card not-allowed">
+        <h3>Requests that should make you stop and check</h3>
+        <details open><summary>Questions about previous bond claims</summary><p>Bond-history questions are not a general invitation to investigate your past bond disputes or claims.</p></details>
+        <details><summary>Questions about prior rental disputes or legal action</summary><p>These are distinct from ordinary rental-history information and should be checked against the prescribed application rules.</p></details>
+        <details><summary>Detailed daily banking transactions</summary><p>Financial evidence should not become an unrestricted review of every transaction you make.</p></details>
+        <details><summary>Extra platform questions</summary><p>An optional-looking field on a third-party application platform is not automatically permitted merely because the platform asks it.</p></details>
+        <details><summary>Protected-characteristic questions without explanation</summary><p>Ask why the information is required and keep the explanation in writing.</p></details>
+      </article>
+    </div>
+  </section>
+
+  <section class="arights-section" id="red-flags">
+    <div class="arights-section-head">
+      <div><span class="arights-kicker">Interactive check</span><h2>What happened during the application?</h2><p>Tick only things that actually occurred. ARights will explain why each item deserves a closer look; it does not make a legal finding.</p></div>
+    </div>
+    <div class="issue-grid">
+      <label class="issue-option"><input type="checkbox" data-issue="extra"><span>Extra questions appeared that were not part of the expected application form.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="bond"><span>I was asked about previous bond claims or bond history.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="dispute"><span>I was asked about a previous rental dispute or legal action.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="bank"><span>I was asked to provide detailed day-to-day bank transactions.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="protected"><span>I was asked about a protected characteristic without a clear written reason.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="treatment"><span>I was refused, delayed or offered worse terms because of a protected characteristic.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="database"><span>A tenancy database was checked but I was not told which database.</span></label>
+      <label class="issue-option"><input type="checkbox" data-issue="fee"><span>I was charged or asked to pay a fee simply to apply, pay rent or inspect.</span></label>
+    </div>
+    <div class="issue-results" id="issue-results"><div class="notice info"><b>No red flags selected.</b> Select an item above to see why it may matter and what evidence to keep.</div></div>
+  </section>
+
+  <section class="arights-section" id="discrimination">
+    <div class="arights-section-head">
+      <div><span class="arights-kicker">Fair treatment</span><h2>Discrimination is different from ordinary applicant selection.</h2><p>A rental provider may assess legitimate matters such as rental history and capacity to pay. They cannot lawfully treat an applicant unfavourably because of a protected personal characteristic, subject to applicable exceptions.</p></div>
+    </div>
+    <div class="rule-dialog-grid">
+      <details class="rule-dialog"><summary>Income support and Centrelink</summary><div class="rule-dialog-body">Being on an income-support payment is not automatically the same thing as a protected characteristic. Capacity to pay can be assessed. But the reason a person receives a payment may overlap with a protected characteristic such as disability, age or parent/carer status.</div></details>
+      <details class="rule-dialog"><summary>Disability and assistance dogs</summary><div class="rule-dialog-body">Disability is a protected characteristic. Treatment connected with disability or an assistance dog can raise discrimination issues. Keep written evidence if this affects the application.</div></details>
+      <details class="rule-dialog"><summary>Children and parent/carer status</summary><div class="rule-dialog-body">Parent or carer status can be protected. If family status appears to change how an application is processed, record exactly what happened and check the applicable guidance.</div></details>
+      <details class="rule-dialog"><summary>Age</summary><div class="rule-dialog-body">Age is protected. A provider may assess whether rent can be paid but should not substitute age itself for a legitimate assessment criterion.</div></details>
+      <details class="rule-dialog"><summary>Victimisation</summary><div class="rule-dialog-body">Treating a person badly because they made or supported a discrimination complaint can itself raise a separate concern.</div></details>
+      <details class="rule-dialog"><summary>Need help?</summary><div class="rule-dialog-body">Consumer Affairs Victoria deals with rental-law compliance. The Victorian Equal Opportunity and Human Rights Commission provides discrimination information and dispute-resolution pathways.<br><a href="https://www.humanrights.vic.gov.au/for-individuals/hotels-camping-sites-and-rental-properties/" target="_blank" rel="noopener">VEOHRC accommodation guidance ↗</a></div></details>
+    </div>
+  </section>
+
+  <section class="arights-section">
+    <div class="arights-section-head">
+      <div><span class="arights-kicker">If something looks wrong</span><h2>Keep evidence, ask for the rule, and use the right pathway.</h2></div>
+    </div>
+    <div class="prepare-grid">
+      <article class="prepare-card"><span>1</span><b>Ask what authorises the request</b><p>Ask the agent to identify why the information is required and how it fits the Victorian application rules.</p></article>
+      <article class="prepare-card"><span>2</span><b>Get the reason in writing</b><p>Written explanations are easier to assess and preserve if a question or decision later needs review.</p></article>
+      <article class="prepare-card"><span>3</span><b>Keep evidence</b><p>Save screenshots, forms, listings, emails, messages, receipts and any written explanation.</p></article>
+      <article class="prepare-card"><span>4</span><b>Use Consumer Affairs Victoria</b><p>Use the official rental-law guidance and complaint pathway for Victorian tenancy/application issues.</p></article>
+      <article class="prepare-card"><span>5</span><b>Use VEOHRC for discrimination</b><p>If the concern is treatment connected to a protected characteristic, review the Victorian discrimination guidance.</p></article>
+      <article class="prepare-card"><span>6</span><b>Return to RentReady for affordability</b><p>Keep legal/application questions separate from whether a property fits your income and rent position.</p></article>
+    </div>
+    <div class="source-row" style="margin-top:14px">
+      <a href="https://www.consumer.vic.gov.au/housing/renting/starting-and-changing-rental-agreements/applying-signing-and-moving-in/applying-for-a-property" target="_blank" rel="noopener">Consumer Affairs Victoria — applying for a property ↗</a>
+      <a href="https://www.consumer.vic.gov.au/housing/renting/legal-and-dispute-support/unlawful-discrimination" target="_blank" rel="noopener">Consumer Affairs Victoria — unlawful discrimination ↗</a>
+      <a href="https://www.humanrights.vic.gov.au/for-individuals/hotels-camping-sites-and-rental-properties/" target="_blank" rel="noopener">VEOHRC — accommodation rights ↗</a>
+    </div>
+    <div class="arights-note"><b>ARights is guidance, not a legal finding.</b> It helps you identify questions to check and evidence to preserve. Official agencies, tribunals and courts determine legal rights and outcomes.</div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="shell footer-inner">
+    <div><b>ARights · RentReady VIC</b><br><span>Prepare to apply · Victorian rental application guidance.</span></div>
+    <div><span>Check current official Victorian sources before relying on a rule in a particular case.</span></div>
+    <div class="footer-actions"><a href="app.html">RentReady assessment</a><span>·</span><a href="about.html">About</a></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const messages = {
+    extra:["Extra application questions","Ask the agent to identify what part of the prescribed application process authorises the question. Save a screenshot of the field and the response."],
+    bond:["Bond-history questions","Keep a record of the question and check it against Consumer Affairs Victoria's prescribed application guidance."],
+    dispute:["Previous disputes or legal action","A request about earlier disputes or legal action is different from ordinary rental history. Preserve the wording and ask why it is being requested."],
+    bank:["Detailed bank transactions","Ask whether a permitted financial document can be supplied without exposing unrelated day-to-day transaction information."],
+    protected:["Protected-characteristic information","Ask for the reason in writing. Keep both the question and explanation before deciding whether further advice or a complaint is appropriate."],
+    treatment:["Different treatment","Record dates, names, messages and the terms offered. Treatment connected to a protected characteristic may warrant discrimination guidance or advice."],
+    database:["Tenancy database disclosure","Ask which database was used and keep the answer. Database use should not be hidden from the applicant."],
+    fee:["Application, payment or inspection fee","Keep the invoice, receipt or screenshot and check the current Victorian rules on fees and third-party rental platforms."]
+  };
+  const out=document.getElementById("issue-results");
+  function render(){
+    const chosen=[...document.querySelectorAll("[data-issue]:checked")].map(x=>x.dataset.issue);
+    if(!chosen.length){
+      out.innerHTML='<div class="notice info"><b>No red flags selected.</b> Select an item above to see why it may matter and what evidence to keep.</div>';
+      return;
+    }
+    out.innerHTML=chosen.map(key=>'<div class="issue-result"><b>'+messages[key][0]+'</b>'+messages[key][1]+'</div>').join("")+
+      '<div class="notice info" style="margin-top:10px"><b>Next step:</b> keep evidence, ask for the request or decision to be explained in writing, and compare it with the official Victorian guidance linked below.</div>';
+  }
+  document.querySelectorAll("[data-issue]").forEach(x=>x.addEventListener("change",render));
+})();
+</script>
+</body>
+</html>
