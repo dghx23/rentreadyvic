@@ -49,6 +49,8 @@
 .leaflet-popup-content{font:10px/1.45 var(--font)}
 @media(max-width:1120px){.map-layout{grid-template-columns:270px minmax(0,1fr)}.detail-panel{grid-column:1/-1}.detail-body{max-height:none}.metric-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:760px){.map-layout{grid-template-columns:1fr}.map-hero{display:block}.map-hero .btn{margin-top:10px}#rental-map{height:520px}.detail-panel{grid-column:auto}.metric-grid{grid-template-columns:1fr 1fr}.source-strip{grid-template-columns:1fr 1fr}}
+.vic-data-footer{border-top:1px solid var(--line);background:#fff;padding:18px 0 24px}.vic-data-footer-inner{width:min(1480px,calc(100% - 24px));margin:auto;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}.vic-data-logos{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.vic-data-logos img{display:block;max-height:42px;max-width:165px;object-fit:contain}.vic-data-logos .datavic-logo{max-height:30px}.vic-data-logos .homes-logo{max-height:46px}.vic-data-credit strong{font-size:9px}.vic-data-credit p{margin:4px 0 0;color:var(--muted);font-size:7.5px;line-height:1.45}.vic-data-credit a{font-weight:800}
+@media(max-width:760px){.vic-data-footer-inner{grid-template-columns:1fr}.vic-data-logos{justify-content:flex-start}}
 @media(max-width:620px){.top-resource-nav{display:none}.map-search-row{grid-template-columns:1fr}#rental-map{height:440px}.metric-grid{grid-template-columns:1fr 1fr}.source-strip{grid-template-columns:1fr}}
 </style>
 </head>
@@ -132,13 +134,29 @@
   </div>
 
   <div class="map-note"><b>What this map measures:</b> Homes Victoria rental data is based on new rental lettings and RTBA bond records. It is not a live count of properties advertised today. Missing or unpublished values remain blank. A Homes Victoria rental area can cover more than one named locality; the source-area name is always shown in the detail panel. Anglicare Victoria's 2026 Rental Affordability Snapshot is shown separately as affordability context.</div>
+  <div class="map-note"><b>Supporting Homes Victoria sources retained in Core AU:</b> Quarterly Median Rents by LGA, Affordable Lettings by LGA and the Rental Report Data Tables are ingested as supporting datasets. They are kept separate from the suburb median layer until each measure is mapped and labelled for its proper geography and methodology.</div>
   <section class="source-strip" aria-label="Rental map data sources">
-    <article class="source-tile"><span>Rental market</span><strong>Homes Victoria / RTBA</strong><p>Median weekly rent and new lettings by rental area and property type. Quarterly source series.</p><a href="https://discover.data.vic.gov.au/dataset/rental-report-quarterly-moving-annual-rents-by-suburb" target="_blank" rel="noopener">Official DataVic source ↗</a></article>
-    <article class="source-tile"><span>Map geography</span><strong>Vicmap Admin</strong><p>Authoritative Victorian locality boundaries; parcels and planning are separate optional map layers.</p><a href="https://vicmap.land.vic.gov.au/agsgis/rest/services/vicmap/Vicmap_Admin/MapServer/11" target="_blank" rel="noopener">Vicmap layer ↗</a></article>
+    <article class="source-tile"><span>Primary rental series</span><strong>Homes Victoria — Moving Annual Rents by Suburb</strong><p>Official Rental Report series using RTBA bond data for median weekly rent, property type and new lettings.</p><a href="https://discover.data.vic.gov.au/dataset/rental-report-quarterly-moving-annual-rents-by-suburb" target="_blank" rel="noopener">Official DataVic dataset ↗</a></article>
+    <article class="source-tile"><span>Map geography</span><strong>Vicmap Admin + Property</strong><p>Authoritative Victorian locality geometry, with optional parcel and planning context from Vicmap services.</p><a href="https://discover.data.vic.gov.au/dataset/vicmap-as-a-service-vaas" target="_blank" rel="noopener">Vicmap as a Service ↗</a></article>
     <article class="source-tile"><span>Affordability research</span><strong>Anglicare Victoria RAS 2026</strong><p>Point-in-time advertised-rental affordability context. Kept separate from the Homes Victoria rent series.</p><a href="https://sentrixdigital.com.au/core/au/property-rental/anglicare-2026" target="_blank" rel="noopener">Core AU source brief ↗</a><br><a href="https://www.anglicarevic.org.au/research/victorian-rental-affordability-snapshot-2026/" target="_blank" rel="noopener">Publisher source ↗</a></article>
     <article class="source-tile"><span>Governance</span><strong>Sentrix Digital Core AU</strong><p>Normalises market data, records provenance and exposes the map contract consumed by RentReady.</p><a href="https://sentrixdigital.com.au/core/au/property-rental/rationale" target="_blank" rel="noopener">Architecture & rationale ↗</a></article>
   </section>
 </main>
+<footer class="vic-data-footer">
+  <div class="vic-data-footer-inner">
+    <div class="vic-data-logos" aria-label="Victorian Government data sources">
+      <a href="https://www.vic.gov.au/" target="_blank" rel="noopener"><img src="https://discover.data.vic.gov.au/images/vic-header-logo.png" alt="Victoria State Government"></a>
+      <a href="https://www.data.vic.gov.au/" target="_blank" rel="noopener"><img class="datavic-logo" src="https://discover.data.vic.gov.au/images/data-vic-logo-x3.png" alt="DataVic"></a>
+      <a href="https://discover.data.vic.gov.au/organization/homes-victoria" target="_blank" rel="noopener"><img class="homes-logo" src="https://discover.data.vic.gov.au/uploads/group/2025-11-17-031612.6748642025-11-17-031612.142403HomesVictoria.png" alt="Homes Victoria"></a>
+    </div>
+    <div class="vic-data-credit">
+      <strong>Victorian Government data attribution</strong>
+      <p>Rental market statistics: Homes Victoria / Residential Tenancies Bond Authority, sourced through DataVic. Spatial context: Vicmap, State Government of Victoria. Victorian Government datasets are credited to their publishers and used subject to the applicable source licence, including CC BY 4.0 where stated by DataVic.</p>
+      <p><a href="https://discover.data.vic.gov.au/dataset/rental-report-quarterly-moving-annual-rents-by-suburb" target="_blank" rel="noopener">Rental dataset ↗</a> · <a href="https://discover.data.vic.gov.au/dataset/vicmap-as-a-service-vaas" target="_blank" rel="noopener">Vicmap catalogue ↗</a> · <a href="https://sentrixdigital.com.au/core/au/property-rental" target="_blank" rel="noopener">Core AU provenance ↗</a></p>
+    </div>
+  </div>
+</footer>
+
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/esri-leaflet@3.0.15/dist/esri-leaflet.js"></script>
